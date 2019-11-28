@@ -1,4 +1,5 @@
 ﻿using Abp.Runtime.Validation;
+using System.Collections.Generic;
 using TuDou.Grace.Dto;
 
 namespace TuDou.Grace.Authorization.Users.Dto
@@ -7,7 +8,7 @@ namespace TuDou.Grace.Authorization.Users.Dto
     {
         public string Filter { get; set; }
 
-        public string Permission { get; set; }
+        public List<string> Permissions { get; set; }
 
         public int? Role { get; set; }
 

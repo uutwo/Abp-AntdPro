@@ -6,7 +6,7 @@ using TuDou.Grace.Web;
 
 namespace TuDou.Grace.EntityFrameworkCore
 {
-    /* This class is needed to run "dotnet ef ..." commands from command line on development. Not used anywhere else */
+    /* 这个类需要在开发时从命令行运行“dotnet ef…”命令。其他地方没用过 */
     public class GraceDbContextFactory : IDesignTimeDbContextFactory<GraceDbContext>
     {
         public GraceDbContext CreateDbContext(string[] args)

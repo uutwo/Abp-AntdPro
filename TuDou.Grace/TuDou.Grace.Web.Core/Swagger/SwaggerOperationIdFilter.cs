@@ -2,14 +2,14 @@
 using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace TuDou.Grace.Web.Swagger
 {
     public class SwaggerOperationIdFilter : IOperationFilter
     {
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             operation.OperationId = FriendlyId(context.ApiDescription);
         }

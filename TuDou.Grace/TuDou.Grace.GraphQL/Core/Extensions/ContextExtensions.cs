@@ -20,11 +20,11 @@ namespace TuDou.Grace.Core.Extensions
         }
 
         /// <summary>
-        /// Returns true if the given fieldSelector exists in the selection of the query.
+        /// 如果给定的fieldSelector存在于查询的选择中，则返回true。
         /// </summary>
-        /// <param name="context">The working context</param>
-        /// <param name="fieldSelector">The query of the field selector. For example items:organizationUnits:displayName</param>
-        /// <param name="namespaceSeperator">The seperator character of the fieldSelector. Default is :</param>
+        /// <param name="context">工作环境</param>
+        /// <param name="fieldSelector">字段选择器的查询。例如项目:organizationUnits: displayName</param>
+        /// <param name="namespaceSeperator">fieldSelector的分隔符。默认是:</param>
         /// <returns></returns>
         public static bool HasSelectionField(this ResolveFieldContext<object> context, string fieldSelector, char namespaceSeperator = ':')
         {

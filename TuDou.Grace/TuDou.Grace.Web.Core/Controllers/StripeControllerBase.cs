@@ -35,7 +35,7 @@ namespace TuDou.Grace.Web.Controllers
                     await HandleSubscriptionCyclePaymentAsync(stripeEvent);
                 }
 
-                // Other WebHook events can be handled here.
+                // 其他WebHook事件可以在这里处理。
 
                 return Ok();
             }

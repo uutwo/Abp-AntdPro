@@ -5,25 +5,20 @@ using Abp.AspNetCore;
 using Abp.AspNetCore.Configuration;
 using Abp.AspNetCore.SignalR;
 using Abp.Configuration.Startup;
-using Abp.Dependency;
 using Abp.Hangfire;
 using Abp.Hangfire.Configuration;
-using Abp.IO;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Runtime.Caching.Redis;
 using Abp.Zero.Configuration;
-using Castle.Core.Internal;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using TuDou.Grace.Chat;
 using TuDou.Grace.Configuration;
 using TuDou.Grace.EntityFrameworkCore;
 using TuDou.Grace.Startup;
 using TuDou.Grace.Web.Authentication.JwtBearer;
 using TuDou.Grace.Web.Authentication.TwoFactor;
-using TuDou.Grace.Web.Chat.SignalR;
 using TuDou.Grace.Web.Configuration;
 
 namespace TuDou.Grace.Web
@@ -34,15 +29,15 @@ namespace TuDou.Grace.Web
         typeof(AbpAspNetCoreSignalRModule),
         typeof(AbpAspNetCoreModule),
         typeof(GraceGraphQLModule),
-        typeof(AbpRedisCacheModule), //AbpRedisCacheModule dependency (and Abp.RedisCache nuget package) can be removed if not using Redis cache
-        typeof(AbpHangfireAspNetCoreModule) //AbpHangfireModule dependency (and Abp.Hangfire.AspNetCore nuget package) can be removed if not using Hangfire
+        typeof(AbpRedisCacheModule), //如果不使用Redis缓存，可以删除AbpRedisCacheModule依赖项(和Abp.RedisCache nuget包)
+        typeof(AbpHangfireAspNetCoreModule) //AbpHangfireModule依赖(和Abp.Hangfire)。如果不使用Hangfire，可以删除AspNetCore nuget包)
     )]
     public class GraceWebCoreModule : AbpModule
     {
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
-        public GraceWebCoreModule(IHostingEnvironment env)
+        public GraceWebCoreModule(IWebHostEnvironment env)
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();
@@ -96,7 +91,8 @@ namespace TuDou.Grace.Web
             tokenAuthConfig.Issuer = _appConfiguration["Authentication:JwtBearer:Issuer"];
             tokenAuthConfig.Audience = _appConfiguration["Authentication:JwtBearer:Audience"];
             tokenAuthConfig.SigningCredentials = new SigningCredentials(tokenAuthConfig.SecurityKey, SecurityAlgorithms.HmacSha256);
-            tokenAuthConfig.Expiration = AppConsts.AccessTokenExpiration;
+            tokenAuthConfig.AccessTokenExpiration = AppConsts.AccessTokenExpiration;
+            tokenAuthConfig.RefreshTokenExpiration = AppConsts.RefreshTokenExpiration;
         }
 
         public override void Initialize()

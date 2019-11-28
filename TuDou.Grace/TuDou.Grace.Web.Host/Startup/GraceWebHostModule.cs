@@ -20,11 +20,11 @@ namespace TuDou.Grace.Web.Startup
     )]
     public class GraceWebHostModule : AbpModule
     {
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
         public GraceWebHostModule(
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();

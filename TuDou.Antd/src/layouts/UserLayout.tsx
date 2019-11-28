@@ -1,35 +1,24 @@
 import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import DocumentTitle from 'react-document-title';
 import Link from 'umi/link';
-import React,{ useEffect } from 'react';
+import React from 'react';
 import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
-
 import SelectLang from '@/components/SelectLang';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
+import AppComponentBase from '@/components/AppComponentBase';
 
 export interface UserLayoutProps extends ConnectProps {
-  breadcrumbNameMap: { [path: string]: MenuDataItem };
+  breadcrumbNameMap: {
+    [path: string]: MenuDataItem;
+  };
 }
 
-const UserLayout: React.SFC<UserLayoutProps> = props => {
-  const {
-    route = {
-      routes: [],
-    },dispatch
-  } = props;
-  const { routes = [] } = route;
-  const {
-    children,
-    location = {
-      pathname: '',
-    },
-  } = props;
-  const { breadcrumb } = getMenuData(routes);
-  useEffect(() => {
+class UserLayout extends AppComponentBase<UserLayoutProps> {
 
+  componentWillMount(){
+    const{dispatch} = this.props;
     if (dispatch) {
       dispatch({
         type: 'global/initAbp',
@@ -38,38 +27,51 @@ const UserLayout: React.SFC<UserLayoutProps> = props => {
         type: 'global/getApplicationSession',
       });
     }
-  }, []);
-  return (
-    <DocumentTitle
-      title={getPageTitle({
-        pathname: location.pathname,
-        breadcrumb,
-        formatMessage,
-        ...props,
-      })}
-    >
-      <div className={styles.container}>
-        <div className={styles.lang}>
-          <SelectLang />
-        </div>
-        <div className={styles.content}>
-          <div className={styles.top}>
-            <div className={styles.header}>
-              <Link to="/">
-                <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>Ant Design</span>
-              </Link>
-            </div>
-            <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+  }
+  render(){
+    const {
+      route = {
+        routes: [],
+      }
+    } = this.props;
+    const { routes = [] } = route;
+    const {
+      children,
+      location = {
+        pathname: '',
+      },
+    } = this.props;
+    const { breadcrumb } = getMenuData(routes);
+    return (
+      <DocumentTitle
+        title={getPageTitle({
+          pathname: location.pathname,
+          breadcrumb,
+          ...this.props,
+        })}
+      >
+        <div className={styles.container}>
+          <div className={styles.lang}>
+            <SelectLang />
           </div>
-          {children}
+          <div className={styles.content}>
+            <div className={styles.top}>
+              <div className={styles.header}>
+                <Link to="/">
+                  <img alt="logo" className={styles.logo} src={logo} />
+                  <span className={styles.title}>Ant Design</span>
+                </Link>
+              </div>
+              <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+            </div>
+            {children}
+          </div>
+          <DefaultFooter />
         </div>
-        <DefaultFooter />
-      </div>
-    </DocumentTitle>
-  );
+      </DocumentTitle>
+    );
+  }
+
 };
 
-export default connect(({ settings }: ConnectState) => ({
- ...settings,
-}))(UserLayout);
+export default connect(({ settings }: ConnectState) => ({ ...settings }))(UserLayout);

@@ -29,7 +29,7 @@ class NotificationService {
   async updateNotificationSettings(input:UpdateNotificationSettingsInput) {
     return request('api/services/app/Notification/UpdateNotificationSettings', {
       method: "PUT",
-      params:input
+      data:input
     });
   };
   async deleteNotification(input:EntityDto<string>) {

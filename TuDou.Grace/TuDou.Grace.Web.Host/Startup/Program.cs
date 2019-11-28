@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using TuDou.Grace.Web.Helpers;
 
 namespace TuDou.Grace.Web.Startup
 {
@@ -7,6 +8,7 @@ namespace TuDou.Grace.Web.Startup
     {
         public static void Main(string[] args)
         {
+            CurrentDirectoryHelpers.SetCurrentDirectory();
             CreateWebHostBuilder(args).Build().Run();
         }
 
@@ -15,6 +17,7 @@ namespace TuDou.Grace.Web.Startup
             return new WebHostBuilder()
                 .UseKestrel(opt => opt.AddServerHeader = false)
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIIS()
                 .UseIISIntegration()
                 .UseStartup<Startup>();
         }

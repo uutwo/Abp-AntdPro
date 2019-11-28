@@ -1,24 +1,32 @@
 import { Icon, Menu } from 'antd';
-import {setLocale } from 'umi-plugin-react/locale';
-
 import { ClickParam } from 'antd/es/menu';
+import * as _ from 'lodash';
 import React from 'react';
 import classNames from 'classnames';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
+import IconFont from './../Iconfont/index';
 
 interface SelectLangProps {
   className?: string;
 }
 const SelectLang: React.FC<SelectLangProps> = props => {
   const { className } = props;
-  const changeLang = ({ key }: ClickParam): void => setLocale(key, false);
-  const locales = abp.localization.languages;
-
+  const languages = _.filter(abp.localization.languages, l => l.isDisabled === false);
+  const changeLang = ({key}: ClickParam)=>{
+    abp.utils.setCookieValue(
+      'Abp.Localization.CultureName',
+      key,
+      new Date(new Date().getTime() + 5 * 365 * 86400000), // 5 year
+      abp.appPath
+  );
+    window.location.reload();
+  }
   const langMenu = (
     <Menu className={styles.menu} selectedKeys={[abp.localization.currentLanguage.name]} onClick={changeLang}>
-      {locales.map(item => (
+      {languages.map(item => (
         <Menu.Item key={item.name}>
+          <IconFont type={item.icon} />
           <span role="img" aria-label={item.displayName}>
             {item.name}
           </span>{' '}

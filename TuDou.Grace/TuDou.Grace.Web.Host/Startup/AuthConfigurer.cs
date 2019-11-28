@@ -81,7 +81,7 @@ namespace TuDou.Grace.Web.Startup
 
             if (context.HttpContext.Request.Path.Value.StartsWith("/signalr"))
             {
-                var env = context.HttpContext.RequestServices.GetService<IHostingEnvironment>();
+                var env = context.HttpContext.RequestServices.GetService<IWebHostEnvironment>();
                 var config = env.GetAppConfiguration();
                 var allowAnonymousSignalRConnection = bool.Parse(config["App:AllowAnonymousSignalRConnection"]);
 

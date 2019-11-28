@@ -9,7 +9,7 @@ namespace TuDou.Grace.Web.Configuration
     {
         public IConfigurationRoot Configuration { get; }
 
-        public AppConfigurationAccessor(IHostingEnvironment env)
+        public AppConfigurationAccessor(IWebHostEnvironment env)
         {
             Configuration = env.GetAppConfiguration();
         }

@@ -91,7 +91,7 @@ if (!__IS_BROWSER) {
     // ctx.req.url may be `/bar?locale=en-US`
     const [pathname] = (ctx.req.url || '').split('?');
     const history = require('@tmp/history').default;
-    history.push(ctx.req.url);
+    history.replace(ctx.req.url);
     let props = {};
     const activeRoute =
       findRoute(require('./router').routes, pathname) || false;
@@ -116,6 +116,7 @@ if (!__IS_BROWSER) {
         res: ctx.res || {},
         ...initialProps,
       });
+      // please use return, avoid return all model
       props = plugins.apply('initialProps', {
         initialValue: props,
       });
@@ -130,6 +131,7 @@ if (!__IS_BROWSER) {
     const rootContainer = plugins.apply('rootContainer', {
       initialValue: React.createElement(require('./router').default, props),
     });
+    const stringify = require('serialize-javascript');
     const htmlTemplateMap = {};
     return {
       htmlElement:

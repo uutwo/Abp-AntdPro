@@ -6,6 +6,7 @@ import styles from './index.less';
 import { FormattedUserNotification } from '@/services/notification.ts/dtos/userNotification';
 import UserNotificationHelper from '@/shared/helpers/UserNotificationHelper';
 import  router  from 'umi/router';
+import { notification } from 'antd';
 
 export interface GlobalHeaderRightProps extends ConnectProps {
   notifications: FormattedUserNotification[];
@@ -71,7 +72,9 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
       });
       await this.loadNotifications();
     }
-
+     notification.success({
+      message:'操作成功!'
+    })
   };
 
 

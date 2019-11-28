@@ -16,7 +16,7 @@ namespace TuDou.Grace.Web.Chat.SignalR
     public class SignalRChatCommunicator : IChatCommunicator, ITransientDependency
     {
         /// <summary>
-        /// Reference to the logger.
+        ///使用日志
         /// </summary>
         public ILogger Logger { get; set; }
 
@@ -125,7 +125,7 @@ namespace TuDou.Grace.Web.Chat.SignalR
             var signalRClient = _chatHub.Clients.Client(client.ConnectionId);
             if (signalRClient == null)
             {
-                Logger.Debug("Can not get chat user " + client.UserId + " from SignalR hub!");
+                Logger.Debug("无法获得聊天用户 " + client.UserId + " 从SignalR中心!");
                 return null;
             }
 

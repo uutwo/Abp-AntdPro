@@ -1,4 +1,5 @@
-﻿using Swashbuckle.AspNetCore.Swagger;
+﻿using Abp.Collections.Extensions;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace TuDou.Grace.Web.Swagger
@@ -6,12 +7,14 @@ namespace TuDou.Grace.Web.Swagger
     public class SwaggerOperationFilter : IOperationFilter
     {
       
-        public void Apply(Operation operation, OperationFilterContext context)
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             if (operation.Parameters == null)
+            {
                 return;
+            }
 
-            for (int i = 0; i < operation.Parameters.Count; ++i)
+            for (var i = 0; i < operation.Parameters.Count; ++i)
             {
                 var parameter = operation.Parameters[i];
 
@@ -21,15 +24,11 @@ namespace TuDou.Grace.Web.Swagger
                     continue;
                 }
 
-                if (context.SchemaRegistry.Definitions.ContainsKey(enumType.Name) == false)
-                    context.SchemaRegistry.Definitions.Add(enumType.Name, context.SchemaRegistry.GetOrRegister(enumType));
+                var schema = context.SchemaRepository.Schemas.GetOrAdd($"#/definitions/{enumType.Name}", () =>
+                    context.SchemaGenerator.GenerateSchema(enumType, context.SchemaRepository)
+                );
 
-
-                var schema = new Schema
-                {
-                    Ref = $"#/definitions/{enumType.Name}"
-                };
-                parameter.Extensions.Add("x-schema", schema);
+                parameter.Schema = schema;
             }
         }
     }

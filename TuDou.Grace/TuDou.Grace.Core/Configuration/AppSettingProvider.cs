@@ -8,8 +8,8 @@ using Microsoft.Extensions.Configuration;
 namespace TuDou.Grace.Configuration
 {
     /// <summary>
-    /// Defines settings for the application.
-    /// See <see cref="AppSettings"/> for setting names.
+    /// 定义应用程序的设置。
+    /// 有关设置名称，请参见<参见cref="AppSettings"/>。
     /// </summary>
     public class AppSettingProvider : SettingProvider
     {
@@ -22,10 +22,10 @@ namespace TuDou.Grace.Configuration
 
         public override IEnumerable<SettingDefinition> GetSettingDefinitions(SettingDefinitionProviderContext context)
         {
-            // Disable TwoFactorLogin by default (can be enabled by UI)
+            // 默认禁用TwoFactorLogin(可以通过UI启用)
             context.Manager.GetSettingDefinition(AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsEnabled).DefaultValue = false.ToString().ToLowerInvariant();
 
-            // Change scope of Email settings
+            // 更改电子邮件设置的范围
             ChangeEmailSettingScopes(context);
 
             return GetHostSettings().Union(GetTenantSettings()).Union(GetSharedSettings())
@@ -57,6 +57,7 @@ namespace TuDou.Grace.Configuration
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.UseDefaultCredentials).Scopes = SettingScopes.Application;
                 context.Manager.GetSettingDefinition(EmailSettingNames.DefaultFromAddress).Scopes = SettingScopes.Application;
                 context.Manager.GetSettingDefinition(EmailSettingNames.DefaultFromDisplayName).Scopes = SettingScopes.Application;
+           
             }
         }
 
@@ -72,7 +73,8 @@ namespace TuDou.Grace.Configuration
                 new SettingDefinition(AppSettings.HostManagement.BillingLegalName, GetFromAppSettings(AppSettings.HostManagement.BillingLegalName, "")),
                 new SettingDefinition(AppSettings.HostManagement.BillingAddress, GetFromAppSettings(AppSettings.HostManagement.BillingAddress, "")),
                 new SettingDefinition(AppSettings.Recaptcha.SiteKey, GetFromSettings("Recaptcha:SiteKey"), isVisibleToClients: true),
-                new SettingDefinition(AppSettings.UiManagement.Theme, GetFromAppSettings(AppSettings.UiManagement.Theme, "default"), isVisibleToClients: true, scopes: SettingScopes.All)
+                new SettingDefinition(AppSettings.UiManagement.Theme, GetFromAppSettings(AppSettings.UiManagement.Theme, "default"), isVisibleToClients: true, scopes: SettingScopes.All),
+                new SettingDefinition(AppSettings.UserManagement.AllowOneConcurrentLoginPerUser, GetFromAppSettings(AppSettings.UserManagement.AllowOneConcurrentLoginPerUser, "false"), isVisibleToClients: true, scopes: SettingScopes.Application | SettingScopes.Tenant)
             };
         }
 

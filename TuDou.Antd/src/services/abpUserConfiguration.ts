@@ -6,7 +6,7 @@ export async function getAll(): Promise<any> {
         '.AspNetCore.Culture': ('c=' + cookieLangValue + '|uic=' + cookieLangValue),
         'Abp.TenantId': abp.multiTenancy.getTenantIdCookie()+''
     };
-    return request( '/AbpUserConfiguration/GetAll', {
+    return request('AbpUserConfiguration/GetAll', {
         method: 'GET',
         headers: requestHeaders,
     })

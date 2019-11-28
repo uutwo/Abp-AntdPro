@@ -21,7 +21,7 @@ namespace TuDou.Grace.Web.Chat.SignalR
         private bool _isCallByRelease;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChatHub"/> class.
+        /// 初始化<see cref="ChatHub"/>类的新实例。
         /// </summary>
         public ChatHub(
             IChatMessageManager chatMessageManager,
@@ -50,13 +50,13 @@ namespace TuDou.Grace.Web.Chat.SignalR
             }
             catch (UserFriendlyException ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn("无法向用户发送聊天消息:" + receiver);
                 Logger.Warn(ex.ToString(), ex);
                 return ex.Message;
             }
             catch (Exception ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn("无法向用户发送聊天消息:" + receiver);
                 Logger.Warn(ex.ToString(), ex);
                 return _localizationManager.GetSource("AbpWeb").GetString("InternalServerError");
             }
@@ -64,7 +64,7 @@ namespace TuDou.Grace.Web.Chat.SignalR
 
         public void Register()
         {
-            Logger.Debug("A client is registered: " + Context.ConnectionId);
+            Logger.Debug("一个客户端已连接" + Context.ConnectionId);
         }
 
         protected override void Dispose(bool disposing)

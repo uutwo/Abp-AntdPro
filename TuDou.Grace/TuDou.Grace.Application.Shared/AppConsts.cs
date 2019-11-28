@@ -27,7 +27,8 @@ namespace TuDou.Grace
         public const int MaxProfilPictureBytesUserFriendlyValue = 5;
 
         public const string TokenValidityKey = "token_validity_key";
-
+        public const string SecurityStampKey = "AspNet.Identity.SecurityStamp";
+        public const string TokenType = "token_type";
         public static string UserIdentifier = "user_identifier";
 
         public const string ThemeDefault = "default";

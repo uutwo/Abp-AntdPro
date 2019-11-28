@@ -38,7 +38,7 @@ namespace TuDou.Grace.MultiTenancy.Payments.Stripe
             var chargeService = new ChargeService();
             var charge = await chargeService.CreateAsync(new ChargeCreateOptions
             {
-                SourceId = source,
+                Source = source,
                 Amount = ConvertToStripePrice(amount),
                 Description = description,
                 Currency = GraceConsts.Currency,
@@ -210,7 +210,7 @@ namespace TuDou.Grace.MultiTenancy.Payments.Stripe
             var customer = await customerService.CreateAsync(new CustomerCreateOptions
             {
                 Description = description,
-                SourceToken = source,
+                Source = source,
                 Email = emailAddress
             });
 
@@ -410,7 +410,7 @@ namespace TuDou.Grace.MultiTenancy.Payments.Stripe
                 Id = planId,
                 Amount = ConvertToStripePrice(amount),
                 Interval = interval,
-                ProductId = productId,
+                Product = productId,
                 Currency = GraceConsts.Currency
             });
 

@@ -29,6 +29,7 @@ using TuDou.Grace.Dto;
 using TuDou.Grace.Notifications;
 using TuDou.Grace.Url;
 using TuDou.Grace.Organizations.Dto;
+using AutoMapper;
 
 namespace TuDou.Grace.Authorization.Users
 {
@@ -52,6 +53,8 @@ namespace TuDou.Grace.Authorization.Users
         private readonly IRepository<OrganizationUnit, long> _organizationUnitRepository;
         private readonly IRoleManagementConfig _roleManagementConfig;
         private readonly UserManager _userManager;
+        private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
+        private readonly IRepository<OrganizationUnitRole, long> _organizationUnitRoleRepository;
 
         public UserAppService(
             RoleManager roleManager,
@@ -68,7 +71,9 @@ namespace TuDou.Grace.Authorization.Users
             IPasswordHasher<User> passwordHasher,
             IRepository<OrganizationUnit, long> organizationUnitRepository,
             IRoleManagementConfig roleManagementConfig,
-            UserManager userManager)
+            UserManager userManager,
+            IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
+            IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository)
         {
             _roleManager = roleManager;
             _userEmailer = userEmailer;
@@ -84,6 +89,8 @@ namespace TuDou.Grace.Authorization.Users
             _organizationUnitRepository = organizationUnitRepository;
             _roleManagementConfig = roleManagementConfig;
             _userManager = userManager;
+            _userOrganizationUnitRepository = userOrganizationUnitRepository;
+            _organizationUnitRoleRepository = organizationUnitRoleRepository;
             _roleRepository = roleRepository;
 
             AppUrlService = NullAppUrlService.Instance;
@@ -148,7 +155,7 @@ namespace TuDou.Grace.Authorization.Users
 
             if (!input.Id.HasValue)
             {
-                // 创建新用户
+                //Creating a new user
                 output.User = new UserEditDto
                 {
                     IsActive = true,
@@ -168,22 +175,35 @@ namespace TuDou.Grace.Authorization.Users
             }
             else
             {
-                //编辑现有用户
+                //Editing an existing user
                 var user = await UserManager.GetUserByIdAsync(input.Id.Value);
 
                 output.User = ObjectMapper.Map<UserEditDto>(user);
                 output.ProfilePictureId = user.ProfilePictureId;
 
+                var organizationUnits = await UserManager.GetOrganizationUnitsAsync(user);
+                output.MemberedOrganizationUnits = organizationUnits.Select(ou => ou.Code).ToList();
+
+                var allRolesOfUsersOrganizationUnits = GetAllRoleNamesOfUsersOrganizationUnits(input.Id.Value);
+
                 foreach (var userRoleDto in userRoleDtos)
                 {
                     userRoleDto.IsAssigned = await UserManager.IsInRoleAsync(user, userRoleDto.RoleName);
+                    userRoleDto.InheritedFromOrganizationUnit = allRolesOfUsersOrganizationUnits.Contains(userRoleDto.RoleName);
                 }
-
-                var organizationUnits = await UserManager.GetOrganizationUnitsAsync(user);
-                output.MemberedOrganizationUnits = organizationUnits.Select(ou => ou.Code).ToList();
             }
 
             return output;
+        }
+
+        private List<string> GetAllRoleNamesOfUsersOrganizationUnits(long userId)
+        {
+            return (from userOu in _userOrganizationUnitRepository.GetAll()
+                    join roleOu in _organizationUnitRoleRepository.GetAll() on userOu.OrganizationUnitId equals roleOu
+                        .OrganizationUnitId
+                    join userOuRoles in _roleRepository.GetAll() on roleOu.RoleId equals userOuRoles.Id
+                    where userOu.UserId == userId
+                    select userOuRoles.Name).ToList();
         }
 
         [AbpAuthorize(AppPermissions.Pages_Administration_Users_ChangePermissions)]
@@ -239,6 +259,7 @@ namespace TuDou.Grace.Authorization.Users
             CheckErrors(await UserManager.DeleteAsync(user));
         }
 
+        [AbpAuthorize(AppPermissions.Pages_Administration_Users_Unlock)]
         public async Task UnlockUser(EntityDto<long> input)
         {
             var user = await UserManager.GetUserByIdAsync(input.Id);
@@ -251,9 +272,11 @@ namespace TuDou.Grace.Authorization.Users
             Debug.Assert(input.User.Id != null, "input.User.Id should be set.");
 
             var user = await UserManager.FindByIdAsync(input.User.Id.Value.ToString());
-
+            var a = LocalizationSource.GetAllStrings().Select(x => x.Name).Contains("Identity.DuplicateUserName");
             //Update user properties
             ObjectMapper.Map(input.User, user); //Passwords is not mapped (see mapping configuration)
+
+            CheckErrors(await UserManager.UpdateAsync(user));
 
             if (input.SetRandomPassword)
             {
@@ -266,8 +289,6 @@ namespace TuDou.Grace.Authorization.Users
                 await UserManager.InitializeOptionsAsync(AbpSession.TenantId);
                 CheckErrors(await UserManager.ChangePasswordAsync(user, input.User.Password));
             }
-
-            CheckErrors(await UserManager.UpdateAsync(user));
 
             //Update roles
             CheckErrors(await UserManager.SetRolesAsync(user, input.AssignedRoleNames));
@@ -350,9 +371,10 @@ namespace TuDou.Grace.Authorization.Users
         private async Task FillRoleNames(IReadOnlyCollection<UserListDto> userListDtos)
         {
             /* This method is optimized to fill role names to given list. */
+            var userIds = userListDtos.Select(u => u.Id);
 
             var userRoles = await _userRoleRepository.GetAll()
-                .Where(userRole => userListDtos.Any(user => user.Id == userRole.UserId))
+                .Where(userRole => userIds.Contains(userRole.UserId))
                 .Select(userRole => userRole).ToListAsync();
 
             var distinctRoleIds = userRoles.Select(userRole => userRole.RoleId).Distinct();
@@ -401,28 +423,32 @@ namespace TuDou.Grace.Authorization.Users
                         u.EmailAddress.Contains(input.Filter)
                 );
 
-            if (!input.Permission.IsNullOrWhiteSpace())
+            if (input.Permissions != null && input.Permissions.Any(p => !p.IsNullOrWhiteSpace()))
             {
                 var staticRoleNames = _roleManagementConfig.StaticRoles.Where(
-                        r => r.GrantAllPermissionsByDefault &&
-                             r.Side == AbpSession.MultiTenancySide
-                    ).Select(r => r.RoleName).ToList();
+                    r => r.GrantAllPermissionsByDefault &&
+                         r.Side == AbpSession.MultiTenancySide
+                ).Select(r => r.RoleName).ToList();
+
+                input.Permissions = input.Permissions.Where(p => !string.IsNullOrEmpty(p)).ToList();
 
                 query = from user in query
                         join ur in _userRoleRepository.GetAll() on user.Id equals ur.UserId into urJoined
                         from ur in urJoined.DefaultIfEmpty()
                         join urr in _roleRepository.GetAll() on ur.RoleId equals urr.Id into urrJoined
                         from urr in urrJoined.DefaultIfEmpty()
-                        join up in _userPermissionRepository.GetAll() on new { UserId = user.Id, Name = input.Permission } equals new { up.UserId, up.Name } into upJoined
+                        join up in _userPermissionRepository.GetAll()
+                            .Where(userPermission => input.Permissions.Contains(userPermission.Name)) on user.Id equals up.UserId into upJoined
                         from up in upJoined.DefaultIfEmpty()
-                        join rp in _rolePermissionRepository.GetAll() on new { RoleId = ur == null ? 0 : ur.RoleId, Name = input.Permission } equals new { rp.RoleId, rp.Name } into rpJoined
+                        join rp in _rolePermissionRepository.GetAll()
+                            .Where(rolePermission => input.Permissions.Contains(rolePermission.Name)) on
+                            new { RoleId = ur == null ? 0 : ur.RoleId } equals new { rp.RoleId } into rpJoined
                         from rp in rpJoined.DefaultIfEmpty()
                         where (up != null && up.IsGranted) ||
                               (up == null && rp != null && rp.IsGranted) ||
                               (up == null && rp == null && staticRoleNames.Contains(urr.Name))
-                        group user by user
-                    into userGrouped
-                        select userGrouped.Key;
+                        //group user by user into userGrouped
+                        select user;
             }
 
             return query;

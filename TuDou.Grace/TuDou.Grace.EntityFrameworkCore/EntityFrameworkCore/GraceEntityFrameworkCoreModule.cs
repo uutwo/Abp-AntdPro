@@ -18,7 +18,7 @@ namespace TuDou.Grace.EntityFrameworkCore
         )]
     public class GraceEntityFrameworkCoreModule : AbpModule
     {
-        /* Used it tests to skip dbcontext registration, in order to use in-memory database of EF Core */
+        /* 使用它测试跳过dbcontext注册，以使用EF Core的内存数据库 */
         public bool SkipDbContextRegistration { get; set; }
 
         public bool SkipDbSeed { get; set; }
@@ -40,7 +40,7 @@ namespace TuDou.Grace.EntityFrameworkCore
                 });
             }
 
-            // Uncomment below line to write change logs for the entities below:
+            // 取消下面的注释，为下面的实体写更改日志:
             //Configuration.EntityHistory.Selectors.Add("GraceEntities", EntityHistoryHelper.TrackedTypes);
             //Configuration.CustomConfigProviders.Add(new EntityHistoryConfigProvider(Configuration));
         }

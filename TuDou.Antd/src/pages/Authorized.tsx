@@ -5,7 +5,6 @@ import pathToRegexp from 'path-to-regexp';
 import Authorized from '@/utils/Authorized';
 import { ConnectProps, ConnectState, Route } from '@/models/connect';
 import { UserLoginInfoDto } from '@/shared/dtos/appSession/userLoginInfoDto';
-import { SignalRHelper } from '@/shared/helpers/SignalRHelper';
 
 interface AuthComponentProps extends ConnectProps {
   user: UserLoginInfoDto;
@@ -41,9 +40,6 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
 }) => {
   const { routes = [] } = route;
   const isLogin = user && user.id;
-  if(isLogin){
-    SignalRHelper.initSignalR(() => {abp.signalr.connect()});
-  }
   return (
     <Authorized
       authority={getRouteAuthority(location.pathname, routes) || ''}

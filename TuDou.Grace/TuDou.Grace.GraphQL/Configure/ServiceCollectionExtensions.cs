@@ -1,5 +1,7 @@
 ﻿using GraphQL;
 using GraphQL.Server;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using TuDou.Grace.Debugging;
 
@@ -18,6 +20,16 @@ namespace TuDou.Grace.Configure
                 .AddGraphTypes(ServiceLifetime.Scoped)
                 .AddUserContextBuilder(httpContext => httpContext.User)
                 .AddDataLoader();
+            AllowSynchronousIo(services);
+        }
+        //https://github.com/graphql-dotnet/graphql-dotnet/issues/1326
+        private static void AllowSynchronousIo(IServiceCollection services)
+        {
+            // kestrel
+            services.Configure<KestrelServerOptions>(options => { options.AllowSynchronousIO = true; });
+
+            // IIS
+            services.Configure<IISServerOptions>(options => { options.AllowSynchronousIO = true; });
         }
     }
 }

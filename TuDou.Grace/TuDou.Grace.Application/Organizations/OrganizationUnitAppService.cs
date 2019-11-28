@@ -40,24 +40,30 @@ namespace TuDou.Grace.Organizations
 
         public async Task<ListResultDto<OrganizationUnitDto>> GetOrganizationUnits()
         {
-            var query = from ou in _organizationUnitRepository.GetAll()
-                        join uoUser in _userOrganizationUnitRepository.GetAll() on ou.Id equals uoUser.OrganizationUnitId into uoUserGrouped
-                        join uoRole in _organizationUnitRoleRepository.GetAll() on ou.Id equals uoRole.OrganizationUnitId into uoRoleGrouped
-                        select new
-                        {
-                            ou,
-                            memberCount = uoUserGrouped.Count(),
-                            roleCount = uoRoleGrouped.Count()
-                        };
+            var organizationUnits = await _organizationUnitRepository.GetAllListAsync();
 
-            var items = await query.ToListAsync();
+            var organizationUnitMemberCounts = await _userOrganizationUnitRepository.GetAll()
+                .GroupBy(x => x.OrganizationUnitId)
+                .Select(groupedUsers => new
+                {
+                    organizationUnitId = groupedUsers.Key,
+                    count = groupedUsers.Count()
+                }).ToDictionaryAsync(x => x.organizationUnitId, y => y.count);
+
+            var organizationUnitRoleCounts = await _organizationUnitRoleRepository.GetAll()
+                .GroupBy(x => x.OrganizationUnitId)
+                .Select(groupedRoles => new
+                {
+                    organizationUnitId = groupedRoles.Key,
+                    count = groupedRoles.Count()
+                }).ToDictionaryAsync(x => x.organizationUnitId, y => y.count);
 
             return new ListResultDto<OrganizationUnitDto>(
-                items.Select(item =>
+                organizationUnits.Select(ou =>
                 {
-                    var organizationUnitDto = ObjectMapper.Map<OrganizationUnitDto>(item.ou);
-                    organizationUnitDto.MemberCount = item.memberCount;
-                    organizationUnitDto.RoleCount = item.roleCount;
+                    var organizationUnitDto = ObjectMapper.Map<OrganizationUnitDto>(ou);
+                    organizationUnitDto.MemberCount = organizationUnitMemberCounts.ContainsKey(ou.Id) ? organizationUnitMemberCounts[ou.Id] : 0;
+                    organizationUnitDto.RoleCount = organizationUnitRoleCounts.ContainsKey(ou.Id) ? organizationUnitRoleCounts[ou.Id] : 0;
                     return organizationUnitDto;
                 }).ToList());
         }

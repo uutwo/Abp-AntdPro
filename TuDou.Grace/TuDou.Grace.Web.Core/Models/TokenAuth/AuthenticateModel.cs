@@ -24,5 +24,7 @@ namespace TuDou.Grace.Web.Models.TokenAuth
         public bool? SingleSignIn { get; set; }
 
         public string ReturnUrl { get; set; }
+        [DisableAuditing]
+        public string CaptchaResponse { get; set; }
     }
 }

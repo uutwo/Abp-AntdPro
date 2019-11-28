@@ -24,7 +24,7 @@ namespace TuDou.Grace.EntityFrameworkCore
         {
             if (connectionString.IsNullOrEmpty())
             {
-                //connectionString is null for unit tests
+                //connectionString对于单元测试是空的
                 return true;
             }
 
@@ -32,7 +32,7 @@ namespace TuDou.Grace.EntityFrameworkCore
             {
                 using (var uow =_unitOfWorkManager.Begin())
                 {
-                    // Switching to host is necessary for single tenant mode.
+                    //单租户模式需要切换到主机。
                     using (_unitOfWorkManager.Current.SetTenantId(null))
                     {
                         _dbContextProvider.GetDbContext().Database.OpenConnection();

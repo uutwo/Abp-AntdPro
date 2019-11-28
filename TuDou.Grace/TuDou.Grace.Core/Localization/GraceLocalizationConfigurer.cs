@@ -15,7 +15,7 @@ namespace TuDou.Grace.Localization
                     GraceConsts.LocalizationSourceName,
                     new XmlEmbeddedFileLocalizationDictionaryProvider(
                         Assembly.GetExecutingAssembly(),
-                        "TuDou.Grace.Localization.Grace"
+                        "TuDou.Grace.Localization.SourceFiles"
                     )
                 )
             );

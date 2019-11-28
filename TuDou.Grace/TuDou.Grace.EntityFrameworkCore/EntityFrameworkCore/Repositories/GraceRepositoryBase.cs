@@ -5,7 +5,7 @@ using Abp.EntityFrameworkCore.Repositories;
 namespace TuDou.Grace.EntityFrameworkCore.Repositories
 {
     /// <summary>
-    /// Base class for custom repositories of the application.
+    /// 应用程序自定义存储库的基类。
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <typeparam name="TPrimaryKey">Primary key type of the entity</typeparam>
@@ -18,7 +18,7 @@ namespace TuDou.Grace.EntityFrameworkCore.Repositories
 
         }
 
-        //add your common methods for all repositories
+        //添加所有存储库的公共方法
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ namespace TuDou.Grace.Configuration
             _emailSender = emailSender;
         }
 
-        #region Send Test Email
+        #region 发送测试邮件
 
         public async Task SendTestEmail(SendTestEmailInput input)
         {

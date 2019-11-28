@@ -3,8 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Abp.AspNetCore;
+using Abp.AspNetCore.Mvc.Antiforgery;
 using Abp.AspNetCore.SignalR.Hubs;
 using Abp.Castle.Logging.Log4Net;
+using Abp.Dependency;
 using Abp.Extensions;
 using Abp.Hangfire;
 using Abp.PlugIns;
@@ -12,7 +14,6 @@ using Castle.Facilities.Logging;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TuDou.Grace.Authorization;
@@ -22,17 +23,22 @@ using TuDou.Grace.Identity;
 using TuDou.Grace.Web.Chat.SignalR;
 using TuDou.Grace.Web.Common;
 using PaulMiami.AspNetCore.Mvc.Recaptcha;
-using Swashbuckle.AspNetCore.Swagger;
 using TuDou.Grace.Web.IdentityServer;
 using TuDou.Grace.Web.Swagger;
 using Stripe;
 using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 using GraphQL.Server;
 using GraphQL.Server.Ui.Playground;
+using HealthChecks.UI.Client;
+using IdentityServer4.Configuration;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using TuDou.Grace.Configure;
 using TuDou.Grace.Schemas;
+using TuDou.Grace.Web.HealthCheck;
+using HealthChecksUISettings = HealthChecks.UI.Configuration.Settings;
 using TuDou.Grace.Web.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace TuDou.Grace.Web.Startup
 {
@@ -41,9 +47,9 @@ namespace TuDou.Grace.Web.Startup
         private const string DefaultCorsPolicyName = "localhost";
 
         private readonly IConfigurationRoot _appConfiguration;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             _hostingEnvironment = env;
             _appConfiguration = env.GetAppConfiguration();
@@ -51,15 +57,15 @@ namespace TuDou.Grace.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //MVC
-            services.AddMvc(options =>
+            //mvc
+            services.AddControllersWithViews(options =>
             {
-                options.Filters.Add(new CorsAuthorizationFilterFactory(DefaultCorsPolicyName));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
+            }).AddNewtonsoftJson();
 
             services.AddSignalR(options => { options.EnableDetailedErrors = true; });
 
-            //为React UI配置CORS
+            //跨域设置
             services.AddCors(options =>
             {
                 options.AddPolicy(DefaultCorsPolicyName, builder =>
@@ -67,7 +73,7 @@ namespace TuDou.Grace.Web.Startup
                     //应用:在appsettings CorsOrigins。json可以包含多个由逗号分隔的地址。
                     builder
                         .WithOrigins(
-                            // 应用:在appsettings CorsOrigins。json可以包含多个由逗号分隔的地址。
+                            // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
                             _appConfiguration["App:CorsOrigins"]
                                 .Split(",", StringSplitOptions.RemoveEmptyEntries)
                                 .Select(o => o.RemovePostFix("/"))
@@ -83,10 +89,16 @@ namespace TuDou.Grace.Web.Startup
             IdentityRegistrar.Register(services);
             AuthConfigurer.Configure(services, _appConfiguration);
 
-            //身份认证服务器
+            //身份认证
             if (bool.Parse(_appConfiguration["IdentityServer:IsEnabled"]))
             {
-                IdentityServerRegistrar.Register(services, _appConfiguration);
+                IdentityServerRegistrar.Register(services, _appConfiguration, options =>
+                     options.UserInteraction = new UserInteractionOptions()
+                     {
+                         LoginUrl = "/UI/Login",
+                         LogoutUrl = "/UI/LogOut",
+                         ErrorUrl = "/Error"
+                     });
             }
 
             if (WebConsts.SwaggerUiEnabled)
@@ -94,22 +106,17 @@ namespace TuDou.Grace.Web.Startup
                 //Swagger—启用这一行和配置方法中的相关行，以启用Swagger UI
                 services.AddSwaggerGen(options =>
                 {
-                    options.SwaggerDoc("v1", new Info { Title = "Grace API", Version = "v1" });
+                    options.SwaggerDoc("v1", new OpenApiInfo() { Title = "Grace API", Version = "v1" });
                     options.DocInclusionPredicate((docName, description) => true);
-                    options.UseReferencedDefinitionsForEnums();
                     options.ParameterFilter<SwaggerEnumParameterFilter>();
                     options.SchemaFilter<SwaggerEnumSchemaFilter>();
                     options.OperationFilter<SwaggerOperationIdFilter>();
                     options.OperationFilter<SwaggerOperationFilter>();
                     options.CustomDefaultSchemaIdSelector();
-
-                    //注意:这只是为了在UI上显示Authorize按钮。
-                    //Authorize按钮的行为在wwwroot/swagger/ui/index.htm中处理
-                    options.AddSecurityDefinition("Bearer", new BasicAuthScheme());
                 });
             }
 
-            //验证码
+            //Recaptcha
             services.AddRecaptcha(new RecaptchaOptions
             {
                 SiteKey = _appConfiguration["Recaptcha:SiteKey"],
@@ -130,6 +137,22 @@ namespace TuDou.Grace.Web.Startup
                 services.AddAndConfigureGraphQL();
             }
 
+            if (bool.Parse(_appConfiguration["HealthChecks:HealthChecksEnabled"]))
+            {
+                services.AddAbpZeroHealthCheck();
+
+                var healthCheckUISection = _appConfiguration.GetSection("HealthChecks")?.GetSection("HealthChecksUI");
+
+                if (bool.Parse(healthCheckUISection["HealthChecksUIEnabled"]))
+                {
+                    services.Configure<HealthChecksUISettings>(settings =>
+                    {
+                        healthCheckUISection.Bind(settings, c => c.BindNonPublicProperties = true);
+                    });
+                    services.AddHealthChecksUI();
+                }
+            }
+
             //配置Abp和依赖项注入
             return services.AddAbp<GraceWebHostModule>(options =>
             {
@@ -142,9 +165,9 @@ namespace TuDou.Grace.Web.Startup
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            //初始化ABP框架。
+            //初始化abp框架
             app.UseAbp(options =>
             {
                 options.UseAbpRequestLocalization = false; //used below: UseAbpRequestLocalization
@@ -158,11 +181,15 @@ namespace TuDou.Grace.Web.Startup
             {
                 app.UseStatusCodePagesWithRedirects("~/Error?statusCode={0}");
                 app.UseExceptionHandler("/Error");
-     
             }
 
-            app.UseCors(DefaultCorsPolicyName); //Enable CORS!
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.UseCors(DefaultCorsPolicyName); //启用跨域
+
             app.UseAuthentication();
+            app.UseAuthorization();
             app.UseJwtTokenMiddleware();
 
             if (bool.Parse(_appConfiguration["IdentityServer:IsEnabled"]))
@@ -171,8 +198,6 @@ namespace TuDou.Grace.Web.Startup
                 app.UseIdentityServer();
             }
 
-            app.UseStaticFiles();
-
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 if (scope.ServiceProvider.GetService<DatabaseCheckHelper>().Exist(_appConfiguration["ConnectionStrings:Default"]))
@@ -180,12 +205,6 @@ namespace TuDou.Grace.Web.Startup
                     app.UseAbpRequestLocalization();
                 }
             }
-
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<AbpCommonHub>("/signalr");
-                routes.MapHub<ChatHub>("/signalr-chat");
-            });
 
             if (WebConsts.HangfireDashboardEnabled)
             {
@@ -199,7 +218,7 @@ namespace TuDou.Grace.Web.Startup
 
             if (bool.Parse(_appConfiguration["Payment:Stripe:IsActive"]))
             {
-                StripeConfiguration.SetApiKey(_appConfiguration["Payment:Stripe:SecretKey"]);
+                StripeConfiguration.ApiKey = _appConfiguration["Payment:Stripe:SecretKey"];
             }
 
             if (WebConsts.GraphQL.Enabled)
@@ -212,16 +231,31 @@ namespace TuDou.Grace.Web.Startup
                 }
             }
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "defaultWithArea",
-                    template: "{area}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapHub<AbpCommonHub>("/signalr");
+                endpoints.MapHub<ChatHub>("/signalr-chat");
 
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("defaultWithArea", "{area}/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+
+                if (bool.Parse(_appConfiguration["HealthChecks:HealthChecksEnabled"]))
+                {
+                    endpoints.MapHealthChecks("/healthz", new HealthCheckOptions()
+                    {
+                        Predicate = _ => true,
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                    });
+                }
             });
+
+            if (bool.Parse(_appConfiguration["HealthChecks:HealthChecksEnabled"]))
+            {
+                if (bool.Parse(_appConfiguration["HealthChecks:HealthChecksUI:HealthChecksUIEnabled"]))
+                {
+                    app.UseHealthChecksUI();
+                }
+            }
 
             if (WebConsts.SwaggerUiEnabled)
             {

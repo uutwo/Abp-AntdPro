@@ -17,10 +17,12 @@ const request = extend({
 // request拦截器, 添加token
 request.interceptors.request.use((url, options) => {
   const token = abp.auth.getToken();
+  const cookieLangValue = abp.utils.getCookieValue('Abp.Localization.CultureName');
   if(token){
     options={
       ...options,
       headers:{
+        '.AspNetCore.Culture': ('c=' + cookieLangValue + '|uic=' + cookieLangValue),
         'Authorization' :'Bearer '+token,
       }
     }
@@ -33,7 +35,7 @@ request.interceptors.request.use((url, options) => {
 });
 // response拦截器, 处理response
 request.interceptors.response.use(async (response, options) => {
-  const { ok  } = response; 
+  const { ok  } = response;
   if(!ok){
     var res = await response.clone().json();
     if(res.error){
@@ -46,5 +48,5 @@ request.interceptors.response.use(async (response, options) => {
   return response;
 });
 
- 
+
 export default request;

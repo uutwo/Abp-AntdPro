@@ -9,5 +9,7 @@
         public string RoleDisplayName { get; set; }
 
         public bool IsAssigned { get; set; }
+
+        public bool InheritedFromOrganizationUnit { get; set; }
     }
 }

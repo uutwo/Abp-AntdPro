@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Abp.Dependency;
 using Abp.UI;
-using PayPal.Core;
-using PayPal.v1.Payments;
+using PayPalCheckoutSdk.Core;
+using PayPalCheckoutSdk.Orders;
 
 namespace TuDou.Grace.MultiTenancy.Payments.Paypal
 {
@@ -38,15 +38,12 @@ namespace TuDou.Grace.MultiTenancy.Payments.Paypal
 
         public async Task<string> ExecutePaymentAsync(PayPalExecutePaymentRequestInput input)
         {
-            var request = new PaymentExecuteRequest(input.PaymentId);
-            request.RequestBody(new PaymentExecution()
-            {
-                PayerId = input.PayerId
-            });
+            var request = new OrdersCaptureRequest(input.PaymentId);
+            request.RequestBody(new OrderActionRequest());
 
             var response = await _client.Execute(request);
-            var payment = response.Result<Payment>();
-            if (payment.State != "approved")
+            var payment = response.Result<Order>();
+            if (payment.Status != "COMPLETED")
             {
                 throw new UserFriendlyException(L("PaymentFailed"));
             }

@@ -1,6 +1,7 @@
 ﻿using Abp.IdentityServer4;
 using Abp.Zero.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using TuDou.Grace.Authorization.Roles;
 using TuDou.Grace.Authorization.Users;
 using TuDou.Grace.Chat;
@@ -34,7 +35,7 @@ namespace TuDou.Grace.EntityFrameworkCore
         public GraceDbContext(DbContextOptions<GraceDbContext> options)
             : base(options)
         {
-            
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

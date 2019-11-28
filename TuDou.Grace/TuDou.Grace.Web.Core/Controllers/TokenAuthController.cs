@@ -35,10 +35,15 @@ using TuDou.Grace.Web.Authentication.JwtBearer;
 using TuDou.Grace.Web.Authentication.TwoFactor;
 using TuDou.Grace.Web.Models.TokenAuth;
 using TuDou.Grace.Authorization.Impersonation;
+using TuDou.Grace.Authorization.Roles;
+using TuDou.Grace.Configuration;
+using TuDou.Grace.Debugging;
 using TuDou.Grace.Identity;
 using TuDou.Grace.Net.Sms;
 using TuDou.Grace.Notifications;
+using TuDou.Grace.Security.Recaptcha;
 using TuDou.Grace.Web.Authentication.External;
+using TuDou.Grace.Web.Common;
 using TuDou.Grace.Models.External;
 
 namespace TuDou.Grace.Web.Controllers
@@ -66,6 +71,10 @@ namespace TuDou.Grace.Web.Controllers
         private readonly IdentityOptions _identityOptions;
         private readonly GoogleAuthenticatorProvider _googleAuthenticatorProvider;
         private readonly ExternalLoginInfoManagerFactory _externalLoginInfoManagerFactory;
+        private readonly ISettingManager _settingManager;
+        private readonly IJwtSecurityStampHandler _securityStampHandler;
+        private readonly AbpUserClaimsPrincipalFactory<User, Role> _claimsPrincipalFactory;
+        public IRecaptchaValidator RecaptchaValidator { get; set; }
 
         public TokenAuthController(
             LogInManager logInManager,
@@ -85,7 +94,10 @@ namespace TuDou.Grace.Web.Controllers
             IEmailSender emailSender,
             IOptions<IdentityOptions> identityOptions,
             GoogleAuthenticatorProvider googleAuthenticatorProvider,
-            ExternalLoginInfoManagerFactory externalLoginInfoManagerFactory)
+            ExternalLoginInfoManagerFactory externalLoginInfoManagerFactory,
+            ISettingManager settingManager,
+            IJwtSecurityStampHandler securityStampHandler,
+            AbpUserClaimsPrincipalFactory<User, Role> claimsPrincipalFactory)
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
@@ -104,12 +116,21 @@ namespace TuDou.Grace.Web.Controllers
             _emailSender = emailSender;
             _googleAuthenticatorProvider = googleAuthenticatorProvider;
             _externalLoginInfoManagerFactory = externalLoginInfoManagerFactory;
+            _settingManager = settingManager;
+            _securityStampHandler = securityStampHandler;
             _identityOptions = identityOptions.Value;
+            _claimsPrincipalFactory = claimsPrincipalFactory;
+            RecaptchaValidator = NullRecaptchaValidator.Instance;
         }
 
         [HttpPost]
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModel model)
         {
+            if (UseCaptchaOnLogin())
+            {
+                await ValidateReCaptcha(model.CaptchaResponse);
+            }
+
             var loginResult = await GetLoginResultAsync(
                 model.UserNameOrEmailAddress,
                 model.Password,
@@ -139,6 +160,7 @@ namespace TuDou.Grace.Web.Controllers
 
             //Two factor auth
             await _userManager.InitializeOptionsAsync(loginResult.Tenant?.Id);
+
             string twoFactorRememberClientToken = null;
             if (await IsTwoFactorAuthRequiredAsync(loginResult, model))
             {
@@ -164,14 +186,21 @@ namespace TuDou.Grace.Web.Controllers
                 twoFactorRememberClientToken = await TwoFactorAuthenticateAsync(loginResult.User, model);
             }
 
-            //Login!
+            // One Concurrent Login 
+            if (AllowOneConcurrentLoginPerUser())
+            {
+                await _userManager.UpdateSecurityStampAsync(loginResult.User);
+                await _securityStampHandler.SetSecurityStampCacheItem(loginResult.User.TenantId, loginResult.User.Id, loginResult.User.SecurityStamp);
+                loginResult.Identity.ReplaceClaim(new Claim(AppConsts.SecurityStampKey, loginResult.User.SecurityStamp));
+            }
+
             var accessToken = CreateAccessToken(await CreateJwtClaims(loginResult.Identity, loginResult.User));
-            var refreshToken = CreateRefreshToken(await CreateJwtClaims(loginResult.Identity, loginResult.User));
+            var refreshToken = CreateRefreshToken(await CreateJwtClaims(loginResult.Identity, loginResult.User, tokenType: TokenType.RefreshToken));
 
             return new AuthenticateResultModel
             {
                 AccessToken = accessToken,
-                ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
+                ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds,
                 RefreshToken = refreshToken,
                 EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
                 TwoFactorRememberClientToken = twoFactorRememberClientToken,
@@ -193,47 +222,40 @@ namespace TuDou.Grace.Web.Controllers
                 throw new ValidationException("Refresh token is not valid!");
             }
 
-            var accessToken = CreateAccessToken(principal.Claims);
-
-            return await Task.FromResult(new RefreshTokenResult(accessToken));
-        }
-
-        private bool IsRefreshTokenValid(string refreshToken, out ClaimsPrincipal principal)
-        {
-            principal = null;
-
             try
             {
-                var validationParameters = new TokenValidationParameters
+                var user = _userManager.GetUser(UserIdentifier.Parse(principal.Claims.First(x => x.Type == AppConsts.UserIdentifier).Value));
+                if (user == null)
                 {
-                    ValidAudience = _configuration.Audience,
-                    ValidIssuer = _configuration.Issuer,
-                    IssuerSigningKey = _configuration.SecurityKey
-                };
-
-                foreach (var validator in _jwtOptions.Value.SecurityTokenValidators)
-                {
-                    if (validator.CanReadToken(refreshToken))
-                    {
-                        try
-                        {
-                            principal = validator.ValidateToken(refreshToken, validationParameters, out _);
-                            return true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Debug(ex.ToString(), ex);
-                        }
-                    }
+                    throw new UserFriendlyException("Unknown user or user identifier");
                 }
+
+                principal = await _claimsPrincipalFactory.CreateAsync(user);
+
+                var accessToken = CreateAccessToken(await CreateJwtClaims(principal.Identity as ClaimsIdentity, user));
+
+                return await Task.FromResult(new RefreshTokenResult(accessToken));
             }
-            catch (Exception ex)
+            catch (UserFriendlyException)
             {
-                Logger.Debug(ex.ToString(), ex);
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new ValidationException("Refresh token is not valid!", e);
+            }
+        }
+
+        private bool UseCaptchaOnLogin()
+        {
+            if (DebugHelper.IsDebug)
+            {
+                return false;
             }
 
-            return false;
+            return SettingManager.GetSettingValue<bool>(AppSettings.UserManagement.UseCaptchaOnLogin);
         }
+
 
         [HttpGet]
         [AbpAuthorize]
@@ -244,6 +266,11 @@ namespace TuDou.Grace.Web.Controllers
                 var tokenValidityKeyInClaims = User.Claims.First(c => c.Type == AppConsts.TokenValidityKey);
                 await _userManager.RemoveTokenValidityKeyAsync(_userManager.GetUser(AbpSession.ToUserIdentifier()), tokenValidityKeyInClaims.Value);
                 _cacheManager.GetCache(AppConsts.TokenValidityKey).Remove(tokenValidityKeyInClaims.Value);
+
+                if (AllowOneConcurrentLoginPerUser())
+                {
+                    await _securityStampHandler.RemoveSecurityStampCacheItem(AbpSession.TenantId, AbpSession.GetUserId());
+                }
             }
         }
 
@@ -300,7 +327,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 AccessToken = accessToken,
                 EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds
+                ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds
             };
         }
 
@@ -314,7 +341,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 AccessToken = accessToken,
                 EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds
+                ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds
             };
         }
 
@@ -349,7 +376,7 @@ namespace TuDou.Grace.Web.Controllers
                         {
                             AccessToken = accessToken,
                             EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                            ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds,
+                            ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds,
                             ReturnUrl = returnUrl
                         };
                     }
@@ -380,7 +407,7 @@ namespace TuDou.Grace.Web.Controllers
                         {
                             AccessToken = accessToken,
                             EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                            ExpireInSeconds = (int)_configuration.Expiration.TotalSeconds
+                            ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds
                         };
                     }
                 default:
@@ -601,7 +628,7 @@ namespace TuDou.Grace.Web.Controllers
 
         private string CreateAccessToken(IEnumerable<Claim> claims, TimeSpan? expiration = null)
         {
-            return CreateToken(claims, expiration ?? _configuration.Expiration);
+            return CreateToken(claims, expiration ?? _configuration.AccessTokenExpiration);
         }
 
         private string CreateRefreshToken(IEnumerable<Claim> claims)
@@ -632,7 +659,7 @@ namespace TuDou.Grace.Web.Controllers
             return SimpleStringCipher.Instance.Encrypt(accessToken, AppConsts.DefaultPassPhrase);
         }
 
-        private async Task<IEnumerable<Claim>> CreateJwtClaims(ClaimsIdentity identity, User user, TimeSpan? expiration = null)
+        private async Task<IEnumerable<Claim>> CreateJwtClaims(ClaimsIdentity identity, User user, TimeSpan? expiration = null, TokenType tokenType = TokenType.AccessToken)
         {
             var tokenValidityKey = Guid.NewGuid().ToString();
             var claims = identity.Claims.ToList();
@@ -650,15 +677,26 @@ namespace TuDou.Grace.Web.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.Now.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 new Claim(AppConsts.TokenValidityKey, tokenValidityKey),
-                new Claim(AppConsts.UserIdentifier, userIdentifier.ToUserIdentifierString())
-            });
+                new Claim(AppConsts.UserIdentifier, userIdentifier.ToUserIdentifierString()),
+                new Claim(AppConsts.TokenType, tokenType.To<int>().ToString())
+             });
+
+            if (!expiration.HasValue)
+            {
+                expiration = tokenType == TokenType.AccessToken
+                    ? _configuration.AccessTokenExpiration
+                    : _configuration.RefreshTokenExpiration;
+            }
 
             _cacheManager
                 .GetCache(AppConsts.TokenValidityKey)
-                .Set(tokenValidityKey, "");
+                .Set(tokenValidityKey, "", absoluteExpireTime: expiration);
 
-            await _userManager.AddTokenValidityKeyAsync(user, tokenValidityKey,
-                DateTime.UtcNow.Add(expiration ?? _configuration.Expiration));
+            await _userManager.AddTokenValidityKeyAsync(
+                user,
+                tokenValidityKey,
+                DateTime.UtcNow.Add(expiration.Value)
+            );
 
             return claims;
         }
@@ -674,6 +712,67 @@ namespace TuDou.Grace.Web.Controllers
             }
 
             return returnUrl;
+        }
+
+
+        private bool IsRefreshTokenValid(string refreshToken, out ClaimsPrincipal principal)
+        {
+            principal = null;
+
+            try
+            {
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = _configuration.Audience,
+                    ValidIssuer = _configuration.Issuer,
+                    IssuerSigningKey = _configuration.SecurityKey
+                };
+
+                foreach (var validator in _jwtOptions.Value.SecurityTokenValidators)
+                {
+                    if (!validator.CanReadToken(refreshToken))
+                    {
+                        continue;
+                    }
+
+                    try
+                    {
+                        principal = validator.ValidateToken(refreshToken, validationParameters, out _);
+
+                        if (principal.Claims.FirstOrDefault(x => x.Type == AppConsts.TokenType)?.Value == TokenType.RefreshToken.To<int>().ToString())
+                        {
+                            return true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Debug(ex.ToString(), ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug(ex.ToString(), ex);
+            }
+
+            return false;
+        }
+
+
+        private bool AllowOneConcurrentLoginPerUser()
+        {
+            return _settingManager.GetSettingValue<bool>(AppSettings.UserManagement.AllowOneConcurrentLoginPerUser);
+        }
+
+        private async Task ValidateReCaptcha(string captchaResponse)
+        {
+            var requestUserAgent = Request.Headers["User-Agent"].ToString();
+            if (!requestUserAgent.IsNullOrWhiteSpace() && WebConsts.ReCaptchaIgnoreWhiteList.Contains(requestUserAgent.Trim()))
+            {
+                return;
+            }
+
+            await RecaptchaValidator.ValidateAsync(captchaResponse);
         }
     }
 }

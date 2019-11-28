@@ -13,7 +13,7 @@ using TuDou.Grace.Authorization.Roles.Dto;
 namespace TuDou.Grace.Authorization.Roles
 {
     /// <summary>
-    ///“角色管理”应用程序服务。
+    /// Application service that is used by 'role management' page.
     /// </summary>
     [AbpAuthorize(AppPermissions.Pages_Administration_Roles)]
     public class RoleAppService : GraceAppServiceBase, IRoleAppService
@@ -33,17 +33,23 @@ namespace TuDou.Grace.Authorization.Roles
         {
             var query = _roleManager.Roles;
 
-            if (!string.IsNullOrEmpty(input.Permission))
+            if (input.Permissions != null && input.Permissions.Any(p => !string.IsNullOrEmpty(p)))
             {
-                var staticRoleNames = _roleManagementConfig.StaticRoles.Where(
-                        r => r.GrantAllPermissionsByDefault &&
-                             r.Side == AbpSession.MultiTenancySide
-                    ).Select(r => r.RoleName).ToList();
+                input.Permissions = input.Permissions.Where(p => !string.IsNullOrEmpty(p)).ToList();
 
-                query = query.Where(r =>
-                    r.Permissions.Any(rp => rp.Name == input.Permission && rp.IsGranted) ||
-                    staticRoleNames.Contains(r.Name)
-                );
+                var staticRoleNames = _roleManagementConfig.StaticRoles.Where(
+                    r => r.GrantAllPermissionsByDefault &&
+                         r.Side == AbpSession.MultiTenancySide
+                ).Select(r => r.RoleName).ToList();
+
+                foreach (var permission in input.Permissions)
+                {
+                    query = query.Where(r =>
+                        r.Permissions.Any(rp => rp.Name == permission)
+                            ? r.Permissions.Any(rp => rp.Name == permission && rp.IsGranted)
+                            : staticRoleNames.Contains(r.Name)
+                    );
+                }
             }
 
             var roles = await query.ToListAsync();
@@ -58,7 +64,7 @@ namespace TuDou.Grace.Authorization.Roles
             var grantedPermissions = new Permission[0];
             RoleEditDto roleEditDto;
 
-            if (input.Id.HasValue) //编辑现有的角色?
+            if (input.Id.HasValue) //Editing existing role?
             {
                 var role = await _roleManager.GetRoleByIdAsync(input.Id.Value);
                 grantedPermissions = (await _roleManager.GetGrantedPermissionsAsync(role)).ToArray();
@@ -120,7 +126,7 @@ namespace TuDou.Grace.Authorization.Roles
         {
             var role = new Role(AbpSession.TenantId, input.Role.DisplayName) { IsDefault = input.Role.IsDefault };
             CheckErrors(await _roleManager.CreateAsync(role));
-            await CurrentUnitOfWork.SaveChangesAsync(); //它被用来获取角色的Id。
+            await CurrentUnitOfWork.SaveChangesAsync(); //It's done to get Id of the role.
             await UpdateGrantedPermissionsAsync(role, input.GrantedPermissionNames);
         }
 

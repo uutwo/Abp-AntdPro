@@ -16,7 +16,7 @@ namespace TuDou.Grace.Startup
         {
             base.PreInitialize();
 
-            //Adding custom AutoMapper configuration
+            //添加自定义自动程序配置
             Configuration.Modules.AbpAutoMapper().Configurators.Add(CustomDtoMapper.CreateMappings);
         }
     }

@@ -32,7 +32,7 @@ namespace TuDou.Grace.Migrator
 
                 if (_skipConnVerification) return;
                 
-                Console.WriteLine("Press ENTER to exit...");
+                Console.WriteLine("按回车键退出…");
                 Console.ReadLine();
             }
         }

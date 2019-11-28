@@ -41,7 +41,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 var logoFile = Request.Form.Files.First();
 
-                //Check input
+                //检查输入
                 if (logoFile == null)
                 {
                     throw new UserFriendlyException(L("File_Empty_Error"));
@@ -87,7 +87,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 var cssFile = Request.Form.Files.First();
 
-                //Check input
+                //检查输入
                 if (cssFile == null)
                 {
                     throw new UserFriendlyException(L("File_Empty_Error"));

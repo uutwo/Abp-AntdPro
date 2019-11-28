@@ -31,7 +31,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 var profilePictureFile = Request.Form.Files.First();
 
-                //Check input
+                //检查输入
                 if (profilePictureFile == null)
                 {
                     throw new UserFriendlyException(L("ProfilePicture_Change_Error"));

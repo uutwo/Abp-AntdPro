@@ -1,8 +1,10 @@
 ﻿using System;
 using Abp.AspNetCore.Mvc.Controllers;
+using Abp.Configuration.Startup;
 using Abp.IdentityFramework;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TuDou.Grace.Web.Controllers
 {
@@ -20,8 +22,9 @@ namespace TuDou.Grace.Web.Controllers
 
         protected void SetTenantIdCookie(int? tenantId)
         {
+            var multiTenancyConfig = HttpContext.RequestServices.GetRequiredService<IMultiTenancyConfig>();
             Response.Cookies.Append(
-                "Abp.TenantId",
+                multiTenancyConfig.TenantIdResolveKey,
                 tenantId?.ToString(),
                 new CookieOptions
                 {

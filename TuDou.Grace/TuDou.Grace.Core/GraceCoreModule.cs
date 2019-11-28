@@ -33,7 +33,6 @@ namespace TuDou.Grace
         typeof(AbpZeroCoreModule),
         typeof(AbpZeroLdapModule),
         typeof(AbpAutoMapperModule),
-        //typeof(AbpAspNetZeroCoreModule),
         typeof(AbpMailKitModule))]
     public class GraceCoreModule : AbpModule
     {

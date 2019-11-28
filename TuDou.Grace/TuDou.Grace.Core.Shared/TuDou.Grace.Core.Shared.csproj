@@ -8,9 +8,8 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Abp" Version="4.10.0" />
-    <PackageReference Include="Abp.Zero.Common" Version="4.10.0" />
-    <PackageReference Include="Abp.ZeroCore" Version="4.10.0" />
+   <PackageReference Include="Abp" Version="5.0.0" />
+    <PackageReference Include="Abp.Zero.Common" Version="5.0.0" />
   </ItemGroup>
 
 

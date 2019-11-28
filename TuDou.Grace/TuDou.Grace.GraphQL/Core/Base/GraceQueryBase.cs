@@ -43,7 +43,7 @@ namespace TuDou.Grace.Core.Base
         [UnitOfWork]
         protected virtual async Task<TResult> InternalResolve(ResolveFieldContext<object> context)
         {
-            //you can add your custom logic here before the original Resolve method.
+            //可以在原来的解析方法之前添加自定义逻辑。
             return await Resolve(context);
         }
 

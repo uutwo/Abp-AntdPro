@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>TuDou.Grace</RootNamespace>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abp.Web.Common" Version="4.10.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.6.0" />
+    <PackageReference Include="Abp.Web.Common" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0-preview2.19523.17" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,7 +17,11 @@ const plugins: IPlugin[] = [
       dva: {
         hmr: true,
       },
-      locale: true,
+      locale: {
+        enable: false,
+        default: 'zh-CN',
+        baseNavigator: true,
+      },
       dynamicImport: {
         loadingComponent: './components/PageLoading/index',
         webpackChunkName: true,
@@ -25,11 +29,11 @@ const plugins: IPlugin[] = [
       },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -142,7 +146,7 @@ export default {
                   path: '/admin/languageTexts/:name',
                   name: '语言列表',
                   component: './admin/languages/languageText',
-                  hideInMenu:true,
+                  hideInMenu: true,
                 },
                 {
                   path: '/admin/auditLogs',
@@ -154,7 +158,7 @@ export default {
                   path: '/admin/notifications',
                   name: '通知',
                   component: './admin/shared/notifications',
-                  hideInMenu:true,
+                  hideInMenu: true,
                 },
               ],
             },
@@ -191,6 +195,10 @@ export default {
     },
     {
       from: 'node_modules/abp-web-resources/Abp/Framework/scripts/libs/abp.signalr-client.js',
+      to: 'dist',
+    },
+    {
+      from: 'src/lib/abp.js',
       to: 'dist',
     },
     {

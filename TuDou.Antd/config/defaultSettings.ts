@@ -52,7 +52,7 @@ export default {
   fixSiderbar: false,
   colorWeak: false,
   menu: {
-    locale: true,
+    locale: false,
   },
   title: 'Ant Design Pro',
   pwa: false,

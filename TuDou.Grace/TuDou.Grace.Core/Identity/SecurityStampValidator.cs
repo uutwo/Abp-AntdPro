@@ -1,6 +1,7 @@
 ﻿using Abp.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TuDou.Grace.Authorization.Roles;
 using TuDou.Grace.Authorization.Users;
@@ -13,8 +14,9 @@ namespace TuDou.Grace.Identity
         public SecurityStampValidator(
             IOptions<SecurityStampValidatorOptions> options, 
             SignInManager signInManager,
-            ISystemClock systemClock)
-            : base(options, signInManager, systemClock)
+            ISystemClock systemClock,
+            ILoggerFactory loggerFactory)
+            : base(options, signInManager, systemClock,loggerFactory)
         {
         }
     }

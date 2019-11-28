@@ -22,7 +22,8 @@ namespace TuDou.Grace.Identity
             ILogger<SignInManager<User>> logger,
             IUnitOfWorkManager unitOfWorkManager,
             ISettingManager settingManager,
-            IAuthenticationSchemeProvider schemes
+            IAuthenticationSchemeProvider schemes,
+            IUserConfirmation<User> userConfirmation
             ) : base(
                 userManager, 
                 contextAccessor, 
@@ -31,7 +32,8 @@ namespace TuDou.Grace.Identity
                 logger,
                 unitOfWorkManager,
                 settingManager,
-                schemes)
+                schemes,
+                userConfirmation)
         {
         }
     }

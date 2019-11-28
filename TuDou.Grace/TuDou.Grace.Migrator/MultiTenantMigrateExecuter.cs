@@ -39,23 +39,23 @@ namespace TuDou.Grace.Migrator
             var hostConnStr = _connectionStringResolver.GetNameOrConnectionString(new ConnectionStringResolveArgs(MultiTenancySides.Host));
             if (hostConnStr.IsNullOrWhiteSpace())
             {
-                Log.Write("Configuration file should contain a connection string named 'Default'");
+                Log.Write("配置文件应该包含一个名为“Default”的连接字符串");
                 return;
             }
 
-            Log.Write("Host database: " + ConnectionStringHelper.GetConnectionString(hostConnStr));
+            Log.Write("主机数据库:" + ConnectionStringHelper.GetConnectionString(hostConnStr));
             if (!skipConnVerification)
             {
-                Log.Write("Continue to migration for this host database and all tenants..? (Y/N): ");
+                Log.Write("继续为这个主机数据库和所有租户迁移?(Y / N):");
                 var command = Console.ReadLine();
                 if (!command.IsIn("Y", "y"))
                 {
-                    Log.Write("Migration canceled.");
+                    Log.Write("迁移取消。");
                     return;
                 }
             }
 
-            Log.Write("HOST database migration started...");
+            Log.Write("主机数据库开始迁移…");
 
             try
             {
@@ -63,13 +63,13 @@ namespace TuDou.Grace.Migrator
             }
             catch (Exception ex)
             {
-                Log.Write("An error occured during migration of host database:");
+                Log.Write("迁移主机数据库时出错:");
                 Log.Write(ex.ToString());
-                Log.Write("Canceled migrations.");
+                Log.Write("取消迁移。");
                 return;
             }
 
-            Log.Write("HOST database migration completed.");
+            Log.Write("完成主机数据库迁移。");
             Log.Write("--------------------------------------------------------");
 
             var migratedDatabases = new HashSet<string>();
@@ -77,11 +77,11 @@ namespace TuDou.Grace.Migrator
             for (int i = 0; i < tenants.Count; i++)
             {
                 var tenant = tenants[i];
-                Log.Write(string.Format("Tenant database migration started... ({0} / {1})", (i + 1), tenants.Count));
-                Log.Write("Name              : " + tenant.Name);
-                Log.Write("TenancyName       : " + tenant.TenancyName);
-                Log.Write("Tenant Id         : " + tenant.Id);
-                Log.Write("Connection string : " + SimpleStringCipher.Instance.Decrypt(tenant.ConnectionString));
+                Log.Write(string.Format("租户数据库开始迁移({0} / {1})", (i + 1), tenants.Count));
+                Log.Write("名称：              : " + tenant.Name);
+                Log.Write("租户名称：       : " + tenant.TenancyName);
+                Log.Write("租户 Id ：        : " + tenant.Id);
+                Log.Write("连接字符串 : " + SimpleStringCipher.Instance.Decrypt(tenant.ConnectionString));
 
                 if (!migratedDatabases.Contains(tenant.ConnectionString))
                 {
@@ -91,23 +91,23 @@ namespace TuDou.Grace.Migrator
                     }
                     catch (Exception ex)
                     {
-                        Log.Write("An error occured during migration of tenant database:");
+                        Log.Write("租户数据库迁移过程中出现错误:");
                         Log.Write(ex.ToString());
-                        Log.Write("Skipped this tenant and will continue for others...");
+                        Log.Write("跳过这个租户，并将继续为其他人……");
                     }
 
                     migratedDatabases.Add(tenant.ConnectionString);
                 }
                 else
                 {
-                    Log.Write("This database has already migrated before (you have more than one tenant in same database). Skipping it....");
+                    Log.Write("此数据库以前已经迁移过(同一数据库中有多个租户)。跳过它....");
                 }
 
-                Log.Write(string.Format("Tenant database migration completed. ({0} / {1})", (i + 1), tenants.Count));
+                Log.Write(string.Format("租户数据库迁移完成。 ({0} / {1})", (i + 1), tenants.Count));
                 Log.Write("--------------------------------------------------------");
             }
 
-            Log.Write("All databases have been migrated.");
+            Log.Write("所有数据库迁移完成");
         }
     }
 }

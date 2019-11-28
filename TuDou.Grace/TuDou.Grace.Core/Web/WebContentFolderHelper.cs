@@ -6,8 +6,8 @@ using Abp.Reflection.Extensions;
 namespace TuDou.Grace.Web
 {
     /// <summary>
-    /// This class is used to find root path of the web project in;
-    /// unit tests (to find views) and entity framework core command line commands (to find conn string).
+    /// 这个类用于查找web项目的根路径;
+    /// 单元测试(用于查找视图)和实体框架核心命令行命令(用于查找conn字符串)。
     /// </summary>
     public static class WebContentDirectoryFinder
     {
@@ -20,7 +20,7 @@ namespace TuDou.Grace.Web
             }
 
             var directoryInfo = new DirectoryInfo(coreAssemblyDirectoryPath);
-            while (!DirectoryContains(directoryInfo.FullName, "TuDou.Grace.Web.sln"))
+            while (!DirectoryContains(directoryInfo.FullName, "TuDou.Grace.sln"))
             {
                 if (directoryInfo.Parent == null)
                 {
@@ -29,7 +29,7 @@ namespace TuDou.Grace.Web
 
                 directoryInfo = directoryInfo.Parent;
             }
-            var webHostFolder = Path.Combine(directoryInfo.FullName, $"src{Path.DirectorySeparatorChar}TuDou.Grace.Web.Host");
+            var webHostFolder = Path.Combine(directoryInfo.FullName, "TuDou.Grace.Web.Host");
             if (Directory.Exists(webHostFolder))
             {
                 return webHostFolder;

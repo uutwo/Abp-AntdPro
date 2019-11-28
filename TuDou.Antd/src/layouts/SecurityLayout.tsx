@@ -27,11 +27,12 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
-        type: 'global/initAbp',
-      });
-      dispatch({
         type: 'global/getApplicationSession',
       });
+      dispatch({
+        type: 'global/initAbp',
+      });
+
 
     }
   }

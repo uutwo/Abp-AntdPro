@@ -69,13 +69,20 @@
             {
                 public const string IsGoogleAuthenticatorEnabled = "App.UserManagement.TwoFactorLogin.IsGoogleAuthenticatorEnabled";
             }
-
+            public static class SessionTimeOut
+            {
+                public const string IsEnabled = "App.UserManagement.SessionTimeOut.IsEnabled";
+                public const string TimeOutSecond = "App.UserManagement.SessionTimeOut.TimeOutSecond";
+                public const string ShowTimeOutNotificationSecond = "App.UserManagement.SessionTimeOut.ShowTimeOutNotificationSecond";
+            }
             public const string AllowSelfRegistration = "App.UserManagement.AllowSelfRegistration";
             public const string IsNewRegisteredUserActiveByDefault = "App.UserManagement.IsNewRegisteredUserActiveByDefault";
             public const string UseCaptchaOnRegistration = "App.UserManagement.UseCaptchaOnRegistration";
+            public const string UseCaptchaOnLogin = "App.UserManagement.UseCaptchaOnLogin";
             public const string SmsVerificationEnabled = "App.UserManagement.SmsVerificationEnabled";
             public const string IsCookieConsentEnabled = "App.UserManagement.IsCookieConsentEnabled";
             public const string IsQuickThemeSelectEnabled = "App.UserManagement.IsQuickThemeSelectEnabled";
+            public const string AllowOneConcurrentLoginPerUser = "App.UserManagement.AllowOneConcurrentLoginPerUser";
         }
 
         public static class Email
@@ -88,9 +95,6 @@
             public const string SiteKey = "Recaptcha.SiteKey";
         }
 
-        public static class CacheKeys
-        {
-            public const string TenantRegistrationCache = "TenantRegistrationCache";
-        }
+    
     }
 }

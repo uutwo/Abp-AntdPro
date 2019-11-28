@@ -29,7 +29,7 @@ namespace TuDou.Grace.Web.Controllers
             {
                 var file = Request.Form.Files.First();
 
-                //Check input
+                //检查输入
                 if (file == null)
                 {
                     throw new UserFriendlyException(L("File_Empty_Error"));

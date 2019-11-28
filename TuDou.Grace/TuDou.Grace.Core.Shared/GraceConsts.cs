@@ -13,5 +13,6 @@
         public const string Currency = "USD";
 
         public const string CurrencySign = "$";
+        public const string AbpApiClientUserAgent = "AbpApiClient";
     }
 }

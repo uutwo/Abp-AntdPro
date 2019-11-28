@@ -1,7 +1,7 @@
 ﻿namespace TuDou.Grace.Notifications
 {
     /// <summary>
-    /// Constants for notification names used in this application.
+    /// 用于此应用程序中使用的通知名称的常量。
     /// </summary>
     public static class AppNotificationNames
     {

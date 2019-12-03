@@ -109,7 +109,7 @@ export default {
             },
             {
               path: '/welcome',
-              name: 'welcome',
+              name: '首页',
               icon: 'smile',
               component: './Welcome',
             },
@@ -202,7 +202,7 @@ export default {
       to: 'dist',
     },
     {
-      from: 'src/lib/abp.js',
+      from: 'node_modules/@elsa-workflows/elsa-workflow-designer/dist/elsa-workflow-designer.js',
       to: 'dist',
     },
   ],

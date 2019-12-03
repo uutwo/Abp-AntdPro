@@ -74,7 +74,7 @@ const routes = [
           },
           {
             path: '/welcome',
-            name: 'welcome',
+            name: '首页',
             icon: 'smile',
             component: __IS_BROWSER
               ? _dvaDynamic({

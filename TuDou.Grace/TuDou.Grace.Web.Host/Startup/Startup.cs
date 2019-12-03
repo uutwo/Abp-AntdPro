@@ -57,12 +57,13 @@ namespace TuDou.Grace.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            
             //mvc
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
             }).AddNewtonsoftJson();
-
+        
             services.AddSignalR(options => { options.EnableDetailedErrors = true; });
 
             //跨域设置
@@ -73,7 +74,7 @@ namespace TuDou.Grace.Web.Startup
                     //应用:在appsettings CorsOrigins。json可以包含多个由逗号分隔的地址。
                     builder
                         .WithOrigins(
-                            // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
+                            // 应用:在appsettings.json CorsOrigins可以包含多个由逗号分隔的地址。
                             _appConfiguration["App:CorsOrigins"]
                                 .Split(",", StringSplitOptions.RemoveEmptyEntries)
                                 .Select(o => o.RemovePostFix("/"))
@@ -85,7 +86,7 @@ namespace TuDou.Grace.Web.Startup
                         .AllowCredentials();
                 });
             });
-
+  
             IdentityRegistrar.Register(services);
             AuthConfigurer.Configure(services, _appConfiguration);
 
@@ -152,7 +153,6 @@ namespace TuDou.Grace.Web.Startup
                     services.AddHealthChecksUI();
                 }
             }
-
             //配置Abp和依赖项注入
             return services.AddAbp<GraceWebHostModule>(options =>
             {

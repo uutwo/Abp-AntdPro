@@ -1,5 +1,5 @@
 import { GetLanguagesOutput } from "@/services/languages/dtos/getLanguagesOutput";
-import { Effect, Subscription, SubscriptionAPI } from "dva";
+import { Effect} from "dva";
 import { Reducer } from "redux";
 import LanguagesService from '@/services/languages/languages'
 import { PagedResultDto } from '@/shared/dtos/pagedResultDto';
@@ -36,6 +36,10 @@ const Model: LanguagesModelType = {
         },
         *getLanguageTexts({payload}, { call, put }) {
            const response = yield call (LanguagesService.getLanguageTexts,payload)
+           yield put({
+            type:'saveLanguageTexts',
+            payload:response.result
+        })
         }
     },
     reducers: {
@@ -48,7 +52,7 @@ const Model: LanguagesModelType = {
         saveLanguageTexts(state,{payload}){
           return{
               ...state,
-              languages:payload
+              languageTexts:payload
           }
       }
     }

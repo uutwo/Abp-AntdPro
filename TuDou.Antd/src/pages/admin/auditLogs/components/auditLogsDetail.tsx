@@ -14,7 +14,7 @@ class AuditLogsDetail extends AppComponentBase<IAuditLogsDetailProps>{
     const { visible, onCancel, auditLogItem } = this.props;
     return (
       <Modal
-        width='50%'
+
         onCancel={onCancel}
         footer={<Button onClick={onCancel} >取消</Button>}
         title="审计日志详情"

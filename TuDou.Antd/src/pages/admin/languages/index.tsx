@@ -6,7 +6,6 @@ import { connect } from "dva";
 import { ConnectState } from "@/models/connect";
 import { AnyAction, Dispatch } from "redux";
 import {LanguagesModelState} from "@/models/admin/languages";
-import Redirect from 'umi/redirect';
 import { Link } from "umi";
 
 export interface LanguagesProps {
@@ -36,18 +35,6 @@ class Languages extends AppComponentBase<LanguagesProps, LanguagesStates> {
   public render() {
     const {loading} = this.props;
     const { languages } = this.props.languages;
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <Link to="/admin/languageTexts/en">修改</Link>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
-            删除
-          </a>
-        </Menu.Item>
-      </Menu>
-    );
     const columns = [
       {
         title: '操作',
@@ -55,7 +42,18 @@ class Languages extends AppComponentBase<LanguagesProps, LanguagesStates> {
         key: 'action',
         render: (text: any, record: any, index: number) => {
           return <div>
-            <Dropdown overlay={menu} trigger={['click']} placement="bottomLeft">
+            <Dropdown overlay={
+              <Menu>
+              <Menu.Item>
+                <Link to={"/admin/languageTexts/"+record.name}>修改</Link>
+              </Menu.Item>
+              <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">
+                  删除
+                </a>
+              </Menu.Item>
+            </Menu>
+            } trigger={['click']} placement="bottomLeft">
               <Button icon="setting" type="primary">操作<Icon type="down" /></Button>
             </Dropdown>
           </div>
@@ -95,6 +93,7 @@ class Languages extends AppComponentBase<LanguagesProps, LanguagesStates> {
         <Card>
           <Table
            loading={loading}
+            rowKey="name"
             size="small"
             bordered
             dataSource={languages == undefined ? [] : languages.items}

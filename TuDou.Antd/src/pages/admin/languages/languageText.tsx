@@ -1,7 +1,7 @@
 import AppComponentBase from "@/components/AppComponentBase";
 import React from "react";
 import { PageHeaderWrapper } from "@ant-design/pro-layout";
-import { Card, Table } from "antd";
+import { Card, Table, Row, Col, Form, Select, Button } from "antd";
 import { ConnectState } from "@/models/connect";
 import { connect } from "dva";
 import { LanguagesModelState } from "@/models/admin/languages";
@@ -9,7 +9,10 @@ import { Dispatch, AnyAction } from "redux";
 import { GetLanguageTextsInput } from "@/services/languages/dtos/getLanguageTextsInput";
 
 import * as _ from 'lodash';
-export interface LanguageTextProps {
+import { FormComponentProps } from 'antd/es/form';
+import Search from "antd/lib/input/Search";
+import { PaginationConfig } from "antd/lib/table";
+export interface LanguageTextProps extends FormComponentProps {
   dispatch: Dispatch<AnyAction>;
   languages: LanguagesModelState;
   loading: boolean;
@@ -19,60 +22,177 @@ export interface LanguageTextStates {
   sourceNames: string[];
   languages: abp.localization.ILanguageInfo[];
 }
-@connect(({ languages, loading }: ConnectState) => ({
+
+const { Option } = Select;
+@connect(({ languages }: ConnectState) => ({
   languages: languages,
-  loading: loading.effects['languages/getLanguages'],
 }))
 class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextStates>{
   state = {
     sourceNames: [],
-    languages: [],
+    languages: abp.localization.languages,
     request: {
       maxResultCount: this.maxResultCount,
       skipCount: this.skipCount,
       sourceName: 'Abp',
       targetLanguageName: '',
-      targetValueFilter:'ALL'
+      targetValueFilter: 'ALL'
     }
   }
   async componentDidMount() {
     const targetLanguageName = location.pathname.replace("/admin/languageTexts/", "");
     const sourceNames = _.map(_.filter(abp.localization.sources, source => source.type === 'MultiTenantLocalizationSource'), value => value.name);
-    const languages = abp.localization.languages;
     await this.setState({
       sourceNames,
-      languages,
       request: {
         ...this.state.request,
         targetLanguageName,
       }
     })
-     this.getTableData();
+
+    this.getTableData();
   }
-   getTableData() {
+  getTableData() {
 
     const { dispatch } = this.props;
-     dispatch({
+    dispatch({
       type: 'languages/getLanguageTexts',
       payload: {
         ...this.state.request,
       }
     })
   }
+
+  handRequestChange=()=>{
+    const {validateFields} = this.props.form;
+    validateFields((errors:any,values:any)=>{
+      if(!errors){
+
+      }
+    })
+  }
+  handleTableChange = (pagination: PaginationConfig) => {
+    this.setState({
+      request: {
+        ...this.state.request,
+        maxResultCount: pagination.pageSize!,
+        skipCount: pagination.current!
+      }
+    }, () => {
+      this.getTableData();
+    })
+
+  }
   public render() {
-    const columns: any = [];
-    return (<PageHeaderWrapper >
-      <Card>
-        <Table
-          size="small"
-          bordered
-          dataSource={[]}
-          pagination={false}
-          columns={columns} />
-      </Card>
-    </PageHeaderWrapper>)
+    const { getFieldDecorator } = this.props.form;
+    const { languages, sourceNames, request } = this.state;
+    const {languageTexts} = this.props.languages;
+    const columns: any = [{
+        title: '键值',
+        dataIndex: 'key',
+        key: 'key',
+      },
+      {
+        title: '默认值',
+        dataIndex: 'baseValue',
+        key: 'baseValue',
+      },
+      {
+        title: '目标值',
+        dataIndex: 'targetValue',
+        key: 'targetValue',
+      },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        render: (text: any, record: any, index: number) => {
+          return <Button icon="edit" onClick={this.handRequestChange} type="primary">编辑</Button>
+        }
+      },
+    ];
+    return (
+      <PageHeaderWrapper
+        content="编辑语言的文本头信息."
+      >
+        <Card>
+          <Row gutter={24} type="flex" justify="space-around">
+
+            <Col xs={24} xl={6} xxl={6}>
+              <Form.Item label="默认语言">
+                {getFieldDecorator('baseLanguageName', {
+                  initialValue: abp.localization.currentLanguage.name
+                })(
+                  <Select style={{ width: '100%' }} >
+                    {languages.map((item: abp.localization.ILanguageInfo) => (
+                      <Option value={item.name} key={item.name}>{item.displayName}</Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col xs={24} xl={6} xxl={6}>
+              <Form.Item label="目标语言">
+                {getFieldDecorator('targetLanguageName', {
+                  initialValue: request.targetLanguageName
+                })(
+                  <Select style={{ width: '100%' }} >
+                    {languages.map((item: abp.localization.ILanguageInfo) => (
+                      <Option value={item.name} key={item.name}>{item.displayName}</Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col xs={24} xl={6} xxl={6}>
+              <Form.Item label="选择源">
+                {getFieldDecorator('sourceName', {
+                  initialValue: 'Grace'
+                })(
+                  <Select style={{ width: '100%' }}>
+                    {sourceNames.map((item: string) => (
+                      <Option value={item} key={item}>{item}</Option>
+                    ))}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col xs={24} xl={6} xxl={6}>
+              <Form.Item label="目标值">
+                {getFieldDecorator('targetValueFilter', {
+                  initialValue: 'ALL'
+                })(
+                  <Select style={{ width: '100%' }} >
+                    <Option value="ALL">全部</Option>
+                    <Option value="EMPTY">空值</Option>
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Item >
+                {getFieldDecorator('filterText', {
+                })(
+                  <Search
+                    placeholder="搜索..."
+                    enterButton="刷新"
+                  />
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Table
+            bordered
+            onChange={this.handleTableChange}
+            dataSource={languageTexts==undefined?[]:languageTexts.items}
+            pagination={{ showTotal: this.showPageTotal, pageSize: this.state.request.maxResultCount, total: languageTexts == undefined ? 0 : languageTexts.totalCount }}
+            columns={columns} />
+        </Card>
+      </PageHeaderWrapper>)
 
 
   }
 }
-export default LanguageText;
+export default Form.create<LanguageTextProps>()(LanguageText);

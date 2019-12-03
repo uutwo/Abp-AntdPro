@@ -1,6 +1,6 @@
 import AppComponentBase from "@/components/AppComponentBase";
 import React from 'react';
-import { Card, Table, Button, Tag, Dropdown, Menu, Icon, Tabs } from "antd";
+import { Card, Table, Button, Icon, Tabs } from "antd";
 import { PageHeaderWrapper } from "@ant-design/pro-layout";
 import { connect } from "dva";
 import { ConnectState } from "@/models/connect";
@@ -13,8 +13,7 @@ import AuditLogsDetail from "./components/auditLogsDetail";
 import { AuditLogListDto } from '@/services/auditLog/dtos/auditLogListDto';
 import { GetEntityChangeInput } from './../../../services/auditLog/dtos/getEntityChangeInput';
 import EntityChangeDetail from "./components/entityChangeDetail";
-import { EntityChangeListDto } from '@/services/auditLog/dtos/entityChangeListDto';
-import { EntityChangeListDto } from './../../../services/auditLog/dtos/entityChangeListDto';
+import { EntityChangeListDto } from "@/services/auditLog/dtos/entityChangeListDto";
 export interface AuditLogsProps {
   dispatch: Dispatch<AnyAction>;
   auditLogs: AuditLogsModelState;
@@ -59,10 +58,22 @@ class AuditLogs extends AppComponentBase<AuditLogsProps, AuditLogsStates> {
     auditLogItem:undefined,
     auditLogsDetailVisible:false
   }
-  handleTableChange = (pagination: PaginationConfig) => {
+  auditLogsHandleTableChange = (pagination: PaginationConfig) => {
     this.setState({
       auditLogrequest: {
         ...this.state.auditLogrequest,
+        maxResultCount: pagination.pageSize!,
+        skipCount: pagination.current!
+      }
+    }, () => {
+      this.getAuditLogTableData();
+    })
+
+  }
+  entityChangeHandleTableChange = (pagination: PaginationConfig) => {
+    this.setState({
+      entityChangeRequest: {
+        ...this.state.entityChangeRequest,
         maxResultCount: pagination.pageSize!,
         skipCount: pagination.current!
       }
@@ -209,9 +220,7 @@ class AuditLogs extends AppComponentBase<AuditLogsProps, AuditLogsStates> {
       }
 
     ];
-    function showPageTotal(total: number) {
-      return `共 ${total} 项`;
-    }
+
     return (
       <PageHeaderWrapper>
 
@@ -221,25 +230,25 @@ class AuditLogs extends AppComponentBase<AuditLogsProps, AuditLogsStates> {
               <Table
                 loading={historyloading}
                 size="default"
-                onChange={this.handleTableChange}
+                onChange={this.auditLogsHandleTableChange}
                 dataSource={auditLogs == undefined ? [] : auditLogs.items}
-                pagination={{ showTotal: showPageTotal, pageSize: this.state.auditLogrequest.maxResultCount, total: auditLogs == undefined ? 0 : auditLogs.totalCount }}
+                pagination={{ showTotal: this.showPageTotal, pageSize: this.state.auditLogrequest.maxResultCount, total: auditLogs == undefined ? 0 : auditLogs.totalCount }}
                 columns={historyColumns} />
             </Tabs.TabPane>
             <Tabs.TabPane key="entityChange" tab="更改日志">
               <Table
                 loading={changeloading}
                 size="default"
-                onChange={this.handleTableChange}
+                onChange={this.entityChangeHandleTableChange}
                 dataSource={entityChanges == undefined ? [] : entityChanges.items}
-                pagination={{ showTotal: showPageTotal, pageSize: this.state.entityChangeRequest.maxResultCount, total: entityChanges == undefined ? 0 : entityChanges.totalCount }}
+                pagination={{ showTotal: this.showPageTotal, pageSize: this.state.entityChangeRequest.maxResultCount, total: entityChanges == undefined ? 0 : entityChanges.totalCount }}
                 columns={entityChangeColumns} />
             </Tabs.TabPane>
           </Tabs>
 
         </Card>
         <EntityChangeDetail
-        entityChangeItem={entityChangeItem}
+        entityChangeItem={entityChangeItem!}
         entityPropertyChanges={entityPropertyChanges}
         visible={entityChangeDetailVisible}
         onCancel={this.entityChangeDetailModal}

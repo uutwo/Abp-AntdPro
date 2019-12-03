@@ -41,7 +41,7 @@ namespace TuDou.Grace.Configuration
                 builder.AddUserSecrets(typeof(AppConfigurations).GetAssembly());
             }
 
-            return builder.Build();
+                return builder.Build();
         }
     }
 }

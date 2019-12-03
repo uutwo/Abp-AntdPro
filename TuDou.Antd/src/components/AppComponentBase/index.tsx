@@ -16,7 +16,10 @@ class AppComponentBase<P = {}, S = {}, SS = any> extends React.Component<P, S, S
   L(key: string, sourceName?: string): string {
     return L(key);
   }
-
+  // 分页
+  showPageTotal(total: number) {
+    return `共 ${total} 项`;
+  }
   isGranted(permissionName: string): boolean {
     return isGranted(permissionName);
   }

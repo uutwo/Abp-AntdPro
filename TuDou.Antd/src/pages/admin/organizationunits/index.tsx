@@ -362,7 +362,7 @@ class OrganizationUnits extends AppComponentBase<OrganizationUnitsProps, Organiz
       <PageHeaderWrapper >
         <Row gutter={[24,24]}>
 
-          <Col xs={24} xxl={12}>
+          <Col xs={24} xl={12}>
 
             <Card extra={<Button onClick={this.creatrRootNodeHandler} type="primary" icon="plus">添加根组织</Button>} title="组织结构树">
               <DirectoryTree
@@ -377,7 +377,7 @@ class OrganizationUnits extends AppComponentBase<OrganizationUnitsProps, Organiz
             </Card>
           </Col>
 
-          <Col  xs={24} xxl={12}>
+          <Col  xs={24} xl={12}>
             <Card title="成员">
               <Tabs type="card"  >
                 <TabPane tab="组织成员" key="user">

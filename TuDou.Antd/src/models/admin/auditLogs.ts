@@ -18,6 +18,8 @@ export interface AuditLogsModelType {
     getAuditLogs: Effect;
     getEntityChanges: Effect;
     getEntityPropertyChanges: Effect;
+    getAuditLogsToExcel:Effect;
+    getEntityChangesToExcel:Effect;
   };
   reducers: {
     saveAuditLogs: Reducer<AuditLogsModelState>;
@@ -51,6 +53,20 @@ const Model: AuditLogsModelType = {
       const response = yield call(AuditLogsService.getEntityPropertyChanges, payload)
       yield put({
         type: 'saveEntityPropertyChanges',
+        payload:response.result
+      })
+    },
+    *getAuditLogsToExcel({ payload }, { call, put }) {
+      const response = yield call(AuditLogsService.getAuditLogsToExcel, payload)
+      yield put({
+        type:'global/downloadFile',
+        payload:response.result
+      })
+    },
+    *getEntityChangesToExcel({ payload }, { call, put }) {
+      const response = yield call(AuditLogsService.getEntityChangesToExcel, payload)
+      yield put({
+        type:'global/downloadFile',
         payload:response.result
       })
     }

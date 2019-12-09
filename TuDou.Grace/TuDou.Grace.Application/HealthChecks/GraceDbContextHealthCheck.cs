@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TuDou.Grace.EntityFrameworkCore;
 
 namespace TuDou.Grace.HealthChecks
 {
-   public class GraceDbContextHealthCheck: IHealthCheck
+    public class GraceDbContextHealthCheck : IHealthCheck
     {
         private readonly DatabaseCheckHelper _checkHelper;
         public GraceDbContextHealthCheck(DatabaseCheckHelper checkHelper)

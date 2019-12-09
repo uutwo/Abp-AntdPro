@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Abp.Auditing;
+﻿using Abp.Auditing;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Timing;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.MultiTenancy.HostDashboard.Dto;
 using TuDou.Grace.MultiTenancy.Payments;
@@ -66,7 +66,7 @@ namespace TuDou.Grace.MultiTenancy.HostDashboard
         {
             return new GetIncomeStatisticsDataOutput(await _incomeStatisticsService.GetIncomeStatisticsData(input.StartDate, input.EndDate, input.IncomeStatisticsDateInterval));
         }
- 
+
         public async Task<GetEditionTenantStatisticsOutput> GetEditionTenantStatistics(GetEditionTenantStatisticsInput input)
         {
             return new GetEditionTenantStatisticsOutput(await GetEditionTenantStatisticsData(input.StartDate, input.EndDate));

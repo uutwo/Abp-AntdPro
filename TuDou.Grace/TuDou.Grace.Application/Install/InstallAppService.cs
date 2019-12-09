@@ -1,8 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Abp;
+﻿using Abp;
 using Abp.Auditing;
 using Abp.Authorization;
 using Abp.Domain.Uow;
@@ -12,6 +8,12 @@ using Abp.Runtime.Security;
 using Abp.UI;
 using Abp.Zero.EntityFrameworkCore;
 using Castle.Core.Internal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.Authorization.Users;
 using TuDou.Grace.Configuration;
@@ -22,8 +24,6 @@ using TuDou.Grace.Identity;
 using TuDou.Grace.Install.Dto;
 using TuDou.Grace.Migrations.Seed;
 using TuDou.Grace.Migrations.Seed.Host;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace TuDou.Grace.Install
 {
@@ -38,7 +38,7 @@ namespace TuDou.Grace.Install
 
         public InstallAppService(AbpZeroDbMigrator migrator,
             LogInManager logInManager,
-            SignInManager signInManager, 
+            SignInManager signInManager,
             DatabaseCheckHelper databaseCheckHelper)
         {
             _migrator = migrator;

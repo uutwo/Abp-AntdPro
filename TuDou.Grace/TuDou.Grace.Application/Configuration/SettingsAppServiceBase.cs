@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Abp.Net.Mail;
+﻿using Abp.Net.Mail;
+using System.Threading.Tasks;
 using TuDou.Grace.Configuration.Host.Dto;
 
 namespace TuDou.Grace.Configuration

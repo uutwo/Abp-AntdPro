@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Abp.Application.Services;
+﻿using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using System;
+using System.Threading.Tasks;
 using TuDou.Grace.Notifications.Dto;
 
 namespace TuDou.Grace.Notifications
@@ -15,7 +15,7 @@ namespace TuDou.Grace.Notifications
         Task SetNotificationAsRead(EntityDto<Guid> input);
 
         Task<GetNotificationSettingsOutput> GetNotificationSettings();
-        
+
         Task UpdateNotificationSettings(UpdateNotificationSettingsInput input);
 
         Task DeleteNotification(EntityDto<Guid> input);

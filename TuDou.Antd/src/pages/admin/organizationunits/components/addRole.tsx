@@ -3,12 +3,12 @@ import React from 'react';
 import { Modal, Table } from "antd";
 import  * as _ from 'lodash';
 import { AnyAction, Dispatch } from "redux";
-import { OrganizationUnitsStateType } from "@/models/admin/organizationUnits";
+import { OrganizationUnitsModelState } from "@/models/admin/organizationUnits";
 import { FindOrganizationUnitRolesInput } from "@/services/organizationunits/dtos/findOrganizationUnitRolesInput";
 import { PaginationConfig } from "antd/lib/table";
 interface IAddRoleProps {
   dispatch: Dispatch<AnyAction>;
-  organizationUnits: OrganizationUnitsStateType;
+  organizationUnits: OrganizationUnitsModelState;
   visible: boolean;
   onCancel: () => void;
   onOk: () => void;
@@ -54,8 +54,7 @@ class AddRole extends AppComponentBase<IAddRoleProps, IAddRoleStates>{
      this.setState({
       findRolesInput:{
         ...this.state.findRolesInput,
-        skipCount:pagination.current!,
-        maxResultCount:pagination.pageSize!
+        skipCount: (pagination.current! - 1) * this.state.findRolesInput.maxResultCount!
       }
      })
   }

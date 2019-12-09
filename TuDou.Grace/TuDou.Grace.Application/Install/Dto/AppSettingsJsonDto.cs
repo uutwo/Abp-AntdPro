@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Abp;
+﻿using Abp;
+using System.Collections.Generic;
 
 namespace TuDou.Grace.Install.Dto
 {

@@ -135,7 +135,7 @@ class CreateOrUpdateUser extends AppComponentBase<CreateOrUpdateUserProps>{
             </FormItem>
 
           </Tabs.TabPane>
-          <Tabs.TabPane tab="权限" key="permission">
+          <Tabs.TabPane tab="组织机构" key="organizationUnit">
             <OrganizationUnitTree />
           </Tabs.TabPane>
         </Tabs>

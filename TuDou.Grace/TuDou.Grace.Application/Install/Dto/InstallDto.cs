@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Abp.Auditing;
+﻿using Abp.Auditing;
+using System.ComponentModel.DataAnnotations;
 using TuDou.Grace.Configuration.Dto;
 using TuDou.Grace.Configuration.Host.Dto;
 

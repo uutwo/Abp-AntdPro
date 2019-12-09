@@ -29,8 +29,8 @@ const PermissionModel: PermissionModelType = {
   },
 
   effects: {
-    *getAllPermissions({ payload }, { call, put }) {
-        const response= yield call(PermissionService.getAllPermissions,payload)
+    *getAllPermissions(_, { call, put }) {
+        const response= yield call(PermissionService.getAllPermissions)
         yield put({
           type:'saveAllPermissions',
           payload:response.result
@@ -38,6 +38,9 @@ const PermissionModel: PermissionModelType = {
 
     },
     *selectPermissionsTree({ payload }, { call, put }) {
+      yield put({
+        type:'getAllPermissions'
+      })
       yield put({
         type:'saveSelectedPermissions',
         payload:payload

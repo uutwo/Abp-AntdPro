@@ -73,7 +73,9 @@ class BasicLayout extends AppComponentBase<BasicLayoutProps> {
    * constructor
    */
   componentWillMount(){
-    SignalRHelper.initSignalR(() => { abp.signalr.connect(); });
+    SignalRHelper.initSignalR(() => {
+      abp.signalr.connect();
+     });
     const {dispatch} = this.props;
     if (dispatch) {
       dispatch({

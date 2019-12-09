@@ -1,6 +1,7 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
 import lodash from 'lodash';
+import AppConst from '@/lib/appconst'
 import { UserLoginInfoDto } from '@/shared/dtos/appSession/userLoginInfoDto';
 import { TenantLoginInfoDto } from '@/shared/dtos/appSession/tenantLoginInfoDto';
 import { ApplicationInfoDto } from '@/shared/dtos/appSession/applicationInfoDto';
@@ -39,6 +40,7 @@ export interface GlobalModelType {
     getNotificationSettings: Effect;
     updateNotificationSettings: Effect;
     changeLanguage: Effect;
+    downloadFile:Effect;
   };
   reducers: {
     savelocales: Reducer<GlobalModelState>;
@@ -107,6 +109,9 @@ const GlobalModel: GlobalModelType = {
       yield put({
         type: 'saveNotificationSettingModalState',
       });
+    },
+    *downloadFile({payload}){
+      location.href=AppConst.remoteServiceBaseUrl+`File/DownloadTempFile?fileName=${payload.fileName}&fileToken=${payload.fileToken}&fileType=${payload.fileType}`
     },
     *getRecentUserLoginAttempts(_, { call, put }) {
       const response = yield call(UserLoginService.getRecentUserLoginAttempts);

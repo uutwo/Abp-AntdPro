@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Abp;
+﻿using Abp;
 using Abp.Dependency;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using TuDou.Grace.Authorization.Users;
 using TuDou.Grace.Dto;
 using TuDou.Grace.Net;
@@ -43,7 +43,7 @@ namespace TuDou.Grace.Gdpr
             var file = new FileDto("ProfilePicture.png", MimeTypeNames.ImagePng);
             _tempFileCacheManager.SetFile(file.FileToken, profilePicture.Bytes);
 
-            return new List<FileDto> {file};
+            return new List<FileDto> { file };
         }
     }
 }

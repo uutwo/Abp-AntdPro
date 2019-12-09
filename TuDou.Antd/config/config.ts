@@ -200,11 +200,7 @@ export default {
     {
       from: 'src/lib/abp.js',
       to: 'dist',
-    },
-    {
-      from: 'node_modules/@elsa-workflows/elsa-workflow-designer/dist/elsa-workflow-designer.js',
-      to: 'dist',
-    },
+    }
   ],
   disableRedirectHoist: true,
   cssLoaderOptions: {

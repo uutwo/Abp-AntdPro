@@ -23,7 +23,7 @@ request.interceptors.request.use((url, options) => {
       ...options,
       headers:{
         '.AspNetCore.Culture': ('c=' + cookieLangValue + '|uic=' + cookieLangValue),
-        'Authorization' :'Bearer '+token,
+        'Authorization' :'Bearer '+ token,
       }
     }
   }
@@ -36,6 +36,7 @@ request.interceptors.request.use((url, options) => {
 // response拦截器, 处理response
 request.interceptors.response.use(async (response, options) => {
   const { ok  } = response;
+
   if(!ok){
     var res = await response.clone().json();
     if(res.error){
@@ -43,8 +44,11 @@ request.interceptors.response.use(async (response, options) => {
         message:res.error.message,
         description:res.error.details
       })
+      return res;
     }
+    return res;
   }
+
   return response;
 });
 

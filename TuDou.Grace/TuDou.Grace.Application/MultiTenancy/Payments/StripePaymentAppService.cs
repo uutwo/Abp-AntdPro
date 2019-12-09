@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Abp.Domain.Repositories;
+﻿using Abp.Domain.Repositories;
 using Abp.Runtime.Session;
+using System;
+using System.Threading.Tasks;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.Editions;
 using TuDou.Grace.MultiTenancy.Payments.Stripe;
@@ -52,7 +52,7 @@ namespace TuDou.Grace.MultiTenancy.Payments
             var edition = await _editionRepository.GetAsync(payment.EditionId);
 
             var product = await _stripeGatewayManager.GetOrCreateProductAsync(StripeGatewayManager.ProductName);
-            
+
             var planId = _stripeGatewayManager.GetPlanId(edition.Name, payment.GetPaymentPeriodType());
             var planInterval = _stripeGatewayManager.GetPlanInterval(payment.PaymentPeriodType);
 

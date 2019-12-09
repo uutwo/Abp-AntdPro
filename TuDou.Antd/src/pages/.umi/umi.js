@@ -116,6 +116,7 @@ if (!__IS_BROWSER) {
         res: ctx.res || {},
         ...initialProps,
       });
+      // please use return, avoid return all model
       props = plugins.apply('initialProps', {
         initialValue: props,
       });
@@ -130,6 +131,7 @@ if (!__IS_BROWSER) {
     const rootContainer = plugins.apply('rootContainer', {
       initialValue: React.createElement(require('./router').default, props),
     });
+    const stringify = require('serialize-javascript');
     const htmlTemplateMap = {};
     return {
       htmlElement:
@@ -156,14 +158,12 @@ export default (__IS_BROWSER ? null : serverRender);
     if (isIE) return;
 
     // Umi UI Bubble
-    require('../../../node_modules/umi-build-dev/node_modules/umi-plugin-ui/lib/bubble').default(
-      {
-        port: 3001,
-        path: 'D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd',
-        currentProject: '',
-        isBigfish: undefined,
-      },
-    );
+    require('../../../node_modules/umi-plugin-ui/lib/bubble').default({
+      port: 3001,
+      path: 'D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd',
+      currentProject: '',
+      isBigfish: undefined,
+    });
   } catch (e) {
     console.warn('Umi UI render error:', e);
   }

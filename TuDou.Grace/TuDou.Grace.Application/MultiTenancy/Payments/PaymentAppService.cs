@@ -1,22 +1,21 @@
-﻿using System;
+﻿using Abp.Application.Services.Dto;
+using Abp.Authorization;
+using Abp.Collections.Extensions;
+using Abp.Linq.Extensions;
+using Abp.Runtime.Session;
+using Abp.UI;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Abp.Authorization;
-using Abp.Runtime.Session;
-using Abp.UI;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.Editions;
 using TuDou.Grace.Editions.Dto;
 using TuDou.Grace.MultiTenancy.Dto;
 using TuDou.Grace.MultiTenancy.Payments.Dto;
-using Abp.Application.Services.Dto;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using Abp;
-using Abp.Collections.Extensions;
-using Abp.Linq.Extensions;
 
 namespace TuDou.Grace.MultiTenancy.Payments
 {
@@ -157,8 +156,8 @@ namespace TuDou.Grace.MultiTenancy.Payments
         public async Task<SubscriptionPaymentDto> GetLastCompletedPayment()
         {
             var payment = await _subscriptionPaymentRepository.GetLastCompletedPaymentOrDefaultAsync(
-                tenantId: AbpSession.GetTenantId(), 
-                gateway: null, 
+                tenantId: AbpSession.GetTenantId(),
+                gateway: null,
                 isRecurring: null);
 
             return ObjectMapper.Map<SubscriptionPaymentDto>(payment);

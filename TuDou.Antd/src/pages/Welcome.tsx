@@ -16,7 +16,9 @@ const CodePreview: React.FC<{}> = ({ children }) => (
   </pre>
 );
 export default (): React.ReactNode => (
-  <PageHeaderWrapper>
+  <PageHeaderWrapper
+   title="首页"
+   content="分析与报告.">
     <Card>
       <Alert
         message="umi ui 现已发布，欢迎使用 npm run ui 启动体验。"

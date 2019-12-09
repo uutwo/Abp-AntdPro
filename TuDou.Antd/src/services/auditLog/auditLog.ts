@@ -16,30 +16,30 @@ import { GetEntityTypeChangeInput } from './dtos/getEntityTypeChangeInput';
         });
     };
     async getEntityHistoryObjectTypes() {
-        return request('/api/services/app/AuditLog/GetEntityHistoryObjectTypes', {
+        return request('api/services/app/AuditLog/GetEntityHistoryObjectTypes', {
             method: "GET",
         });
     };
     async getEntityChanges(input: GetEntityChangeInput) {
-        return request('/api/services/app/AuditLog/GetEntityChanges', {
+        return request('api/services/app/AuditLog/GetEntityChanges', {
             method: "GET",
             params: input
         });
     };
     async getEntityTypeChanges(input: GetEntityTypeChangeInput) {
-        return request('/api/services/app/AuditLog/GetEntityTypeChanges', {
+        return request('api/services/app/AuditLog/GetEntityTypeChanges', {
             method: "GET",
             params: input
         });
     };
     async getEntityChangesToExcel(input: GetEntityChangeInput) {
-        return request('/api/services/app/AuditLog/GetEntityChangesToExcel', {
+        return request('api/services/app/AuditLog/GetEntityChangesToExcel', {
             method: "GET",
             params: input
         });
     };
     async getEntityPropertyChanges(entityChangeId: number) {
-        return request('/api/services/app/AuditLog/GetEntityPropertyChanges', {
+        return request('api/services/app/AuditLog/GetEntityPropertyChanges', {
             method: "GET",
             params: {
                 entityChangeId:entityChangeId

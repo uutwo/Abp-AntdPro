@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using Abp.Extensions;
+﻿using Abp.Extensions;
 using Abp.Runtime.Session;
 using Abp.Timing.Timezone;
+using System.Collections.Generic;
 using TuDou.Grace.Auditing.Dto;
 using TuDou.Grace.DataExporting.Excel.EpPlus;
 using TuDou.Grace.Dto;
@@ -13,7 +13,7 @@ namespace TuDou.Grace.Auditing.Exporting
     {
         private readonly ITimeZoneConverter _timeZoneConverter;
         private readonly IAbpSession _abpSession;
-        
+
         public AuditLogListExcelExporter(
             ITimeZoneConverter timeZoneConverter,
             IAbpSession abpSession,
@@ -68,7 +68,7 @@ namespace TuDou.Grace.Auditing.Exporting
 
                     for (var i = 1; i <= 10; i++)
                     {
-                        if (i.IsIn(5, 10)) 
+                        if (i.IsIn(5, 10))
                         {
                             continue;
                         }

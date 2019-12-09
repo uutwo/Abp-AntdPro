@@ -1,5 +1,5 @@
 import AppComponentBase from "@/components/AppComponentBase";
-import React from "react";
+import React, { RefObject } from "react";
 import { PageHeaderWrapper } from "@ant-design/pro-layout";
 import { Card, Table, Row, Col, Form, Select, Button } from "antd";
 import { ConnectState } from "@/models/connect";
@@ -7,7 +7,7 @@ import { connect } from "dva";
 import { LanguagesModelState } from "@/models/admin/languages";
 import { Dispatch, AnyAction } from "redux";
 import { GetLanguageTextsInput } from "@/services/languages/dtos/getLanguageTextsInput";
-
+import EditLanguageText from './components/editLanguageText';
 import * as _ from 'lodash';
 import { FormComponentProps } from 'antd/es/form';
 import Search from "antd/lib/input/Search";
@@ -21,6 +21,7 @@ export interface LanguageTextStates {
   request: GetLanguageTextsInput;
   sourceNames: string[];
   languages: abp.localization.ILanguageInfo[];
+  editLanguageTextModalVisible: boolean;
 }
 
 const { Option } = Select;
@@ -28,16 +29,20 @@ const { Option } = Select;
   languages: languages,
 }))
 class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextStates>{
+  modalRef: any = React.createRef();
   state = {
     sourceNames: [],
     languages: abp.localization.languages,
     request: {
       maxResultCount: this.maxResultCount,
       skipCount: this.skipCount,
-      sourceName: 'Abp',
+      sourceName: 'Grace',
       targetLanguageName: '',
-      targetValueFilter: 'ALL'
-    }
+      targetValueFilter: 'ALL',
+      filterText: '',
+      baseLanguageName: abp.localization.currentLanguage.name
+    },
+    editLanguageTextModalVisible: false
   }
   async componentDidMount() {
     const targetLanguageName = location.pathname.replace("/admin/languageTexts/", "");
@@ -62,21 +67,66 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
       }
     })
   }
-
-  handRequestChange=()=>{
-    const {validateFields} = this.props.form;
-    validateFields((errors:any,values:any)=>{
-      if(!errors){
-
+  handRequestChange = () => {
+    const { validateFields } = this.props.form;
+    validateFields((errors: any, values: any) => {
+      if (!errors) {
+        this.setState({
+          request: {
+            maxResultCount: this.state.request.maxResultCount,
+            skipCount: this.state.request.skipCount,
+            baseLanguageName: values.baseLanguageName,
+            targetLanguageName: values.targetLanguageName,
+            sourceName: values.sourceName,
+            targetValueFilter: values.targetValueFilter,
+            filterText: values.filterText == undefined ? "" : values.filterText,
+          }
+        }, () => {
+          this.getTableData();
+        })
       }
+
     })
+  }
+  Modal() {
+    this.setState({
+      editLanguageTextModalVisible: !this.state.editLanguageTextModalVisible
+    })
+  }
+  modalOpen = (record: any) => {
+    const { setFieldsValue } = this.modalRef.current;
+    setFieldsValue({
+      ...record
+    })
+    this.Modal();
+  }
+  modalCancel = () => {
+    this.Modal();
+  }
+  modalOk = () => {
+    const { validateFields } = this.modalRef.current;
+    validateFields((errors: any, values: any) => {
+      if (!errors) {
+        const { dispatch } = this.props;
+        dispatch({
+          type: 'languages/updateLanguageText',
+          payload: {
+            key: values.key,
+            languageName: this.state.request.targetLanguageName,
+            value: values.targetValue,
+            sourceName: this.state.request.sourceName
+          }
+        })
+        this.getTableData();
+      }
+    });
+    this.Modal();
   }
   handleTableChange = (pagination: PaginationConfig) => {
     this.setState({
       request: {
         ...this.state.request,
-        maxResultCount: pagination.pageSize!,
-        skipCount: pagination.current!
+        skipCount: (pagination.current! - 1) * this.state.request.maxResultCount!
       }
     }, () => {
       this.getTableData();
@@ -85,31 +135,31 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
   }
   public render() {
     const { getFieldDecorator } = this.props.form;
-    const { languages, sourceNames, request } = this.state;
-    const {languageTexts} = this.props.languages;
+    const { languages, sourceNames, request, editLanguageTextModalVisible } = this.state;
+    const { languageTexts } = this.props.languages;
     const columns: any = [{
-        title: '键值',
-        dataIndex: 'key',
-        key: 'key',
-      },
-      {
-        title: '默认值',
-        dataIndex: 'baseValue',
-        key: 'baseValue',
-      },
-      {
-        title: '目标值',
-        dataIndex: 'targetValue',
-        key: 'targetValue',
-      },
-      {
-        title: '操作',
-        dataIndex: 'action',
-        key: 'action',
-        render: (text: any, record: any, index: number) => {
-          return <Button icon="edit" onClick={this.handRequestChange} type="primary">编辑</Button>
-        }
-      },
+      title: '键值',
+      dataIndex: 'key',
+      key: 'key',
+    },
+    {
+      title: '默认值',
+      dataIndex: 'baseValue',
+      key: 'baseValue',
+    },
+    {
+      title: '目标值',
+      dataIndex: 'targetValue',
+      key: 'targetValue',
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      render: (text: any, record: any, index: number) => {
+        return <Button icon="edit" onClick={() => { this.modalOpen(record) }} type="primary">编辑</Button>
+      }
+    },
     ];
     return (
       <PageHeaderWrapper
@@ -176,6 +226,7 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
                 {getFieldDecorator('filterText', {
                 })(
                   <Search
+                    onSearch={this.handRequestChange}
                     placeholder="搜索..."
                     enterButton="刷新"
                   />
@@ -186,10 +237,18 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
           <Table
             bordered
             onChange={this.handleTableChange}
-            dataSource={languageTexts==undefined?[]:languageTexts.items}
+            dataSource={languageTexts == undefined ? [] : languageTexts.items}
             pagination={{ showTotal: this.showPageTotal, pageSize: this.state.request.maxResultCount, total: languageTexts == undefined ? 0 : languageTexts.totalCount }}
             columns={columns} />
         </Card>
+        <EditLanguageText
+          ref={this.modalRef}
+          baseValue={languages.filter(t => t.name == request.baseLanguageName)[0].displayName}
+          targetValue={request.targetLanguageName == "" ? "" : languages.filter(t => t.name == request.targetLanguageName)[0].displayName}
+          onOk={this.modalOk}
+          onCancel={this.modalCancel}
+          visible={editLanguageTextModalVisible}
+          />
       </PageHeaderWrapper>)
 
 

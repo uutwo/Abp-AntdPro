@@ -18,6 +18,7 @@ export interface UsersModelType {
         unlockUser: Effect;
         createOrUpdateUser: Effect;
         deleteUser: Effect;
+        getUsersToExcel:Effect;
     };
     reducers: {
         saveUsers: Reducer<UsersStateType>;
@@ -33,14 +34,14 @@ const Model: UsersModelType = {
     },
     effects: {
         *getUsers({ payload }, { call, put }) {
-           const response = yield call(UsersAppService.getUsers,payload)
+           const response = yield call(UsersAppService.GetUsers,payload)
            yield put({
                type:'saveUsers',
                payload:response.result
            })
         },
         *getUserForEdit({ payload }, { call, put }) {
-          const response = yield call(UsersAppService.getUserForEdit,payload)
+          const response = yield call(UsersAppService.GetUserForEdit,payload)
            yield put({
             type:'saveEditUser',
             payload:response.result
@@ -56,6 +57,14 @@ const Model: UsersModelType = {
         *createOrUpdateUser({ payload }, { call, put }) {
            yield call(UsersAppService.CreateOrUpdateUser,payload)
        },
+       *getUsersToExcel({ payload }, { call, put }) {
+        const response= yield call(UsersAppService.GetUsersToExcel,payload)
+        yield put({
+          type:'global/downloadFile',
+          payload:response.result
+        })
+
+    },
     },
     reducers: {
         saveUsers(state, { payload }) {

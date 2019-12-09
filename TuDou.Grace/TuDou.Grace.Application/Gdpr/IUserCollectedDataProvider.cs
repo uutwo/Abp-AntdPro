@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Abp;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Abp;
 using TuDou.Grace.Dto;
 
 namespace TuDou.Grace.Gdpr

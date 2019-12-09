@@ -5,13 +5,13 @@ import { CreateOrUpdateUserInput } from "./dtos/createOrUpdateUserInput";
 import { UpdateUserPermissionsInput } from "./dtos/updateUserPermissionsInput";
 
 class UsersService{
-    async getUsers(input: GetUsersInput) {
+    async GetUsers(input: GetUsersInput) {
         return request('api/services/app/User/GetUsers', {
             method: "GET",
             params: input
         });
     };
-    async getUserForEdit(input: EntityDto) {
+    async GetUserForEdit(input: EntityDto) {
       return request('api/services/app/User/GetUserForEdit', {
           method: "GET",
           params: input
@@ -45,6 +45,12 @@ class UsersService{
     return request('api/services/app/User/ResetUserSpecificPermissions', {
         method: "POST",
         data: input
+    });
+   };
+   async GetUsersToExcel(input: GetUsersInput) {
+    return request('api/services/app/User/GetUsersToExcel', {
+        method: "GET",
+        params: input
     });
    };
    async GetUserPermissionsForEdit(input: EntityDto) {

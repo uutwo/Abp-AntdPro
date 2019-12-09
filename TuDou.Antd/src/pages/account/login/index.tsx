@@ -5,7 +5,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { LoginModalState } from '@/models/login';
+import { LoginModelState } from '@/models/login';
 import LoginComponents from './components/Login';
 import styles from './style.less';
 import { LoginParamsType } from '@/services/login';
@@ -17,7 +17,7 @@ const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 
 export interface LoginProps {
   dispatch: Dispatch<AnyAction>;
-  userLogin: LoginModalState;
+  userLogin: LoginModelState;
   submitting: boolean;
 }
 export interface LoginState {

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.Threading.Tasks;
-using Abp.Authorization;
+﻿using Abp.Authorization;
 using Abp.Configuration;
 using Abp.Extensions;
 using Abp.Net.Mail;
 using Abp.Runtime.Security;
 using Abp.Timing;
 using Abp.Zero.Configuration;
+using System;
+using System.Globalization;
+using System.Threading.Tasks;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.Configuration.Dto;
 using TuDou.Grace.Configuration.Host.Dto;
@@ -94,7 +94,7 @@ namespace TuDou.Grace.Configuration.Host
                 IsEmailConfirmationRequiredForLogin = await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement.IsEmailConfirmationRequiredForLogin),
                 SmsVerificationEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.SmsVerificationEnabled),
                 IsCookieConsentEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsCookieConsentEnabled),
-                IsQuickThemeSelectEnabled =  await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled)
+                IsQuickThemeSelectEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled)
             };
         }
 

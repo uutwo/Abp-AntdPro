@@ -1,3 +1,3 @@
 export interface GetRolesInput{
-    permission:string;
+    permissions:string[];
 }

@@ -50,8 +50,7 @@ class AddMember extends AppComponentBase<IAddMemberProps, IAddMemberStates>{
      this.setState({
       findUsersInput:{
         ...this.state.findUsersInput,
-        skipCount:pagination.current!,
-        maxResultCount:pagination.pageSize!
+        skipCount: (pagination.current! - 1) * this.state.findUsersInput.maxResultCount!
       }
      })
   }

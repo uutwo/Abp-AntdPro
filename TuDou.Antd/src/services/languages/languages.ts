@@ -1,5 +1,7 @@
 import request from "@/utils/request";
 import { GetLanguageTextsInput } from "./dtos/getLanguageTextsInput";
+import { UpdateLanguageTextInput } from "./dtos/updateLanguageTextInput";
+import { SetDefaultLanguageInput } from './dtos/setDefaultLanguageInput';
 
  class LanguagesService{
     async getLanguages() {
@@ -22,9 +24,10 @@ import { GetLanguageTextsInput } from "./dtos/getLanguageTextsInput";
             method: "DELETE",
         });
     };
-    async SetDefaultLanguage() {
+    async SetDefaultLanguage(input:SetDefaultLanguageInput) {
         return request('api/services/app/Language/SetDefaultLanguage', {
             method: "POST",
+            data:input
         });
     };
     async getLanguageTexts(input:GetLanguageTextsInput) {
@@ -33,9 +36,10 @@ import { GetLanguageTextsInput } from "./dtos/getLanguageTextsInput";
             params:input
         });
     };
-    async UpdateLanguageText() {
+    async UpdateLanguageText(input:UpdateLanguageTextInput) {
         return request('api/services/app/Language/UpdateLanguageText', {
             method: "PUT",
+            data:input
         });
     };
 }

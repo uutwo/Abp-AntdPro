@@ -8,7 +8,7 @@ namespace TuDou.Grace.Url
 
         private NullAppUrlService()
         {
-            
+
         }
 
         public string CreateEmailActivationUrlFormat(int? tenantId)

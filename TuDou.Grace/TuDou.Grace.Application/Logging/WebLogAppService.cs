@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Abp.Authorization;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Abp.Authorization;
 using TuDou.Grace.Authorization;
 using TuDou.Grace.Dto;
 using TuDou.Grace.IO;
@@ -77,7 +77,7 @@ namespace TuDou.Grace.Logging
 
             //Create the zip file
             var zipFileDto = new FileDto("WebSiteLogs.zip", MimeTypeNames.ApplicationZip);
-            
+
             using (var outputZipFileStream = new MemoryStream())
             {
                 using (var zipStream = new ZipArchive(outputZipFileStream, ZipArchiveMode.Create))
@@ -101,7 +101,7 @@ namespace TuDou.Grace.Logging
 
             return zipFileDto;
         }
-        
+
         private List<FileInfo> GetAllLogFiles()
         {
             var directory = new DirectoryInfo(_appFolders.WebLogsFolder);

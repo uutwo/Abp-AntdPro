@@ -39,7 +39,7 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(TokenAuthService.authenticate, payload);
+      const response = yield call(TokenAuthService.authenticate, payload)
       yield put({
         type: 'changeLoginStatus',
         payload: response,

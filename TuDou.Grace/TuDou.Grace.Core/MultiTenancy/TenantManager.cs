@@ -10,7 +10,6 @@ using Abp.MultiTenancy;
 using TuDou.Grace.Authorization.Roles;
 using TuDou.Grace.Authorization.Users;
 using TuDou.Grace.Editions;
-using TuDou.Grace.MultiTenancy.Demo;
 using Abp.Extensions;
 using Abp.Notifications;
 using Abp.Runtime.Security;
@@ -35,7 +34,6 @@ namespace TuDou.Grace.MultiTenancy
         private readonly RoleManager _roleManager;
         private readonly UserManager _userManager;
         private readonly IUserEmailer _userEmailer;
-        private readonly TenantDemoDataBuilder _demoDataBuilder;
         private readonly INotificationSubscriptionManager _notificationSubscriptionManager;
         private readonly IAppNotifier _appNotifier;
         private readonly IAbpZeroDbMigrator _abpZeroDbMigrator;
@@ -49,7 +47,6 @@ namespace TuDou.Grace.MultiTenancy
             IUnitOfWorkManager unitOfWorkManager,
             RoleManager roleManager,
             IUserEmailer userEmailer,
-            TenantDemoDataBuilder demoDataBuilder,
             UserManager userManager,
             INotificationSubscriptionManager notificationSubscriptionManager,
             IAppNotifier appNotifier,
@@ -68,7 +65,6 @@ namespace TuDou.Grace.MultiTenancy
             _unitOfWorkManager = unitOfWorkManager;
             _roleManager = roleManager;
             _userEmailer = userEmailer;
-            _demoDataBuilder = demoDataBuilder;
             _userManager = userManager;
             _notificationSubscriptionManager = notificationSubscriptionManager;
             _appNotifier = appNotifier;
@@ -168,8 +164,6 @@ namespace TuDou.Grace.MultiTenancy
                     }
 
                     await _unitOfWorkManager.Current.SaveChangesAsync();
-
-                    await _demoDataBuilder.BuildForAsync(tenant);
 
                     newTenantId = tenant.Id;
                     newAdminId = adminUser.Id;

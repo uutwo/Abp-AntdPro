@@ -40,16 +40,16 @@ namespace TuDou.Grace.Authorization.Impersonation
 
             CheckCurrentTenant(cacheItem.TargetTenantId);
 
-            //Get the user from tenant
+            //从租户获取用户
             var user = await _userManager.FindByIdAsync(cacheItem.TargetUserId.ToString());
 
-            //Create identity
+            //创建身份
 
             var identity = (ClaimsIdentity)(await _principalFactory.CreateAsync(user)).Identity;
 
             if (!cacheItem.IsBackToImpersonator)
             {
-                //Add claims for audit logging
+                //添加审计日志的声明
                 if (cacheItem.ImpersonatorTenantId.HasValue)
                 {
                     identity.AddClaim(new Claim(AbpClaimTypes.ImpersonatorTenantId, cacheItem.ImpersonatorTenantId.Value.ToString(CultureInfo.InvariantCulture)));
@@ -58,7 +58,7 @@ namespace TuDou.Grace.Authorization.Impersonation
                 identity.AddClaim(new Claim(AbpClaimTypes.ImpersonatorUserId, cacheItem.ImpersonatorUserId.ToString(CultureInfo.InvariantCulture)));
             }
 
-            //Remove the cache item to prevent re-use
+            //删除缓存项以防止重复使用
             await _cacheManager.GetImpersonationCache().RemoveAsync(impersonationToken);
 
             return new UserAndIdentity(user, identity);
@@ -107,7 +107,7 @@ namespace TuDou.Grace.Authorization.Impersonation
 
         private async Task<string> GenerateImpersonationTokenAsync(int? tenantId, long userId, bool isBackToImpersonator)
         {
-            //Create a cache item
+            //创建缓存项
             var cacheItem = new ImpersonationCacheItem(
                 tenantId,
                 userId,
@@ -120,7 +120,7 @@ namespace TuDou.Grace.Authorization.Impersonation
                 cacheItem.ImpersonatorUserId = AbpSession.GetUserId();
             }
 
-            //Create a random token and save to the cache
+            //创建一个随机令牌并保存到缓存中
             var token = Guid.NewGuid().ToString();
 
             await _cacheManager

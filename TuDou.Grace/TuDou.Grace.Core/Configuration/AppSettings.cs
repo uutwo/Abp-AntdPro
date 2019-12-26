@@ -1,8 +1,8 @@
 ﻿namespace TuDou.Grace.Configuration
 {
     /// <summary>
-    /// Defines string constants for setting names in the application.
-    /// See <see cref="AppSettingProvider"/> for setting definitions.
+    /// 定义用于在应用程序中设置名称的字符串常量。
+    /// 有关设置定义，请参见<参见cref="AppSettingProvider"/>。
     /// </summary>
     public static class AppSettings
     {
@@ -58,9 +58,6 @@
             public const string UseCaptchaOnRegistration = "App.TenantManagement.UseCaptchaOnRegistration";
             public const string DefaultEdition = "App.TenantManagement.DefaultEdition";
             public const string SubscriptionExpireNotifyDayCount = "App.TenantManagement.SubscriptionExpireNotifyDayCount";
-            public const string BillingLegalName = "App.TenantManagement.BillingLegalName";
-            public const string BillingAddress = "App.TenantManagement.BillingAddress";
-            public const string BillingTaxVatNo = "App.TenantManagement.BillingTaxVatNo";
         }
 
         public static class UserManagement

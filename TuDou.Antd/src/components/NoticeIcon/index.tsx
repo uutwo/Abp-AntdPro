@@ -5,11 +5,9 @@ import NoticeList, { NoticeIconTabProps } from './NoticeList';
 
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import { FormattedUserNotification } from '@/services/notification.ts/dtos/userNotification';
+import { FormattedUserNotification } from '@/services/notification/dtos/userNotification';
 
 const { TabPane } = Tabs;
-
-
 
 export interface NoticeIconProps {
   count?: number;
@@ -91,7 +89,7 @@ export default class NoticeIcon extends Component<NoticeIconProps> {
         const msgCount = count || count === 0 ? count : len;
         const tabTitle: string = msgCount > 0 ? `${title} (${msgCount})` : title;
         return (
-          <TabPane tab={tabTitle} key={title}>
+          <TabPane tab={tabTitle} key={tabKey}>
             <NoticeList
               clearText={clearText}
               viewMoreText={viewMoreText}

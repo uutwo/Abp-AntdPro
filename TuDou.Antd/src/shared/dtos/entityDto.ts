@@ -1,3 +1,3 @@
-export class EntityDto<T = number> {
+export default class EntityDto<T = number> {
   id!: T;
 }

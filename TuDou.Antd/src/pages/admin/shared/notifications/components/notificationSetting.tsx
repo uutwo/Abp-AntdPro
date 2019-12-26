@@ -1,9 +1,10 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import { Modal, Form, Switch, Typography, Checkbox, Icon } from "antd";
-import React from "react";
-import *  as _ from 'lodash';
+import AppComponentBase from '@/components/AppComponentBase';
+import { Modal, Form, Switch, Typography, Checkbox, Icon } from 'antd';
+import React from 'react';
+import * as _ from 'lodash';
 import { FormComponentProps } from 'antd/lib/form';
-import { GetNotificationSettingsOutput } from './../../../../../services/notification.ts/dtos/getNotificationSettingsOutput';
+import { GetNotificationSettingsOutput } from '@/services/notification/dtos/getNotificationSettingsOutput';
+
 const { Text } = Typography;
 interface INotificationSettingProps extends FormComponentProps {
   visible: boolean;
@@ -11,13 +12,13 @@ interface INotificationSettingProps extends FormComponentProps {
   onOk: () => void;
   notificationSetting: GetNotificationSettingsOutput;
 }
-class NotificationSetting extends AppComponentBase<INotificationSettingProps>{
+class NotificationSetting extends AppComponentBase<INotificationSettingProps> {
   render() {
     const { visible, onCancel, onOk, notificationSetting } = this.props;
     const { getFieldDecorator } = this.props.form;
-    let options:any[]=[];
+    let options:any[] = [];
     if (notificationSetting !== undefined) {
-        options = notificationSetting.notifications!.map((x) => {
+        options = notificationSetting.notifications!.map(x => {
         const role = { label: this.L(x.displayName!), value: x.name! };
         return role;
       });
@@ -29,11 +30,11 @@ class NotificationSetting extends AppComponentBase<INotificationSettingProps>{
         title="通知设置"
         visible={visible}>
         <Form.Item label="接收通知">
-          {getFieldDecorator('receiveNotifications', { valuePropName: "checked", initialValue: notificationSetting == undefined ? true : notificationSetting.receiveNotifications })(
+          {getFieldDecorator('receiveNotifications', { valuePropName: 'checked', initialValue: notificationSetting === undefined ? true : notificationSetting.receiveNotifications })(
             <Switch
 
               checkedChildren={<Icon type="check" />}
-              unCheckedChildren={<Icon type="close" />} />
+              unCheckedChildren={<Icon type="close" />} />,
           )}
 
         </Form.Item>
@@ -43,8 +44,8 @@ class NotificationSetting extends AppComponentBase<INotificationSettingProps>{
         <br />
         <br />
         <Form.Item label="通知类型">
-          {getFieldDecorator('notifications', {initialValue:notificationSetting == undefined ?[]:_.map(notificationSetting.notifications,"name")})(
-            <Checkbox.Group options={options} />
+          {getFieldDecorator('notifications', { initialValue: notificationSetting === undefined ? [] : _.map(notificationSetting.notifications, 'name') })(
+            <Checkbox.Group options={options} />,
           )}
 
         </Form.Item>

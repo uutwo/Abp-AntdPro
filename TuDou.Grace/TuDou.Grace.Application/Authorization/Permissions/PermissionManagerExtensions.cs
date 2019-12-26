@@ -9,8 +9,8 @@ namespace TuDou.Grace.Authorization.Permissions
     public static class PermissionManagerExtensions
     {
         /// <summary>
-        /// Gets all permissions by names.
-        /// Throws <see cref="AbpValidationException"/> if can not find any of the permission names.
+        /// 按名称获取所有权限。
+        /// 如果找不到任何权限名，抛出<参见cref="AbpValidationException"/>。
         /// </summary>
         public static IEnumerable<Permission> GetPermissionsFromNamesByValidating(this IPermissionManager permissionManager, IEnumerable<string> permissionNames)
         {

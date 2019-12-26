@@ -1,6 +1,7 @@
-import { EntityDto } from "@/shared/dtos/entityDto";
 
-export interface AuditLogListDto extends EntityDto{
+import EntityDto from '@/shared/dtos/entityDto';
+
+export interface AuditLogListDto extends EntityDto {
     userId?:number;
     userName:string;
     impersonatorTenantId?:number;

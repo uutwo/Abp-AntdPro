@@ -8,7 +8,7 @@ using TuDou.Grace.Authorization.Roles;
 namespace TuDou.Grace.Authorization.Users
 {
     /// <summary>
-    /// Used to perform database operations for <see cref="UserManager"/>.
+    ///用于执行<参见cref="UserManager"/>的数据库操作。
     /// </summary>
     public class UserStore : AbpUserStore<Role, User>
     {

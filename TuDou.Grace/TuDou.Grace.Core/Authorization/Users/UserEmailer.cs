@@ -22,7 +22,7 @@ using TuDou.Grace.Net.Emailing;
 namespace TuDou.Grace.Authorization.Users
 {
     /// <summary>
-    /// Used to send email to users.
+    /// 用于发送邮件给用户
     /// </summary>
     public class UserEmailer : GraceServiceBase, IUserEmailer, ITransientDependency
     {
@@ -35,7 +35,7 @@ namespace TuDou.Grace.Authorization.Users
         private readonly EditionManager _editionManager;
         private readonly UserManager _userManager;
 
-        // used for styling action links on email messages.
+        // 用于样式化连接信息
         private string _emailButtonStyle =
             "padding-left: 30px; padding-right: 30px; padding-top: 12px; padding-bottom: 12px; color: #ffffff; background-color: #00bb77; font-size: 14pt; text-decoration: none;";
         private string _emailButtonColor = "#00bb77";
@@ -61,19 +61,19 @@ namespace TuDou.Grace.Authorization.Users
         }
 
         /// <summary>
-        /// Send email activation link to user's email address.
+        /// 发送激活邮件至用户的邮箱
         /// </summary>
         /// <param name="user">User</param>
         /// <param name="link">Email activation link</param>
         /// <param name="plainPassword">
-        /// Can be set to user's plain password to include it in the email.
+        /// 可以设置为用户的普通密码，以包含在电子邮件中。
         /// </param>
         [UnitOfWork]
         public virtual async Task SendEmailActivationLinkAsync(User user, string link, string plainPassword = null)
         {
             if (user.EmailConfirmationCode.IsNullOrEmpty())
             {
-                throw new Exception("EmailConfirmationCode should be set in order to send email activation link.");
+                throw new Exception("要发送电子邮件激活链接，请设置EmailConfirmationCode。");
             }
 
             link = link.Replace("{userId}", user.Id.ToString());
@@ -117,10 +117,10 @@ namespace TuDou.Grace.Authorization.Users
         }
 
         /// <summary>
-        /// Sends a password reset link to user's email.
+        /// 发送密码重置链接到用户的电子邮件。
         /// </summary>
-        /// <param name="user">User</param>
-        /// <param name="link">Reset link</param>
+        /// <param name="user">用户</param>
+        /// <param name="link">重置链接</param>
         public async Task SendPasswordResetLinkAsync(User user, string link = null)
         {
             if (user.PasswordResetCode.IsNullOrEmpty())
@@ -346,7 +346,7 @@ namespace TuDou.Grace.Authorization.Users
         }
 
         /// <summary>
-        /// Returns link with encrypted parameters
+        /// 返回带有加密参数的链接
         /// </summary>
         /// <param name="link"></param>
         /// <param name="encrptedParameterName"></param>

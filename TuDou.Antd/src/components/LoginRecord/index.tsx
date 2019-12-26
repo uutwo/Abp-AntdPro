@@ -1,10 +1,11 @@
-import AppComponentBase from "../AppComponentBase";
 import React from 'react';
-import { Card, Modal } from "antd";
-import { connect } from "dva";
-import { ConnectState } from "@/models/connect";
-import { ListResultDto } from "@/shared/dtos/listResultDto";
-import { UserLoginAttemptDto } from "@/services/userLogin/dtos/userLoginAttemptDto";
+import { Card, Modal } from 'antd';
+import { connect } from 'dva';
+import AppComponentBase from '../AppComponentBase';
+import { ConnectState } from '@/models/connect';
+import { ListResultDto } from '@/shared/dtos/listResultDto';
+import { UserLoginAttemptDto } from '@/services/userLogin/dtos/userLoginAttemptDto';
+
 export interface LoginRecordProps{
     visible:boolean;
     onCancel:()=>void;
@@ -12,13 +13,13 @@ export interface LoginRecordProps{
 }
 class LoginRecord extends AppComponentBase<LoginRecordProps> {
     render() {
-        const {visible,onCancel,userLoginRecords} = this.props;
+        const { visible, onCancel, userLoginRecords } = this.props;
         return (
             <div>
-                <Modal width={'50%'}  footer={null} onCancel={onCancel} visible={visible}>
+                <Modal width="50%" footer={null} onCancel={onCancel} visible={visible}>
                   {
-                    userLoginRecords==undefined?null:userLoginRecords.items.map(item=>{
-                       return <Card style={{border: '1px solid #0abb87',color:'#0abb87',width: '100%',fontSize:14,marginBottom:10 }}>
+                    userLoginRecords === undefined ? null : userLoginRecords.items.map(item => {
+                       return <Card key={item.creationTime} style={{ border: '1px solid #0abb87', color: '#0abb87', width: '100%', fontSize: 14, marginBottom: 10 }}>
                            <p>{item.clientIpAddress}</p>
                            <p>{item.clientName}</p>
                            <p>{item.creationTime}</p>

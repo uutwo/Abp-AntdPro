@@ -18,7 +18,6 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@abp/*": [ "../node_modules/abp-ng2-module/dist/src/*" ],
       "@app/*": [ "./app/*" ],
     }
   },

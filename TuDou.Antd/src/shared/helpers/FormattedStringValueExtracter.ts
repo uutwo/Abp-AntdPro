@@ -1,7 +1,7 @@
 
 class ExtractionResult {
-
     public IsMatch: boolean;
+
     public Matches: any[];
 
 
@@ -17,7 +17,6 @@ enum FormatStringTokenType {
 }
 
 class FormatStringToken {
-
     public Text: string;
 
     public Type: FormatStringTokenType;
@@ -26,50 +25,52 @@ class FormatStringToken {
         this.Text = text;
         this.Type = type;
     }
-
 }
 
 class FormatStringTokenizer {
-
-    Tokenize(format: string, includeBracketsForDynamicValues: boolean = false): FormatStringToken[] {
+    Tokenize(format: string,
+       includeBracketsForDynamicValues: boolean = false): FormatStringToken[] {
         const tokens: FormatStringToken[] = [];
 
         let currentText = '';
         let inDynamicValue = false;
 
-        for (let i = 0; i < format.length; i++) {
+        for (let i = 0; i < format.length; i += 1) {
             const c = format[i];
             switch (c) {
                 case '{':
                     if (inDynamicValue) {
-                        throw new Error('Incorrect syntax at char ' + i + '! format string can not contain nested dynamic value expression!');
+                        throw new Error(`Incorrect syntax at char ${i}! format string can not contain nested dynamic value expression!`);
                     }
 
                     inDynamicValue = true;
 
                     if (currentText.length > 0) {
-                        tokens.push(new FormatStringToken(currentText, FormatStringTokenType.ConstantText));
+                        tokens.push(new FormatStringToken(currentText,
+                         FormatStringTokenType.ConstantText));
                         currentText = '';
                     }
 
                     break;
                 case '}':
                     if (!inDynamicValue) {
-                        throw new Error(('Incorrect syntax at char ' + i + '! These is no opening brackets for the closing bracket }.'));
+                        throw new Error((`Incorrect syntax at char ${i}! These is no opening brackets for the closing bracket }.`));
                     }
 
                     inDynamicValue = false;
 
                     if (currentText.length <= 0) {
-                        throw new Error(('Incorrect syntax at char ' + i + '! Brackets does not containt any chars.'));
+                        throw new Error((`Incorrect syntax at char ${i}! Brackets does not containt any chars.`));
                     }
 
+                    // eslint-disable-next-line no-case-declarations
                     let dynamicValue = currentText;
                     if (includeBracketsForDynamicValues) {
-                        dynamicValue = '{' + dynamicValue + '}';
+                        dynamicValue = `{${dynamicValue}}`;
                     }
 
-                    tokens.push(new FormatStringToken(dynamicValue, FormatStringTokenType.DynamicValue));
+                    tokens.push(new FormatStringToken(dynamicValue,
+                       FormatStringTokenType.DynamicValue));
                     currentText = '';
 
                     break;
@@ -89,11 +90,9 @@ class FormatStringTokenizer {
 
         return tokens;
     }
-
 }
 
 export class FormattedStringValueExtracter {
-
     Extract(str: string, format: string): ExtractionResult {
         if (str === format) {
             return new ExtractionResult(true);
@@ -106,7 +105,7 @@ export class FormattedStringValueExtracter {
 
         const result = new ExtractionResult(true);
 
-        for (let i = 0; i < formatTokens.length; i++) {
+        for (let i = 0; i < formatTokens.length; i += 1) {
             const currentToken = formatTokens[i];
             const previousToken = i > 0 ? formatTokens[i - 1] : null;
 
@@ -116,8 +115,8 @@ export class FormattedStringValueExtracter {
                         result.IsMatch = false;
                         return result;
                     }
-
-                    str = str.substr(currentToken.Text.length, str.length - currentToken.Text.length);
+                    str = str.substr(currentToken.Text.length,
+                       str.length - currentToken.Text.length);
                 } else {
                     const matchIndex = str.indexOf(currentToken.Text);
                     if (matchIndex < 0) {
@@ -126,7 +125,8 @@ export class FormattedStringValueExtracter {
                     }
 
 
-                    result.Matches.push({ name: previousToken.Text, value: str.substr(0, matchIndex) });
+                    result.Matches.push({ name: previousToken!.Text,
+                       value: str.substr(0, matchIndex) });
                     str = str.substring(0, matchIndex + currentToken.Text.length);
                 }
             }
@@ -147,7 +147,7 @@ export class FormattedStringValueExtracter {
         }
 
         const values = [];
-        for (let i = 0; i < result.Matches.length; i++) {
+        for (let i = 0; i < result.Matches.length; i += 1) {
             values.push(result.Matches[i].value);
         }
 

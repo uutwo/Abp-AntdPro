@@ -51,7 +51,7 @@ namespace TuDou.Grace.Install
         {
             if (CheckDatabaseInternal())
             {
-                throw new UserFriendlyException("Setup process is already done.");
+                throw new UserFriendlyException("安装过程已经完成。");
             }
 
             SetConnectionString(input.ConnectionString);

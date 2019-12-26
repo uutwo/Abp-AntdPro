@@ -1,14 +1,13 @@
-import request from "@/utils/request";
-import { AuthenticateModel } from "./dtos/authenticateModel";
+import request from '@/utils/request';
+import { AuthenticateModel } from './dtos/authenticateModel';
 
 
-class TokenAuthService{
+class TokenAuthService {
     async authenticate(input: AuthenticateModel) {
         return request('api/TokenAuth/Authenticate', {
-            method: "POST",
-            data: input
+            method: 'POST',
+            data: input,
         });
-    };
-
+    }
 }
-export default new  TokenAuthService();
+export default new TokenAuthService();

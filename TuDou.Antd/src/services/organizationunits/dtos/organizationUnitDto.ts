@@ -1,4 +1,5 @@
-import { AuditedEntityDto } from "@/shared/dtos/auditedEntityDto";
+import AuditedEntityDto from '@/shared/dtos/auditedEntityDto';
+
 
 export interface OrganizationUnitDto extends AuditedEntityDto<number>{
     parentId:number;

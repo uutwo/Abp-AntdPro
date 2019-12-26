@@ -82,7 +82,7 @@ namespace TuDou.Grace.Chat
             var userId = AbpSession.GetUserId();
             var tenantId = AbpSession.TenantId;
 
-            // receiver messages
+            // 接收消息
             var messages = await _chatMessageRepository
                  .GetAll()
                  .Where(m =>
@@ -102,7 +102,7 @@ namespace TuDou.Grace.Chat
                 message.ChangeReadState(ChatMessageReadState.Read);
             }
 
-            // sender messages
+            // 发送消息
             using (CurrentUnitOfWork.SetTenantId(input.TenantId))
             {
                 var reverseMessages = await _chatMessageRepository.GetAll()

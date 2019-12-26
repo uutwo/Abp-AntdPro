@@ -19,6 +19,7 @@ import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 import AppComponentBase from '@/components/AppComponentBase';
 import { SignalRHelper } from '@/shared/helpers/SignalRHelper';
+
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -72,19 +73,13 @@ class BasicLayout extends AppComponentBase<BasicLayoutProps> {
   /**
    * constructor
    */
-  componentWillMount(){
+ async componentWillMount() {
     SignalRHelper.initSignalR(() => {
       abp.signalr.connect();
      });
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     if (dispatch) {
-      dispatch({
-        type: 'global/getApplicationSession',
-      });
-      dispatch({
-        type: 'global/initAbp',
-      });
-      dispatch({
+      await dispatch({
         type: 'settings/getSetting',
       });
     }
@@ -94,7 +89,7 @@ class BasicLayout extends AppComponentBase<BasicLayoutProps> {
    */
 
    handleMenuCollapse = (payload: boolean): void => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
         type: 'global/changeLayoutCollapsed',
@@ -102,7 +97,8 @@ class BasicLayout extends AppComponentBase<BasicLayoutProps> {
       });
     }
   };
-  render(){
+
+  render() {
     const { children, settings } = this.props;
     return (
       <ProLayout

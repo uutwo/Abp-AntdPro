@@ -35,7 +35,7 @@ namespace TuDou.Grace.Configuration.Host
             _settingDefinitionManager = settingDefinitionManager;
         }
 
-        #region Get Settings
+        #region 获取设置
 
         public async Task<HostSettingsEditDto> GetAllSettings()
         {
@@ -188,7 +188,7 @@ namespace TuDou.Grace.Configuration.Host
 
         #endregion
 
-        #region Update Settings
+        #region 更新设置
 
         public async Task UpdateAllSettings(HostSettingsEditDto input)
         {

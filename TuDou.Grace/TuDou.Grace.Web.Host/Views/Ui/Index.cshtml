@@ -1,7 +1,11 @@
 ﻿@using TuDou.Grace.Authorization
 @using TuDou.Grace.Web.Common
+@using Abp.Web.Security.AntiForgery
 @model TuDou.Grace.Web.Models.Ui.HomePageModel
-
+@inject IAbpAntiForgeryManager AbpAntiForgeryManager
+@{
+    AbpAntiForgeryManager.SetCookie(Context);
+}
 <head>
     <title>Grace</title>
 

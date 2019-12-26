@@ -4,11 +4,11 @@ using TuDou.Grace.Authorization.Users;
 namespace TuDou.Grace.Authorization.Roles
 {
     /// <summary>
-    /// Represents a role in the system.
+    /// 表示系统中的一个角色。
     /// </summary>
     public class Role : AbpRole<User>
     {
-        //Can add application specific role properties here
+        //可以在这里添加应用程序特定的角色属性
 
         public Role()
         {

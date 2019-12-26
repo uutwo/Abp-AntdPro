@@ -1,5 +1,9 @@
-﻿@model TuDou.Grace.Web.Models.Ui.LoginModel
-
+﻿@using Abp.Web.Security.AntiForgery
+@model TuDou.Grace.Web.Models.Ui.LoginModel
+@inject IAbpAntiForgeryManager AbpAntiForgeryManager
+@{
+    AbpAntiForgeryManager.SetCookie(Context);
+}
 <head>
     <title>Grace</title>
 
@@ -8,6 +12,7 @@
 <div class="login-form">
     <h1>@L("LogIn")</h1>
     <form method="post">
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
         <div class="login-form-row">
             <label for="TenancyName">@L("TenancyName")</label>
             <input type="text" id="TenancyName" name="TenancyName" placeholder="@L("TenancyName")">

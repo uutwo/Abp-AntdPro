@@ -1,7 +1,7 @@
 const RouterConfig = require('../../config/config').default.routes;
 const { uniq } = require('lodash');
 
-const BASE_URL = `http://localhost:${process.env.PORT || 8000}`;
+const BASE_URL = `http://127.0.0.1:${process.env.PORT || 8000}`;
 
 function formatter(routes, parentPath = '') {
   const fixedParentPath = parentPath.replace(/\/{1,}/g, '/');
@@ -32,7 +32,6 @@ describe('Ant Design Pro E2E test', () => {
   };
 
   const routers = formatter(RouterConfig);
-  console.log('routers', routers);
   routers.forEach(route => {
     it(`test pages ${route}`, testPage(route));
   });

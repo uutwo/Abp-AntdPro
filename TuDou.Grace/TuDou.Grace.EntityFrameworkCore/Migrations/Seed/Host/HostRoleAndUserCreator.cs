@@ -30,7 +30,7 @@ namespace TuDou.Grace.Migrations.Seed.Host
 
         private void CreateHostRoleAndUsers()
         {
-            //Admin role for host
+            //主机角色
 
             var adminRoleForHost = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == null && r.Name == StaticRoleNames.Host.Admin);
             if (adminRoleForHost == null)
@@ -39,7 +39,7 @@ namespace TuDou.Grace.Migrations.Seed.Host
                 _context.SaveChanges();
             }
 
-            //admin user for host
+            //主机管理员
 
             var adminUserForHost = _context.Users.IgnoreQueryFilters().FirstOrDefault(u => u.TenantId == null && u.UserName == AbpUserBase.AdminUserName);
             if (adminUserForHost == null)
@@ -50,7 +50,7 @@ namespace TuDou.Grace.Migrations.Seed.Host
                     UserName = AbpUserBase.AdminUserName,
                     Name = "admin",
                     Surname = "admin",
-                    EmailAddress = "admin@aspnetzero.com",
+                    EmailAddress = "171372668@qq.com",
                     IsEmailConfirmed = true,
                     ShouldChangePasswordOnNextLogin = false,
                     IsActive = true,
@@ -62,11 +62,11 @@ namespace TuDou.Grace.Migrations.Seed.Host
                 adminUserForHost = _context.Users.Add(user).Entity;
                 _context.SaveChanges();
 
-                //Assign Admin role to admin user
+                //将管理角色分配给管理用户
                 _context.UserRoles.Add(new UserRole(null, adminUserForHost.Id, adminRoleForHost.Id));
                 _context.SaveChanges();
 
-                //User account of admin user
+                //管理员账户
                 _context.UserAccounts.Add(new UserAccount
                 {
                     TenantId = null,
@@ -77,7 +77,7 @@ namespace TuDou.Grace.Migrations.Seed.Host
 
                 _context.SaveChanges();
 
-                //Notification subscriptions
+                //通知订阅
                 _context.NotificationSubscriptions.Add(new NotificationSubscriptionInfo(SequentialGuidGenerator.Instance.Create(), null, adminUserForHost.Id, AppNotificationNames.NewTenantRegistered));
                 _context.NotificationSubscriptions.Add(new NotificationSubscriptionInfo(SequentialGuidGenerator.Instance.Create(), null, adminUserForHost.Id, AppNotificationNames.NewUserRegistered));
 

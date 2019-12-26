@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+
 export interface ApplicationInfoDto {
     version: string | undefined;
     releaseDate: moment.Moment | undefined;

@@ -13,7 +13,7 @@ namespace TuDou.Grace.Authorization
             switch (result)
             {
                 case AbpLoginResultType.Success:
-                    return new Exception("Don't call this method with a success result!");
+                    return new Exception("成功不要调用此方法!");
                 case AbpLoginResultType.InvalidUserNameOrEmailAddress:
                 case AbpLoginResultType.InvalidPassword:
                     return new UserFriendlyException(L("LoginFailed"), L("InvalidUserNameOrPassword"));
@@ -27,8 +27,8 @@ namespace TuDou.Grace.Authorization
                     return new UserFriendlyException(L("LoginFailed"), L("UserEmailIsNotConfirmedAndCanNotLogin"));
                 case AbpLoginResultType.LockedOut:
                     return new UserFriendlyException(L("LoginFailed"), L("UserLockedOutMessage"));
-                default: //Can not fall to default actually. But other result types can be added in the future and we may forget to handle it
-                    Logger.Warn("Unhandled login fail reason: " + result);
+                default: //实际上不能违约。但是将来可能会添加其他结果类型，我们可能会忘记处理它
+                    Logger.Warn("未处理登录失败原因:" + result);
                     return new UserFriendlyException(L("LoginFailed"));
             }
         }
@@ -38,7 +38,7 @@ namespace TuDou.Grace.Authorization
             switch (result)
             {
                 case AbpLoginResultType.Success:
-                    throw new Exception("Don't call this method with a success result!");
+                    throw new Exception("成功不要调用此方法");
                 case AbpLoginResultType.InvalidUserNameOrEmailAddress:
                 case AbpLoginResultType.InvalidPassword:
                     return L("InvalidUserNameOrPassword");
@@ -52,7 +52,7 @@ namespace TuDou.Grace.Authorization
                     return L("UserEmailIsNotConfirmedAndCanNotLogin");
                 case AbpLoginResultType.LockedOut:
                     return L("UserLockedOutMessage");
-                default: //Can not fall to default actually. But other result types can be added in the future and we may forget to handle it
+                default: //实际上不能违约。但是将来可能会添加其他结果类型，我们可能会忘记处理它
                     Logger.Warn("Unhandled login fail reason: " + result);
                     return L("LoginFailed");
             }

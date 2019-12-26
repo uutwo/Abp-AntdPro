@@ -1,6 +1,7 @@
-import { PagedRequestDto } from "@/shared/dtos/pagedRequestDto";
-import { EntityDto } from "@/shared/dtos/entityDto";
+import PagedRequestDto from '@/shared/dtos/pagedRequestDto';
+import EntityDto from '@/shared/dtos/entityDto';
 
-export interface GetOrganizationUnitUsersInput extends PagedRequestDto,EntityDto{
+
+export interface GetOrganizationUnitUsersInput extends PagedRequestDto, EntityDto{
     sorting?:string;
 }

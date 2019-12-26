@@ -1,4 +1,3 @@
-export interface ListResultDto<T> {
+export default interface ListResultDto<T> {
     items: T[];
 }
-  

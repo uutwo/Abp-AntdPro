@@ -4,18 +4,20 @@ import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { UserModelState } from './user';
-import { LoginModelType } from './login';
-import { UsersModelType } from './admin/users';
-import { RolesModelType, RolesModelState } from './admin/roles';
-import { OrganizationUnitsModelType, OrganizationUnitsModelState } from './admin/organizationUnits';
-import { LanguagesModelType, LanguagesModelState } from './admin/languages';
-import { AuditLogsModelType, AuditLogsModelState } from './admin/auditLogs';
-import { PermissionModelType, PermissionModelState } from './permission';
+import { RolesModelState } from './admin/roles';
+import { OrganizationUnitsModelState } from './admin/organizationUnits';
+import { LanguagesModelState } from './admin/languages';
+import { AuditLogsModelState } from './admin/auditLogs';
+import { PermissionModelState } from './permission';
 import { OrganizationUnitTreeModelState } from './organizationUnitTree';
 import { LoginState } from '@/pages/account/login';
 import { NotificationModelState } from './notification';
-export { GlobalModelState, SettingModelState, UserModelState };
+import { AccountModelState } from './account';
+import { ProfileModelState } from './profile';
+import { SettingsModelState } from './admin/settings';
+import { DataDictionaryModelState } from './admin/dataDicationary';
 
+export { GlobalModelState, SettingModelState, UserModelState };
 export interface Loading {
   global: boolean;
   effects: { [key: string]: boolean | undefined };
@@ -33,6 +35,10 @@ export interface Loading {
     permissions?:boolean;
     organizationUnitTree?:boolean;
     notification?:boolean;
+    account?:boolean;
+    profile?:boolean;
+    adminSettings?:boolean;
+    dataDictionarys?:boolean;
   };
 }
 
@@ -50,6 +56,10 @@ export interface ConnectState {
   permissions:PermissionModelState;
   notification:NotificationModelState;
   organizationUnitTree:OrganizationUnitTreeModelState;
+  account:AccountModelState;
+  profile:ProfileModelState;
+  adminSettings:SettingsModelState;
+  dataDictionarys: DataDictionaryModelState;
 }
 
 export interface Route extends MenuDataItem {

@@ -1,21 +1,20 @@
-import AppComponentBase from "@/components/AppComponentBase";
+import AppComponentBase from '@/components/AppComponentBase';
 import React, { Fragment } from 'react';
-import { Card, Table, Button, Tag, Dropdown, Menu, Icon, Input, Row, Col, Modal, Select } from "antd";
-import styles from './index.less';
+import { Card, Table, Button, Tag, Dropdown, Menu, Icon, Input, Row, Col, Modal, Select } from 'antd';
 import * as _ from 'lodash';
-import { PageHeaderWrapper } from "@ant-design/pro-layout";
-import { connect } from "dva";
-import { ConnectState } from "@/models/connect";
-import { AnyAction, Dispatch } from "redux";
-import { GetUsersInput } from "@/services/users/dtos/getUsersInput";
-import { UsersStateType } from "@/models/admin/users";
-import { PaginationConfig } from "antd/lib/table";
-import CreateOrUpdateUser from "./components/createOrUpdateUser";
-import { EntityDto } from './../../../shared/dtos/entityDto';
-import { OrganizationUnitTreeModelState } from './../../../models/organizationUnitTree';
-import { PermissionModelState } from "@/models/permission";
-import PermissionsTree from "@/components/PermissionsTree";
-import { ListResultDto } from '@/shared/dtos/listResultDto';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { connect } from 'dva';
+import { ConnectState } from '@/models/connect';
+import { AnyAction, Dispatch } from 'redux';
+import { GetUsersInput } from '@/services/users/dtos/getUsersInput';
+import { UsersStateType } from '@/models/admin/users';
+import { PaginationConfig } from 'antd/lib/table';
+import CreateOrUpdateUser from './components/createOrUpdateUser';
+import EntityDto from '../../../shared/dtos/entityDto';
+import { OrganizationUnitTreeModelState } from '../../../models/organizationUnitTree';
+import { PermissionModelState } from '@/models/permission';
+import PermissionsTree from '@/components/PermissionsTree';
+import ListResultDto from '@/shared/dtos/listResultDto';
 import { RoleListDto } from '@/services/roles/dtos/roleListDto';
 
 
@@ -37,14 +36,15 @@ interface UsersStates {
 const { Search } = Input;
 const { Option } = Select;
 @connect(({ users, roles, organizationUnitTree, permissions, loading }: ConnectState) => ({
-  users: users,
-  permissions: permissions,
+  users,
+  permissions,
   roles: roles.roles,
-  organizationUnitTree: organizationUnitTree,
+  organizationUnitTree,
   loading: loading.effects['users/getUsers'],
 }))
 class Users extends AppComponentBase<UsersProps, UsersStates> {
   modalRef: any = React.createRef();
+
   state = {
     request: {
       filter: '',
@@ -56,19 +56,22 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
     formIsOpen: false,
     userId: null,
     selectPermissionModalVisible: false,
-    createOrUpdateModalVisible: false
+    createOrUpdateModalVisible: false,
   }
+
   async componentDidMount() {
     await this.getTableData();
   }
+
   // 获取表格数据
   async getTableData() {
     const { dispatch } = this.props;
     await dispatch({
       type: 'users/getUsers',
-      payload: this.state.request
+      payload: this.state.request,
     });
   }
+
   // modal 确认按钮处理
   createOrUpdateModalOkHandler = () => {
     const { validateFields } = this.modalRef.current!;
@@ -81,158 +84,174 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
         };
         delete user.roles;
         dispatch({
-          type: "users/createOrUpdateUser",
+          type: 'users/createOrUpdateUser',
           payload: {
-            user: user,
+            user,
             assignedRoleNames: values.roles,
-            organizationUnits: this.props.organizationUnitTree.selectedOrganizationUnits
-          }
+            organizationUnits: this.props.organizationUnitTree.selectedOrganizationUnits,
+          },
         })
       }
     });
     this.createOrUpdateModal();
     this.notity.success({
-      message: '操作成功!'
+      message: '操作成功!',
     })
   }
+
   async createOrUpdateModalOpen(userId: number | null) {
     await this.setState({
-      userId
+      userId,
     });
     const { dispatch } = this.props;
     await dispatch({
       type: 'users/getUserForEdit',
       payload: {
-        id: userId
-      }
+        id: userId,
+      },
     });
     const { setFieldsValue } = this.modalRef.current!;
     await setFieldsValue({
       ...this.props.users.editUser!.user,
-      roles: _.map(_.filter(this.props.users.editUser!.roles, 'isAssigned'), "roleName")
+      roles: _.map(_.filter(this.props.users.editUser!.roles, 'isAssigned'), 'roleName'),
     })
 
     const { memberedOrganizationUnits, allOrganizationUnits } = this.props.users.editUser!;
-    const selectOrganizationUnits = _.filter(allOrganizationUnits, function (o) { return memberedOrganizationUnits!.includes(o.code); })
+    const selectOrganizationUnits = _.filter(allOrganizationUnits,
+      o => memberedOrganizationUnits!.includes(o.code))
     await dispatch({
       type: 'organizationUnitTree/selectOrganizationUnits',
-      payload: _.map(selectOrganizationUnits, 'id')
+      payload: _.map(selectOrganizationUnits, 'id'),
     })
 
     this.createOrUpdateModal();
   }
+
   // 打开或关闭modal
   createOrUpdateModal = () => {
-    this.setState({
-      createOrUpdateModalVisible: !this.state.createOrUpdateModalVisible
-    })
+    this.setState(state => ({
+      createOrUpdateModalVisible: !state.createOrUpdateModalVisible,
+    }))
   }
+
   handleTableChange = (pagination: PaginationConfig) => {
-    this.setState({
+    this.setState(state => ({
       request: {
-        ...this.state.request,
-        skipCount: (pagination.current! - 1) * this.state.request.maxResultCount!
-      }
-    }, () => {
+        ...state.request,
+        skipCount: (pagination.current! - 1) * state.request.maxResultCount!,
+      },
+    }), () => {
       this.getTableData();
     })
-
   }
+
   async deleteUser(input: EntityDto) {
     const { dispatch } = this.props;
     await dispatch({
       type: 'users/deleteUser',
-      payload: input
+      payload: input,
     })
     this.notity.success({
       message: '操作成功!',
-      description: '删除用户成功!'
+      description: '删除用户成功!',
     })
   }
+
   formOpenOrClose = () => {
-    this.setState({
-      formIsOpen: !this.state.formIsOpen
-     }, () => {
+    this.setState(state => ({
+      formIsOpen: !state.formIsOpen,
+    }), () => {
       if (this.state.formIsOpen) {
         const { dispatch } = this.props;
         dispatch({
-          type: "roles/getRoles",
-          payload: undefined
+          type: 'roles/getRoles',
+          payload: undefined,
         })
       }
     })
   }
+
   async unlockUser(input: EntityDto) {
     const { dispatch } = this.props;
     await dispatch({
       type: 'users/unlockUser',
-      payload: input
+      payload: input,
     })
     await this.getTableData();
     this.notity.success({
       message: '操作成功!',
-      description: '解锁用户成功!'
+      description: '解锁用户成功!',
     })
   }
+
   exportUserHandler = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'users/getUsersToExcel',
-      payload: this.state.request
+      payload: this.state.request,
     })
+  }
 
-  }
   selectPermissionModal = () => {
-    this.setState({
-      selectPermissionModalVisible: !this.state.selectPermissionModalVisible
-    })
+    this.setState(state => ({
+      selectPermissionModalVisible: state.selectPermissionModalVisible,
+    }))
   }
+
   selectPermissionModalOpen = async () => {
     const { dispatch } = this.props;
     await dispatch({
-      type: "permissions/selectPermissionsTree",
-      payload: this.state.request.permissions
+      type: 'permissions/selectPermissionsTree',
+      payload: this.state.request.permissions,
     })
     this.selectPermissionModal();
   }
-  rolesSelect=(value:any)=>{
-     this.setState({
-       request:{
-         ...this.state.request,
-         role:value
-       }
-     })
+
+  rolesSelect = (value: any) => {
+    this.setState(state => ({
+      request: {
+        ...state.request,
+        role: value,
+      },
+    }))
   }
+
   selectPermissionModalOk = () => {
-    this.setState({
+    this.setState(state => ({
       request: {
-        ...this.state.request,
-        permissions: this.props.permissions.selectedPermissionsName!
-      }
-    }, () => {
+        ...state.request,
+        permissions: this.props.permissions.selectedPermissionsName!,
+      },
+    }), () => {
       this.getTableData();
     })
     this.selectPermissionModal();
   }
+
   searchHandler = (value: any) => {
-    this.setState({
+    this.setState(state => ({
       request: {
-        ...this.state.request,
+        ...state.request,
         filter: value,
-      }
-    }, () => {
+      },
+    }), () => {
       this.getTableData();
     })
   }
+
   public render() {
     const { loading, roles } = this.props;
 
     const { users, editUser } = this.props.users;
-    const { createOrUpdateModalVisible, userId, formIsOpen, selectPermissionModalVisible, request } = this.state;
+    const {
+      createOrUpdateModalVisible, userId, formIsOpen, selectPermissionModalVisible, request,
+    } = this.state;
     const formRender = () => {
-      const triggerIconType = formIsOpen ? "caret-up" : "caret-down"
-      const triggerText = formIsOpen ? "隐藏高级过滤" : "显示高级过滤";
-      const trigger = () => <a onClick={this.formOpenOrClose}><Icon type={triggerIconType} />{triggerText}</a>;
+      const triggerIconType = formIsOpen ? 'caret-up' : 'caret-down'
+      const triggerText = formIsOpen ? '隐藏高级过滤' : '显示高级过滤';
+      const trigger = () => <a onClick={this.formOpenOrClose}>
+        <Icon type={triggerIconType} />{triggerText}
+      </a>;
       return (
         <Fragment>
           <Row>
@@ -254,9 +273,9 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
                 <Select onSelect={this.rolesSelect} className="selectWidth">
                   {
                     roles === undefined ? null : (
-                      roles.items.map((item: RoleListDto) => {
-                       return <Option key={item.id} value={item.id}>{item.displayName}</Option>
-                      })
+                      roles.items.map((item: RoleListDto) => <Option
+                        key={item.id} value={item.id}>{item.displayName}
+                      </Option>)
                     )
                   }
                 </Select>
@@ -274,33 +293,32 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        render: (text: any, record: any, index: number) => {
-          return <Fragment>
-            <Dropdown overlay={
-              <Menu>
-                {/*<Menu.Item>
+        render: (text: any, record: any) => <Fragment>
+          <Dropdown overlay={
+            <Menu>
+              {/* <Menu.Item>
                     使用这个用户登录
-                </Menu.Item>*/}
-                <Menu.Item onClick={() => { this.createOrUpdateModalOpen(record.id) }}>
-                  修改
+                </Menu.Item> */}
+              <Menu.Item onClick={() => { this.createOrUpdateModalOpen(record.id) }}>
+                修改
               </Menu.Item>
-                <Menu.Item>
 
-                  权限
+              <Menu.Item>
+
+                权限
               </Menu.Item>
                 <Menu.Item onClick={async () => { await this.unlockUser({ id: record.id }) }}>
                   解锁
-              </Menu.Item>
+                </Menu.Item>
                 <Menu.Item onClick={async () => { await this.deleteUser({ id: record.id }) }}>
                   删除
                 </Menu.Item>
-              </Menu>
-            } trigger={['click']} placement="bottomLeft">
+            </Menu>
+          } trigger={['click']} placement="bottomLeft">
 
-              <Button icon="setting" type="primary">操作<Icon type="down" /></Button>
-            </Dropdown>
-          </Fragment>
-        }
+            <Button icon="setting" type="primary">操作<Icon type="down" /></Button>
+          </Dropdown>
+        </Fragment>,
       },
       {
         title: '用户名',
@@ -321,9 +339,7 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
         title: '角色',
         dataIndex: 'roles',
         key: 'roles',
-        render: (text: any, record: any, index: number) => {
-          return <div>{text[0].roleName}</div>
-        }
+        render: (text: any) => <div>{text[0].roleName}</div>,
       },
       {
         title: '邮箱地址',
@@ -334,9 +350,7 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
         title: '邮箱地址确认',
         dataIndex: 'isEmailConfirmed',
         key: 'isEmailConfirmed',
-        render: (text: any, record: any, index: number) => {
-          return <div>{text ? <Tag color="#108ee9">是</Tag> : <Tag color="#f50">否</Tag>}</div>
-        }
+        render: (text: any) => <div>{text ? <Tag color="#108ee9">是</Tag> : <Tag color="#f50">否</Tag>}</div>,
       },
     ];
     function showPageTotal(total: number) {
@@ -358,8 +372,12 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
             bordered
             onChange={this.handleTableChange}
             rowKey="id"
-            dataSource={users == undefined ? [] : users.items}
-            pagination={{ showTotal: showPageTotal, pageSize: this.state.request.maxResultCount, total: users == undefined ? 0 : users.totalCount }}
+            dataSource={users === undefined ? [] : users.items}
+            pagination={{
+              showTotal: showPageTotal,
+              pageSize: this.state.request.maxResultCount,
+              total: users === undefined ? 0 : users.totalCount,
+            }}
             columns={columns} />
         </Card>
         <Modal
@@ -373,7 +391,7 @@ class Users extends AppComponentBase<UsersProps, UsersStates> {
         <CreateOrUpdateUser
           ref={this.modalRef}
           userId={userId}
-          roles={editUser == undefined ? [] : editUser.roles}
+          roles={editUser === undefined ? [] : editUser.roles}
           onOk={this.createOrUpdateModalOkHandler}
           visible={createOrUpdateModalVisible}
           onCancel={this.createOrUpdateModal} />

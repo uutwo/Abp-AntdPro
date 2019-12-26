@@ -23,9 +23,9 @@ using TuDou.Grace.Security;
 namespace TuDou.Grace.Authorization.Users
 {
     /// <summary>
-    /// User manager.
-    /// Used to implement domain logic for users.
-    /// Extends <see cref="AbpUserManager{TRole,TUser}"/>.
+    /// 用户管理器。
+    /// 用于为用户实现域逻辑。
+    /// 扩展 <see cref="AbpUserManager{TRole,TUser}"/>.
     /// </summary>
     public class UserManager : AbpUserManager<Role, User>
     {

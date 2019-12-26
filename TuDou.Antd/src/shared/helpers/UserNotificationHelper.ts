@@ -1,25 +1,26 @@
-import AppConsts from "@/lib/appconst";
-import { FormattedUserNotification } from "@/services/notification.ts/dtos/userNotification";
-import * as moment from 'moment';
+import AppConsts from '@/lib/appconst';
+import { FormattedUserNotification } from '@/services/notification/dtos/userNotification';
 import * as Push from 'push.js';
+
 class UserNotificationHelper {
   getUrl(userNotification: abp.notifications.IUserNotification): string {
+    // eslint-disable-next-line default-case
     switch (userNotification.notification.notificationName) {
       case 'App.NewUserRegistered':
-        return '/app/admin/users?filterText=' + userNotification.notification.data.properties.emailAddress;
+        return `/app/admin/users?filterText=${userNotification.notification.data.properties.emailAddress}`;
       case 'App.NewTenantRegistered':
-        return '/app/admin/tenants?filterText=' + userNotification.notification.data.properties.tenancyName;
+        return `/app/admin/tenants?filterText=${userNotification.notification.data.properties.tenancyName}`;
       case 'App.GdprDataPrepared':
-        return AppConsts.remoteServiceBaseUrl + '/File/DownloadBinaryFile?id=' + userNotification.notification.data.properties.binaryObjectId + '&contentType=application/zip&fileName=collectedData.zip';
+        return `${AppConsts.remoteServiceBaseUrl}/File/DownloadBinaryFile?id=${userNotification.notification.data.properties.binaryObjectId}&contentType=application/zip&fileName=collectedData.zip`;
       case 'App.DownloadInvalidImportUsers':
-        return AppConsts.remoteServiceBaseUrl + '/File/DownloadTempFile?fileToken=' + userNotification.notification.data.properties.fileToken + '&fileType=' + userNotification.notification.data.properties.fileType + '&fileName=' + userNotification.notification.data.properties.fileName;
-      //Add your custom notification names to navigate to a URL when user clicks to a notification.
+        return `${AppConsts.remoteServiceBaseUrl}/File/DownloadTempFile?fileToken=${userNotification.notification.data.properties.fileToken}&fileType=${userNotification.notification.data.properties.fileType}&fileName=${userNotification.notification.data.properties.fileName}`;
+      // Add your custom notification names to navigate to a URL when user clicks to a notification.
     }
 
-    //No url for this notification
+    // No url for this notification
     return '';
   }
-  /* PUBLIC functions ******************************************/
+  /* PUBLIC functions ***************************************** */
 
   getUiIconBySeverity(severity: abp.notifications.severity): string {
     switch (severity) {
@@ -36,8 +37,9 @@ class UserNotificationHelper {
         return 'fa fa-info';
     }
   }
+
   format(userNotification: abp.notifications.IUserNotification, truncateText?: boolean): FormattedUserNotification {
-    let formatted: FormattedUserNotification = {
+    const formatted: FormattedUserNotification = {
       userNotificationId: userNotification.id,
       text: abp.notifications.getFormattedMessageFromUserNotification(userNotification),
       time: new Date(userNotification.notification.creationTime).toLocaleDateString(),
@@ -46,7 +48,7 @@ class UserNotificationHelper {
       state: abp.notifications.getUserNotificationStateAsString(userNotification.state),
       data: userNotification.notification.data,
       url: this.getUrl(userNotification),
-      isUnread: userNotification.state === abp.notifications.userNotificationState.UNREAD
+      isUnread: userNotification.state === abp.notifications.userNotificationState.UNREAD,
     };
 
     if (truncateText || truncateText === undefined) {
@@ -55,30 +57,30 @@ class UserNotificationHelper {
 
     return formatted;
   }
-  show(userNotification: abp.notifications.IUserNotification): void {
 
-    //应用通知
+  show(userNotification: abp.notifications.IUserNotification): void {
+    // 应用通知
     abp.notifications.showUiNotifyForUserNotification(userNotification, {
-      'onclick': () => {
-        //Take action when user clicks to live toastr notification
-        let url = this.getUrl(userNotification);
+      onclick: () => {
+        // Take action when user clicks to live toastr notification
+        const url = this.getUrl(userNotification);
         if (url) {
-          location.href = url;
+          window.location.href = url;
         }
-      }
+      },
     });
 
-    //桌面通知
+    // 桌面通知
     Push.default.create('Grace', {
       body: this.format(userNotification).text,
-      icon: abp.appPath + 'assets/read.svg',
+      icon: `${abp.appPath}assets/read.svg`,
       timeout: 6000,
-      onClick: function () {
+      onClick () {
         window.focus();
-
-      }
+      },
     });
   }
+
   setAllAsRead(callback?: () => void): void {
 
   }

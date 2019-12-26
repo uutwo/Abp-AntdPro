@@ -3,6 +3,7 @@ import DocumentTitle from 'react-document-title';
 import Link from 'umi/link';
 import React from 'react';
 import { connect } from 'dva';
+import { Spin, Icon } from 'antd';
 import SelectLang from '@/components/SelectLang';
 import { ConnectProps, ConnectState } from '@/models/connect';
 import logo from '../assets/logo.svg';
@@ -10,15 +11,15 @@ import styles from './UserLayout.less';
 import AppComponentBase from '@/components/AppComponentBase';
 
 export interface UserLayoutProps extends ConnectProps {
+  isInitAbp:boolean
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
   };
 }
 
 class UserLayout extends AppComponentBase<UserLayoutProps> {
-
-  componentWillMount(){
-    const{dispatch} = this.props;
+  componentWillMount() {
+    const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
         type: 'global/initAbp',
@@ -28,11 +29,13 @@ class UserLayout extends AppComponentBase<UserLayoutProps> {
       });
     }
   }
-  render(){
+
+  render() {
+    const { isInitAbp } = this.props
     const {
       route = {
         routes: [],
-      }
+      },
     } = this.props;
     const { routes = [] } = route;
     const {
@@ -41,6 +44,7 @@ class UserLayout extends AppComponentBase<UserLayoutProps> {
         pathname: '',
       },
     } = this.props;
+    const loadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
     const { breadcrumb } = getMenuData(routes);
     return (
       <DocumentTitle
@@ -64,14 +68,13 @@ class UserLayout extends AppComponentBase<UserLayoutProps> {
               </div>
               <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
             </div>
-            {children}
+            {isInitAbp ? children : <div style={{ textAlign: 'center' }} ><Spin indicator={loadingIcon} /></div>}
           </div>
           <DefaultFooter />
         </div>
       </DocumentTitle>
     );
   }
-
-};
-
-export default connect(({ settings }: ConnectState) => ({ ...settings }))(UserLayout);
+}
+export default connect(({ settings, global }: ConnectState) =>
+ ({ isInitAbp: global.isInitAbp, ...settings }))(UserLayout);

@@ -1,9 +1,9 @@
-import { Reducer } from "redux";
-import { Effect } from "dva";
+import { Reducer } from 'redux';
+import { Effect } from 'dva';
 import RolesService from '@/services/roles/roles'
-import { RoleListDto } from "@/services/roles/dtos/roleListDto";
-import { ListResultDto } from "@/shared/dtos/listResultDto";
-import { GetRoleForEditOutput } from "@/services/roles/dtos/getRoleForEditOutput";
+import { RoleListDto } from '@/services/roles/dtos/roleListDto';
+import ListResultDto from '@/shared/dtos/listResultDto';
+import { GetRoleForEditOutput } from '@/services/roles/dtos/getRoleForEditOutput';
 
 export interface RolesModelState {
   roles?: ListResultDto<RoleListDto>;
@@ -27,55 +27,55 @@ export interface RolesModelType {
 const Model: RolesModelType = {
   namespace: 'roles',
   state: {
-    roles: undefined
+    roles: undefined,
   },
   effects: {
     *getRoles({ payload }, { call, put }) {
       const response = yield call(RolesService.getRoles, payload)
       yield put({
         type: 'saveRoles',
-        payload: response.result
+        payload: response.result,
       })
     },
     *getRoleForEdit({ payload }, { call, put }) {
       const response = yield call(RolesService.getRoleForEdit, payload)
       yield put({
         type: 'saveEditRole',
-        payload: response.result
+        payload: response.result,
       })
     },
-    *createOrUpdateRole({ payload }, { call, put }) {
+    *createOrUpdateRole({ payload }, { call }) {
       yield call(RolesService.createOrUpdateRole, payload)
     },
     *deleteRole({ payload }, { call, put }) {
       yield call(RolesService.deleteRole, payload)
       yield put({
         type: 'saveDeleteRole',
-        payload: payload
+        payload,
       })
-    }
+    },
   },
   reducers: {
     saveEditRole(state, { payload }) {
       return ({
         ...state,
-        editRole: payload
+        editRole: payload,
       })
     },
     saveRoles(state, { payload }) {
       return ({
         ...state,
-        roles: payload
+        roles: payload,
       })
     },
     saveDeleteRole(state, { payload }) {
       return ({
         ...state,
         roles: {
-          items:state!.roles!.items.filter(t=>t.id!==payload)
-        }
+          items: state!.roles!.items.filter(t => t.id !== payload),
+        },
       })
-    }
-  }
+    },
+  },
 }
 export default Model;

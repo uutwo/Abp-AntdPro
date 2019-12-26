@@ -44,7 +44,7 @@ namespace TuDou.Grace.Chat.Exporting
                         _ => _.CreationTime
                     );
 
-                    //Formatting cells
+                    //格式化单元格
                     var timeColumn = sheet.Column(5);
                     timeColumn.Style.Numberformat.Format = "yyyy-mm-dd hh:mm:ss";
                 });

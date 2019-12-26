@@ -65,6 +65,9 @@ namespace TuDou.Grace.Web.Startup
 
             if (bool.Parse(_appConfiguration["Authentication:OpenId:IsEnabled"]))
             {
+                var jsonClaimMappings = new List<JsonClaimMap>();
+                _appConfiguration.GetSection("Authentication:OpenId:ClaimsMapping").Bind(jsonClaimMappings);
+
                 externalAuthConfiguration.Providers.Add(
                     new ExternalLoginProviderInfo(
                         OpenIdConnectAuthProviderApi.Name,
@@ -76,7 +79,8 @@ namespace TuDou.Grace.Web.Startup
                             {"Authority", _appConfiguration["Authentication:OpenId:Authority"]},
                             {"LoginUrl",_appConfiguration["Authentication:OpenId:LoginUrl"]},
                             {"ValidateIssuer",_appConfiguration["Authentication:OpenId:ValidateIssuer"]}
-                        }
+                        },
+                        jsonClaimMappings
                     )
                 );
             }

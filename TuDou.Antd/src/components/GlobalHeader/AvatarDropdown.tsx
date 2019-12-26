@@ -14,13 +14,8 @@ export interface GlobalHeaderRightProps extends ConnectProps {
   user?: CurrentUser;
   menu?: boolean;
 }
-export interface GlobalHeaderRightStates{
-  loginRecordModalVisible:boolean;
-}
+
 class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
-  state={
-    loginRecordModalVisible:true
-  }
   onMenuClick = (event: ClickParam) => {
     const { key } = event;
 
@@ -33,18 +28,19 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       }
       return;
     }
-    if(key==="loginRecent"){
-      const {dispatch} = this.props;
+    if (key === 'loginRecent') {
+      const { dispatch } = this.props;
       if (dispatch) {
       dispatch!({
-        type:'global/changeRecentUserLoginModalState',
-        payload:true
+        type: 'global/changeRecentUserLoginModalState',
+        payload: true,
       })
     }
       return;
     }
     router.push(`/account/${key}`);
   };
+
   render(): React.ReactNode {
     const { user = { avatar: '', name: '' }, menu } = this.props;
     const menuHeaderDropdown = (

@@ -1,4 +1,4 @@
-import { ThemeSettingsDto } from "../theme/themeSettingsDto";
+import { ThemeSettingsDto } from '../theme/themeSettingsDto';
 
 export interface UiCustomizationSettingsDto {
     baseSettings: ThemeSettingsDto | undefined;

@@ -1,4 +1,5 @@
-export default function getCurrentClockProvider(currentProviderName: string): abp.timing.IClockProvider {
+export default function getCurrentClockProvider
+(currentProviderName: string): abp.timing.IClockProvider {
     if (currentProviderName === 'unspecifiedClockProvider') {
         return abp.timing.unspecifiedClockProvider;
     }

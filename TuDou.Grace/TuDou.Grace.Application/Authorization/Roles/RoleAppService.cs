@@ -13,7 +13,7 @@ using TuDou.Grace.Authorization.Roles.Dto;
 namespace TuDou.Grace.Authorization.Roles
 {
     /// <summary>
-    /// Application service that is used by 'role management' page.
+    /// “角色管理”页使用的应用程序服务。
     /// </summary>
     [AbpAuthorize(AppPermissions.Pages_Administration_Roles)]
     public class RoleAppService : GraceAppServiceBase, IRoleAppService
@@ -126,7 +126,7 @@ namespace TuDou.Grace.Authorization.Roles
         {
             var role = new Role(AbpSession.TenantId, input.Role.DisplayName) { IsDefault = input.Role.IsDefault };
             CheckErrors(await _roleManager.CreateAsync(role));
-            await CurrentUnitOfWork.SaveChangesAsync(); //It's done to get Id of the role.
+            await CurrentUnitOfWork.SaveChangesAsync(); //用来获取角色的Id。
             await UpdateGrantedPermissionsAsync(role, input.GrantedPermissionNames);
         }
 

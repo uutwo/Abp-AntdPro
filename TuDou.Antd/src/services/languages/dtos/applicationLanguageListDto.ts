@@ -1,4 +1,4 @@
-import { FullAuditedEntityDto } from "@/shared/dtos/fullAuditedEntityDto";
+import FullAuditedEntityDto from '@/shared/dtos/fullAuditedEntityDto';
 
 export interface ApplicationLanguageListDto extends FullAuditedEntityDto{
     tenantId:number;

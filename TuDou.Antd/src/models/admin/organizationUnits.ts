@@ -1,12 +1,12 @@
-import { Reducer } from "redux";
-import { Effect } from "dva";
+import { Reducer } from 'redux';
+import { Effect } from 'dva';
 import OrganizationUnitsService from '@/services/organizationunits/organizationunits'
-import { ListResultDto } from "@/shared/dtos/listResultDto";
-import { OrganizationUnitDto } from "@/services/organizationunits/dtos/organizationUnitDto";
-import { PagedResultDto } from "@/shared/dtos/pagedResultDto";
-import { OrganizationUnitUserListDto } from "@/services/organizationunits/dtos/organizationUnitUserListDto";
-import { OrganizationUnitRoleListDto } from "@/services/organizationunits/dtos/organizationUnitRoleListDto";
-import NameValueDto from "@/shared/dtos/nameValueDto";
+import { OrganizationUnitDto } from '@/services/organizationunits/dtos/organizationUnitDto';
+import { OrganizationUnitUserListDto } from '@/services/organizationunits/dtos/organizationUnitUserListDto';
+import { OrganizationUnitRoleListDto } from '@/services/organizationunits/dtos/organizationUnitRoleListDto';
+import NameValueDto from '@/shared/dtos/nameValueDto';
+import PagedResultDto from '@/shared/dtos/pagedResultDto';
+import ListResultDto from '@/shared/dtos/listResultDto';
 
 export interface OrganizationUnitsModelState {
   organizationUnits?: ListResultDto<OrganizationUnitDto>;
@@ -57,89 +57,88 @@ const Model: OrganizationUnitsModelType = {
     organizationUnits: undefined,
     organizationUnitUsers: undefined,
     organizationUnitRoles: undefined,
-    findUsers:undefined,
-    findRoles:undefined,
-    selectFindUsers:undefined,
+    findUsers: undefined,
+    findRoles: undefined,
+    selectFindUsers: undefined,
   },
   effects: {
-    *removeRoleFromOrganizationUnit({ payload }, { call, put }){
+    *removeRoleFromOrganizationUnit({ payload }, { call, put }) {
       yield call(OrganizationUnitsService.removeRoleFromOrganizationUnit, payload)
       yield put({
         type: 'saveRemoveRoleFromOrganizationUnit',
-        payload: payload
+        payload,
       })
     },
-    *removeUserFromOrganizationUnit({ payload }, { call, put }){
+    *removeUserFromOrganizationUnit({ payload }, { call, put }) {
       yield call(OrganizationUnitsService.removeUserFromOrganizationUnit, payload)
       yield put({
         type: 'saveRemoveUserFromOrganizationUnit',
-        payload: payload
+        payload,
       })
     },
-    *addRolesToOrganizationUnit({ payload }, { call, put }){
+    *addRolesToOrganizationUnit({ payload }, { call }) {
       yield call(OrganizationUnitsService.addRolesToOrganizationUnit, payload)
     },
-    *addUsersToOrganizationUnit({ payload }, { call, put }){
+    *addUsersToOrganizationUnit({ payload }, { call }) {
         yield call(OrganizationUnitsService.addUsersToOrganizationUnit, payload)
-
     },
-    *selectFindRoles({ payload }, { call, put }){
+    *selectFindRoles({ payload }, { put }) {
       yield put({
         type: 'saveSelectFindRoles',
-        payload: payload
+        payload,
       })
     },
-    *selectFindUsers({ payload }, { call, put }){
+    *selectFindUsers({ payload }, { put }) {
       yield put({
         type: 'saveSelectFindUsers',
-        payload: payload
+        payload,
       })
     },
     *findUsers({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.findUsers, payload)
       yield put({
         type: 'saveFindUsers',
-        payload: response.result
+        payload: response.result,
       })
     },
     *findRoles({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.findRoles, payload)
       yield put({
         type: 'saveFindRoles',
-        payload: response.result
+        payload: response.result,
       })
     },
     *getOrganizationUnits({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.getOrganizationUnits, payload)
       yield put({
         type: 'saveOrganizationUnits',
-        payload: response.result
+        payload: response.result,
       })
     },
-    *deleteOrganizationUnit( { payload }, { call,put }) {
+    *deleteOrganizationUnit({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.deleteOrganizationUnit, payload)
       if (response.success) {
         yield put({
           type: 'saveDeleteOrganizationUnit',
-          payload: payload.id
+          payload: payload.id,
         })
       }
     },
-    *createOrganizationUnit( { payload }, { call,put }) {
+    *createOrganizationUnit({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.createOrganizationUnit, payload)
       if (response.success) {
         yield put({
           type: 'saveCreateOrganizationUnit',
-          payload: response.result
+          payload: response.result,
         })
       }
     },
-    *updateOrganizationUnit( { payload }, { call,put }) {
+    *updateOrganizationUnit({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.updateOrganizationUnit, payload)
       if (response.success) {
         yield put({
           type: 'saveUpdateOrganizationUnit',
-          payload: response.result
+          payload: response.result,
         })
       }
     },
@@ -147,83 +146,82 @@ const Model: OrganizationUnitsModelType = {
       const response = yield call(OrganizationUnitsService.getOrganizationUnitUsers, payload)
       yield put({
         type: 'saveOrganizationUnitUsers',
-        payload: response.result
+        payload: response.result,
       })
     },
     *getOrganizationUnitRoles({ payload }, { call, put }) {
       const response = yield call(OrganizationUnitsService.getOrganizationUnitRoles, payload)
       yield put({
         type: 'saveOrganizationUnitRoles',
-        payload: response.result
+        payload: response.result,
       })
-    }
+    },
   },
   reducers: {
     saveRemoveUserFromOrganizationUnit(state, { payload }) {
       return ({
         ...state,
-        organizationUnitUsers:{
-          items:state!.organizationUnitUsers!.items.filter(todo => todo.id !== payload.userId),
-          totalCount:state!.organizationUnitUsers!.totalCount-1
-        }
-
+        organizationUnitUsers: {
+          items: state!.organizationUnitUsers!.items.filter(todo => todo.id !== payload.userId),
+          totalCount: state!.organizationUnitUsers!.totalCount - 1,
+        },
       })
     },
     saveRemoveRoleFromOrganizationUnit(state, { payload }) {
       return ({
         ...state,
-        organizationUnitRoles:{
-          items:state!.organizationUnitRoles!.items.filter(todo => todo.id !== payload.roleId),
-          totalCount:state!.organizationUnitRoles!.totalCount-1
-        }
+        organizationUnitRoles: {
+          items: state!.organizationUnitRoles!.items.filter(todo => todo.id !== payload.roleId),
+          totalCount: state!.organizationUnitRoles!.totalCount - 1,
+        },
 
       })
     },
     saveSelectFindUsers(state, { payload }) {
       return ({
         ...state,
-        selectFindUsers:payload
+        selectFindUsers: payload,
       })
     },
     saveSelectFindRoles(state, { payload }) {
       return ({
         ...state,
-        selectFindUsers:payload
+        selectFindUsers: payload,
       })
     },
     saveFindUsers(state, { payload }) {
       return ({
         ...state,
-        findUsers:payload
+        findUsers: payload,
       })
     },
     saveFindRoles(state, { payload }) {
       return ({
         ...state,
-        findRoles:payload
+        findRoles: payload,
       })
     },
     saveUpdateOrganizationUnit(state, { payload }) {
-     var organunits = state!.organizationUnits!.items.map(item=>{
+     const organunits = state!.organizationUnits!.items.map(item => {
         if (item.id === payload.id) {
           return { ...item, ...payload };
-        } else {
-          return item;
         }
+          return item;
       })
-      state!.organizationUnits!.items=organunits
+      state!.organizationUnits!.items = organunits
       return ({
-        ...state
+        ...state,
       })
     },
     saveCreateOrganizationUnit(state, { payload }) {
-      state!.organizationUnits!.items=state!.organizationUnits!.items.concat(payload);
+      state!.organizationUnits!.items = state!.organizationUnits!.items.concat(payload);
       return ({
         ...state,
       })
     },
     saveDeleteOrganizationUnit(state, { payload }) {
-      state!.organizationUnits!.items=state!.organizationUnits!.items.filter(t=>t.id!==payload);
+      state!.organizationUnits!.items =
+       state!.organizationUnits!.items.filter(t => t.id !== payload);
       return ({
         ...state,
       })
@@ -232,23 +230,23 @@ const Model: OrganizationUnitsModelType = {
     saveOrganizationUnits(state, { payload }) {
       return ({
         ...state,
-        organizationUnits: payload
+        organizationUnits: payload,
       })
     },
     // 组织机构用户
     saveOrganizationUnitUsers(state, { payload }) {
       return ({
         ...state,
-        organizationUnitUsers: payload
+        organizationUnitUsers: payload,
       })
     },
     // 组织机构角色
     saveOrganizationUnitRoles(state, { payload }) {
       return ({
         ...state,
-        organizationUnitRoles: payload
+        organizationUnitRoles: payload,
       })
-    }
-  }
+    },
+  },
 }
 export default Model;

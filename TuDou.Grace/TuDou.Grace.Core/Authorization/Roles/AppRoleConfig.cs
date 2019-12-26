@@ -7,7 +7,7 @@ namespace TuDou.Grace.Authorization.Roles
     {
         public static void Configure(IRoleManagementConfig roleManagementConfig)
         {
-            //Static host roles
+            //静态主机角色
 
             roleManagementConfig.StaticRoles.Add(
                 new StaticRoleDefinition(
@@ -16,7 +16,7 @@ namespace TuDou.Grace.Authorization.Roles
                     grantAllPermissionsByDefault: true)
                 );
 
-            //Static tenant roles
+            //静态租户角色
 
             roleManagementConfig.StaticRoles.Add(
                 new StaticRoleDefinition(

@@ -18,4 +18,3 @@ export interface TenantLoginInfoDto {
     creationTimeString: string | undefined;
     id: number | undefined;
 }
-

@@ -1,12 +1,11 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 
-class UserLoginService{
+class UserLoginService {
     async getRecentUserLoginAttempts() {
         return request('api/services/app/UserLogin/GetRecentUserLoginAttempts', {
-            method: "GET",
+            method: 'GET',
         });
-    };
-
+    }
 }
-export default new  UserLoginService();
+export default new UserLoginService();

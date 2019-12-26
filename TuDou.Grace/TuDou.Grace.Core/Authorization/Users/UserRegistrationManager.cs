@@ -93,7 +93,7 @@ namespace TuDou.Grace.Authorization.Users
                 await _userEmailer.SendEmailActivationLinkAsync(user, emailActivationLink);
             }
 
-            //Notifications
+            //通知
             await _notificationSubscriptionManager.SubscribeToAllAvailableNotificationsAsync(user.ToUserIdentifier());
             await _appNotifier.WelcomeToTheApplicationAsync(user);
             await _appNotifier.NewUserRegisteredAsync(user);

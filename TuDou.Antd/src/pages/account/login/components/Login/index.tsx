@@ -18,7 +18,7 @@ export interface LoginProps {
   className?: string;
   form: FormComponentProps['form'];
   onCreate?: (form?: FormComponentProps['form']) => void;
-  children: React.ReactElement<LoginTab>[];
+  children: React.ReactElement<typeof LoginTab>[];
 }
 
 interface LoginState {
@@ -125,16 +125,16 @@ class Login extends Component<LoginProps, LoginState> {
   render() {
     const { className, children } = this.props;
     const { type, tabs = [] } = this.state;
-    const TabChildren: React.ReactComponentElement<LoginTab>[] = [];
+    const TabChildren: any[] = [];
     const otherChildren: React.ReactElement<unknown>[] = [];
     React.Children.forEach(
       children,
-      (child: React.ReactComponentElement<LoginTab> | React.ReactElement<unknown>) => {
+      (child: any) => {
         if (!child) {
           return;
         }
         if (child.type.typeName === 'LoginTab') {
-          TabChildren.push(child as React.ReactComponentElement<LoginTab>);
+          TabChildren.push(child);
         } else {
           otherChildren.push(child);
         }

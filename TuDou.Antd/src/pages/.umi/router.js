@@ -1,8 +1,13 @@
 import React from 'react';
-import { Router as DefaultRouter, Route, Switch } from 'react-router-dom';
+import {
+  Router as DefaultRouter,
+  Route,
+  Switch,
+  StaticRouter,
+} from 'react-router-dom';
 import dynamic from 'umi/dynamic';
 import renderRoutes from 'umi/lib/renderRoutes';
-import history from '@tmp/history';
+import history from '@@/history';
 import RendererWrapper0 from 'D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/pages/.umi/LocaleWrapper.jsx';
 import _dvaDynamic from 'dva/dynamic';
 
@@ -31,6 +36,19 @@ const routes = [
                 .default,
             })
           : require('../account/login').default,
+        exact: true,
+      },
+      {
+        name: 'account',
+        path: '/account/register',
+        component: __IS_BROWSER
+          ? _dvaDynamic({
+              component: () =>
+                import(/* webpackChunkName: "p__account__register" */ '../account/register'),
+              LoadingComponent: require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/components/PageLoading/index')
+                .default,
+            })
+          : require('../account/register').default,
         exact: true,
       },
       {
@@ -187,6 +205,34 @@ const routes = [
                     })
                   : require('../admin/shared/notifications').default,
                 hideInMenu: true,
+                exact: true,
+              },
+              {
+                path: '/admin/dataDictionarys',
+                name: '数据字典',
+                icon: 'profile',
+                component: __IS_BROWSER
+                  ? _dvaDynamic({
+                      component: () =>
+                        import(/* webpackChunkName: "layouts__BasicLayout" */ '../admin/dataDictionarys'),
+                      LoadingComponent: require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/components/PageLoading/index')
+                        .default,
+                    })
+                  : require('../admin/dataDictionarys').default,
+                exact: true,
+              },
+              {
+                path: '/admin/settings',
+                icon: 'setting',
+                name: '设置',
+                component: __IS_BROWSER
+                  ? _dvaDynamic({
+                      component: () =>
+                        import(/* webpackChunkName: "layouts__BasicLayout" */ '../admin/settings'),
+                      LoadingComponent: require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/components/PageLoading/index')
+                        .default,
+                    })
+                  : require('../admin/settings').default,
                 exact: true,
               },
               {

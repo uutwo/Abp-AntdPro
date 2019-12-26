@@ -1,7 +1,7 @@
 ﻿namespace TuDou.Grace.Chat
 {
     /// <summary>
-    /// This class is defined to use a generic version of IOnlineClientManager for ChatHub
+    /// 这个类被定义为对ChatHub使用IOnlineClientManager的通用版本
     /// </summary>
     public class ChatChannel
     {

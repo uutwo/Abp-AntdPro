@@ -29,19 +29,8 @@ namespace TuDou.Grace.Configuration
             ChangeEmailSettingScopes(context);
 
             return GetHostSettings().Union(GetTenantSettings()).Union(GetSharedSettings())
-                // theme settings
-                .Union(GetDefaultThemeSettings())
-                .Union(GetTheme2Settings())
-                .Union(GetTheme3Settings())
-                .Union(GetTheme4Settings())
-                .Union(GetTheme5Settings())
-                .Union(GetTheme6Settings())
-                .Union(GetTheme7Settings())
-                .Union(GetTheme8Settings())
-                .Union(GetTheme9Settings())
-                .Union(GetTheme10Settings())
-                .Union(GetTheme11Settings())
-                .Union(GetTheme12Settings());
+                // 主题设置
+                .Union(GetDefaultThemeSettings());
         }
 
         private void ChangeEmailSettingScopes(SettingDefinitionProviderContext context)
@@ -85,9 +74,6 @@ namespace TuDou.Grace.Configuration
                 new SettingDefinition(AppSettings.UserManagement.AllowSelfRegistration, GetFromAppSettings(AppSettings.UserManagement.AllowSelfRegistration, "true"), scopes: SettingScopes.Tenant, isVisibleToClients: true),
                 new SettingDefinition(AppSettings.UserManagement.IsNewRegisteredUserActiveByDefault, GetFromAppSettings(AppSettings.UserManagement.IsNewRegisteredUserActiveByDefault, "false"), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.UserManagement.UseCaptchaOnRegistration, GetFromAppSettings(AppSettings.UserManagement.UseCaptchaOnRegistration, "true"), scopes: SettingScopes.Tenant, isVisibleToClients: true),
-                new SettingDefinition(AppSettings.TenantManagement.BillingLegalName, GetFromAppSettings(AppSettings.TenantManagement.BillingLegalName, ""), scopes: SettingScopes.Tenant),
-                new SettingDefinition(AppSettings.TenantManagement.BillingAddress, GetFromAppSettings(AppSettings.TenantManagement.BillingAddress, ""), scopes: SettingScopes.Tenant),
-                new SettingDefinition(AppSettings.TenantManagement.BillingTaxVatNo, GetFromAppSettings(AppSettings.TenantManagement.BillingTaxVatNo, ""), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.Email.UseHostDefaultEmailSettings, GetFromAppSettings(AppSettings.Email.UseHostDefaultEmailSettings, GraceConsts.MultiTenancyEnabled? "true":"false"), scopes: SettingScopes.Tenant)
             };
         }
@@ -134,163 +120,6 @@ namespace TuDou.Grace.Configuration
                 new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All)
             };
         }
-
-        private IEnumerable<SettingDefinition> GetTheme2Settings()
-        {
-            var themeName = "theme2";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fixed"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, "topbar"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, "true"),isVisibleToClients: true, scopes: SettingScopes.All)
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme3Settings()
-        {
-            var themeName = "theme3";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Fixed, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Fixed, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Style, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Style, "solid"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme4Settings()
-        {
-            var themeName = "theme4";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fixed"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, "menu"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, "true"),isVisibleToClients: true, scopes: SettingScopes.All)
-          };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme5Settings()
-        {
-            var themeName = "theme5";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fixed"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MinimizeType, "menu"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MenuArrows, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All)
-          };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme6Settings()
-        {
-            var themeName = "theme6";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Fixed, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Fixed, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Style, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Style, "solid"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All)
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme7Settings()
-        {
-            var themeName = "theme7";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Fixed, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Fixed, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Style, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Style, "solid"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme8Settings()
-        {
-            var themeName = "theme8";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fluid"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme9Settings()
-        {
-            var themeName = "theme9";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fixed"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All)
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme10Settings()
-        {
-            var themeName = "theme10";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fixed"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme11Settings()
-        {
-            var themeName = "theme11";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LayoutType, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.LayoutType, "fluid"), isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LeftAside.FixedAside, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.LeftAside.FixedAside, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-            };
-        }
-
-        private IEnumerable<SettingDefinition> GetTheme12Settings()
-        {
-            var themeName = "theme12";
-
-            return new[]
-            {
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.DesktopFixedHeader, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Header.DesktopFixedHeader, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Header.MobileFixedHeader, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Header.MobileFixedHeader, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Fixed, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Fixed, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.SubHeader.Style, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.SubHeader.Style, "solid"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LeftAside.FixedAside, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.LeftAside.FixedAside, "true"),isVisibleToClients: true, scopes: SettingScopes.All),
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.LeftAside.SubmenuToggle, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.LeftAside.SubmenuToggle, "false"),isVisibleToClients: true, scopes: SettingScopes.All),
-
-                new SettingDefinition(themeName + "." + AppSettings.UiManagement.Footer.FixedFooter, GetFromAppSettings(themeName + "." +AppSettings.UiManagement.Footer.FixedFooter, "false"),isVisibleToClients: true, scopes: SettingScopes.All)
-            };
-        }
+    
     }
 }

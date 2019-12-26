@@ -1,74 +1,77 @@
-import AppComponentBase from "@/components/AppComponentBase";
+import AppComponentBase from '@/components/AppComponentBase';
 import React from 'react';
-import { Modal, Table } from "antd";
-import  * as _ from 'lodash';
-import { AnyAction, Dispatch } from "redux";
-import { OrganizationUnitsStateType } from "@/models/admin/organizationUnits";
-import { FindOrganizationUnitUsersInput } from "@/services/organizationunits/dtos/findOrganizationUnitUsersInput";
-import { PaginationConfig } from "antd/lib/table";
+import { Modal, Table } from 'antd';
+import * as _ from 'lodash';
+import { AnyAction, Dispatch } from 'redux';
+import { OrganizationUnitsModelState } from '@/models/admin/organizationUnits';
+import { FindOrganizationUnitUsersInput } from '@/services/organizationunits/dtos/findOrganizationUnitUsersInput';
+import { PaginationConfig } from 'antd/lib/table';
+
 interface IAddMemberProps {
   dispatch: Dispatch<AnyAction>;
-  organizationUnits: OrganizationUnitsStateType;
+  organizationUnits: OrganizationUnitsModelState;
   visible: boolean;
   onCancel: () => void;
   onOk: () => void;
-  organizationUnitId:number|null;
+  organizationUnitId: number | null;
 }
 interface IAddMemberStates {
   findUsersInput: FindOrganizationUnitUsersInput;
   selectedMember: any[];
 }
-class AddMember extends AppComponentBase<IAddMemberProps, IAddMemberStates>{
+class AddMember extends AppComponentBase<IAddMemberProps, IAddMemberStates> {
   state = {
-    selectedMember:[],
+    selectedMember: [],
     findUsersInput: {
       maxResultCount: this.maxResultCount,
       skipCount: this.skipCount,
       filter: '',
-      organizationUnitId: null
-    }
+      organizationUnitId: null,
+    },
   }
-  findUsers =async () => {
+
+  findUsers = async () => {
     const { dispatch } = this.props;
     await dispatch({
-      type: "organizationUnits/findUsers",
-      payload: {...this.state.findUsersInput,organizationUnitId:this.props.organizationUnitId}
+      type: 'organizationUnits/findUsers',
+      payload: { ...this.state.findUsersInput, organizationUnitId: this.props.organizationUnitId },
     })
   }
+
   // 复选框选中
-  onSelectChange = (selectedMember:any[],selectedRows:any[]) => {
-    const {dispatch} = this.props;
-    const selectValues=_.map(selectedRows,item=>{
-      return  Number(item.value);
-    });
+  onSelectChange = (selectedMember: any[], selectedRows: any[]) => {
+    const { dispatch } = this.props;
+    const selectValues = _.map(selectedRows, item => Number(item.value));
     dispatch({
-      type: "organizationUnits/selectFindUsers",
-      payload: selectValues
+      type: 'organizationUnits/selectFindUsers',
+      payload: selectValues,
     })
   };
-  handleTableChange=(pagination: PaginationConfig)=>{
-     this.setState({
-      findUsersInput:{
-        ...this.state.findUsersInput,
-        skipCount: (pagination.current! - 1) * this.state.findUsersInput.maxResultCount!
-      }
-     })
+
+  handleTableChange = (pagination: PaginationConfig) => {
+    this.setState(state => ({
+      findUsersInput: {
+        ...state.findUsersInput,
+        skipCount: (pagination.current! - 1) * state.findUsersInput.maxResultCount!,
+      },
+    }))
   }
+
   render() {
-    const { visible,onOk, onCancel,organizationUnits } = this.props;
+    const { visible, onOk, onCancel, organizationUnits } = this.props;
     const { selectedMember } = this.state;
     const columns = [
       {
         title: '名字',
         dataIndex: 'name',
         key: 'name',
-      }
+      },
     ];
     const rowSelection = {
       selectedMember,
       onChange: this.onSelectChange,
     };
-    function showPageTotal(total:number) {
+    function showPageTotal(total: number) {
       return `共 ${total} 项`;
     }
     return (
@@ -78,12 +81,20 @@ class AddMember extends AppComponentBase<IAddMemberProps, IAddMemberStates>{
         title="添加组织成员"
         onCancel={onCancel}>
         <Table
-          loading={organizationUnits.findUsers==undefined}
-          dataSource={organizationUnits.findUsers==undefined?[]:organizationUnits.findUsers!.items}
+          loading={organizationUnits.findUsers === undefined}
+          rowKey="value"
+          dataSource={
+            organizationUnits.findUsers === undefined ? [] : organizationUnits.findUsers!.items}
           columns={columns}
           rowSelection={rowSelection}
           onChange={this.handleTableChange}
-          pagination={{ showTotal:showPageTotal,pageSize:this.state.findUsersInput.maxResultCount,current:this.state.findUsersInput.skipCount,total:organizationUnits.findUsers==undefined?0:organizationUnits.findUsers!.totalCount}} >
+          pagination={{
+            showTotal: showPageTotal,
+            pageSize: this.state.findUsersInput.maxResultCount,
+            current: this.state.findUsersInput.skipCount,
+            total: organizationUnits.findUsers
+            === undefined ? 0 : organizationUnits.findUsers!.totalCount,
+          }} >
 
         </Table>
       </Modal>

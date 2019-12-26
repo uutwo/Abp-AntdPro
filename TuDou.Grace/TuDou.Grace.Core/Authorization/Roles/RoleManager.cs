@@ -18,8 +18,8 @@ using TuDou.Grace.Authorization.Users;
 namespace TuDou.Grace.Authorization.Roles
 {
     /// <summary>
-    /// Role manager.
-    /// Used to implement domain logic for roles.
+    /// 角色管理
+    /// 用于实现角色的域逻辑。
     /// </summary>
     public class RoleManager : AbpRoleManager<Role, User>
     {
@@ -66,7 +66,7 @@ namespace TuDou.Grace.Authorization.Roles
             var role = await FindByIdAsync(userId.ToString());
             if (role == null)
             {
-                throw new ApplicationException("There is no user with id: " + userId);
+                throw new ApplicationException("没有此用户id: " + userId);
             }
 
             return role;

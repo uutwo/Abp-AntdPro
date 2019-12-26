@@ -1,4 +1,4 @@
-import  AppConsts  from '@/lib/appconst';
+import AppConsts from '@/lib/appconst';
 import * as _ from 'lodash';
 
 export class LocaleMappingService {
@@ -9,7 +9,7 @@ export class LocaleMappingService {
 
         const localeMappings = _.filter(AppConsts.localeMappings[mappingSource], { from: locale });
         if (localeMappings && localeMappings.length) {
-            return localeMappings[0]['to'];
+            return localeMappings[0].to;
         }
 
         return locale;

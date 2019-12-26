@@ -9,21 +9,21 @@ namespace TuDou.Grace.Web.Authentication.JwtBearer
 {
     public static class JwtTokenMiddleware
     {
-        public static IApplicationBuilder UseJwtTokenMiddleware(
-          this IApplicationBuilder app,
-          string schema = "Bearer")
+        public static IApplicationBuilder UseJwtTokenMiddleware(this IApplicationBuilder app, string schema = "Bearer")
         {
-            return app.Use((async (ctx, next) =>
+            return UseExtensions.Use(app, async delegate (HttpContext ctx, Func<Task> next)
             {
                 IIdentity identity = ctx.User.Identity;
-                if ((identity != null ? (!identity.IsAuthenticated ? 1 : 0) : 1) != 0)
+                if (identity == null || !identity.IsAuthenticated)
                 {
-                    AuthenticateResult authenticateResult = await ctx.AuthenticateAsync(schema);
-                    if (authenticateResult.Succeeded && authenticateResult.Principal != null)
-                        ctx.User = authenticateResult.Principal;
+                    AuthenticateResult val = await AuthenticationHttpContextExtensions.AuthenticateAsync(ctx, schema);
+                    if (val.Succeeded && val.Principal != null)
+                    {
+                        ctx.User = val.Principal;
+                    }
                 }
                 await next();
-            }));
+            });
         }
     }
 }

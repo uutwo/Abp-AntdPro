@@ -1,13 +1,13 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import { Modal, Tabs, Form, Input, Row, Col, Checkbox } from "antd";
+import AppComponentBase from '@/components/AppComponentBase';
+import { Modal, Tabs, Form, Input, Row, Col, Checkbox } from 'antd';
 import React from 'react';
 import { FormComponentProps } from 'antd/es/form';
 import defaultAvate from '@/assets/default-profile-picture.png';
-import FormItem from "antd/es/form/FormItem";
-import styles from './index.less';
-import CheckboxGroup from "antd/lib/checkbox/Group";
-import { UserRoleDto } from "@/services/users/dtos/userRoleDto";
-import OrganizationUnitTree from "@/components/OrganizationUnitTree";
+import FormItem from 'antd/es/form/FormItem';
+import CheckboxGroup from 'antd/lib/checkbox/Group';
+import { UserRoleDto } from '@/services/users/dtos/userRoleDto';
+import OrganizationUnitTree from '@/components/OrganizationUnitTree';
+
 export interface CreateOrUpdateUserProps extends FormComponentProps {
   visible: boolean;
   onCancel: () => void;
@@ -17,19 +17,18 @@ export interface CreateOrUpdateUserProps extends FormComponentProps {
 }
 
 
-class CreateOrUpdateUser extends AppComponentBase<CreateOrUpdateUserProps>{
-
+class CreateOrUpdateUser extends AppComponentBase<CreateOrUpdateUserProps> {
   render() {
-    const { visible, onCancel, onOk, userId, form,roles} = this.props;
+    const { visible, onCancel, onOk, userId, form, roles } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     const options = roles.map((x: UserRoleDto) => {
-      var role = { label: x.roleDisplayName!, value: x.roleName! };
+      const role = { label: x.roleDisplayName!, value: x.roleName! };
       return role;
     });
     return (
       <Modal
         width={600}
-        title={userId == null ? "新增用户" : `编辑用户`}
+        title={userId == null ? '新增用户' : '编辑用户'}
         visible={visible}
         onCancel={onCancel}
         onOk={onOk}
@@ -39,98 +38,98 @@ class CreateOrUpdateUser extends AppComponentBase<CreateOrUpdateUserProps>{
           <Tabs.TabPane tab="用户" key="user">
             <Row type="flex" justify="space-around" align="middle">
               <Col span={8} >
-                <img src={defaultAvate} height={128} width={128} />
+                <img alt="" src={defaultAvate} height={128} width={128} />
               </Col>
               <Col span={16}>
-                <FormItem className={styles.customFormItem} label="名称">
-                  {getFieldDecorator("name", {
+                <FormItem className="customFormItem" label="名称">
+                  {getFieldDecorator('name', {
 
                   })(<Input />)
                   }
                 </FormItem>
-                <FormItem className={styles.customFormItem} label="完整名称">
-                  {getFieldDecorator("surname", {
+                <FormItem className="customFormItem" label="完整名称">
+                  {getFieldDecorator('surname', {
 
                   })(<Input />)
                   }
                 </FormItem>
               </Col>
             </Row>
-            <FormItem className={styles.customFormItem} label="邮箱地址">
-              {getFieldDecorator("emailAddress", {
+            <FormItem className="customFormItem" label="邮箱地址">
+              {getFieldDecorator('emailAddress', {
 
               })(<Input />)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem} label="联系电话">
-              {getFieldDecorator("phoneNumber", {
+            <FormItem className="customFormItem" label="联系电话">
+              {getFieldDecorator('phoneNumber', {
 
               })(<Input />)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem} label="用户名">
-              {getFieldDecorator("userName", {
+            <FormItem className="customFormItem" label="用户名">
+              {getFieldDecorator('userName', {
 
               })(<Input />)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("setRandomPassword", {
-                valuePropName:'checked'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('setRandomPassword', {
+                valuePropName: 'checked',
               })(<Checkbox>使用随机密码
                 </Checkbox>)
               }
             </FormItem>
-            {!getFieldValue("setRandomPassword")?
+            {!getFieldValue('setRandomPassword') ?
              (<div>
-              <FormItem className={styles.customFormItem} label="密码">
-              {getFieldDecorator("password", {
+              <FormItem className="customFormItem" label="密码">
+              {getFieldDecorator('password', {
 
               })(<Input />)
               }
-            </FormItem>  <FormItem className={styles.customFormItem} label="确认密码">
-            {getFieldDecorator("passwordRepeat", {
+            </FormItem>  <FormItem className="customFormItem" label="确认密码">
+            {getFieldDecorator('passwordRepeat', {
 
             })(<Input />)
             }
           </FormItem>
-              </div>):null
+              </div>) : null
             }
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("shouldChangePasswordOnNextLogin", {
-                valuePropName:'checked'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('shouldChangePasswordOnNextLogin', {
+                valuePropName: 'checked',
               })(<Checkbox>下次登录需要修改密码.
                 </Checkbox>)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("sendActivationEmail", {
-                valuePropName:'checked'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('sendActivationEmail', {
+                valuePropName: 'checked',
               })(<Checkbox>发送激活邮件.
                 </Checkbox>)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("isActive", {
-               valuePropName:'checked'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('isActive', {
+               valuePropName: 'checked',
               })(<Checkbox>激活
                 </Checkbox>)
               }
             </FormItem>
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("isLockoutEnabled", {
-                valuePropName:'checked'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('isLockoutEnabled', {
+                valuePropName: 'checked',
               })(<Checkbox>是否启用锁定？
                 </Checkbox>)
               }
             </FormItem>
           </Tabs.TabPane>
           <Tabs.TabPane tab="角色" key="role">
-            <FormItem className={styles.customFormItem}>
-              {getFieldDecorator("roles", {
-                valuePropName: 'value'
+            <FormItem className="customFormItem">
+              {getFieldDecorator('roles', {
+                valuePropName: 'value',
               })(
-                <CheckboxGroup options={options} />
+                <CheckboxGroup options={options} />,
               )}
             </FormItem>
 

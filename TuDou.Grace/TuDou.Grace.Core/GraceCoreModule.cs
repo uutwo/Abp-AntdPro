@@ -26,10 +26,12 @@ using TuDou.Grace.MultiTenancy;
 using TuDou.Grace.Net.Emailing;
 using TuDou.Grace.Notifications;
 using TuDou.Grace.Timing;
+using Abp.GeneralTree;
 
 namespace TuDou.Grace
 {
     [DependsOn(
+        typeof(GeneralTreeModule),
         typeof(AbpZeroCoreModule),
         typeof(AbpZeroLdapModule),
         typeof(AbpAutoMapperModule),
@@ -75,7 +77,7 @@ namespace TuDou.Grace
             //配置角色
             AppRoleConfig.Configure(Configuration.Modules.Zero().RoleManagement);
 
-            if (DebugHelper.IsDebug)
+            if (!DebugHelper.IsDebug)
             {
                 //在调试模式下禁用电子邮件发送
                 Configuration.ReplaceService<IEmailSender, NullEmailSender>(DependencyLifeStyle.Transient);

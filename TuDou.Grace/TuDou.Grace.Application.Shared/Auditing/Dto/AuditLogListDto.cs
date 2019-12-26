@@ -3,7 +3,7 @@ using Abp.Application.Services.Dto;
 
 namespace TuDou.Grace.Auditing.Dto
 {
-    //### This class is mapped in CustomDtoMapper ###
+    //### 这个类在CustomDtoMapper中映射 ###
     public class AuditLogListDto : EntityDto<long>
     {
         public long? UserId { get; set; }

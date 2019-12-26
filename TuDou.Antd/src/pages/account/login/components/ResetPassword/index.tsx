@@ -1,7 +1,8 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import { Modal, Form, Input } from "antd";
+import AppComponentBase from '@/components/AppComponentBase';
+import { Modal, Form, Input } from 'antd';
 import * as React from 'react'
-import { FormComponentProps } from "antd/lib/form";
+import { FormComponentProps } from 'antd/lib/form';
+
 export interface IResetPasswordProps extends FormComponentProps {
     visible: boolean;
     onOk: () => void;
@@ -10,10 +11,11 @@ export interface IResetPasswordProps extends FormComponentProps {
 export interface IResetPasswordStates {
     confirmDirty: boolean;
 }
-class ResetPassword extends AppComponentBase<IResetPasswordProps> {
+class ResetPassword extends AppComponentBase<IResetPasswordProps, IResetPasswordStates> {
     state = {
-        confirmDirty: false
+        confirmDirty: false,
     }
+
     compareToFirstPassword = (rule: any, value: any, callback: any) => {
         const { form } = this.props;
         if (value && value !== form.getFieldValue('password')) {
@@ -22,11 +24,14 @@ class ResetPassword extends AppComponentBase<IResetPasswordProps> {
             callback();
         }
     };
+
     // 确认密码 blur 事件
     handleConfirmBlur = (e: any) => {
         const { value } = e.target;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+        this.setState(state => (
+          { confirmDirty: state.confirmDirty || !!value }));
     };
+
     validateToNextPassword = (rule: any, value: any, callback: any) => {
         const { form } = this.props;
         if (value && this.state.confirmDirty) {
@@ -34,6 +39,7 @@ class ResetPassword extends AppComponentBase<IResetPasswordProps> {
         }
         callback();
     };
+
     public render() {
         const { visible, onCancel, onOk } = this.props;
         const { getFieldDecorator } = this.props.form;
@@ -62,11 +68,11 @@ class ResetPassword extends AppComponentBase<IResetPasswordProps> {
                                     message: '密码不能为空！',
                                 }, {
                                     validator: this.validateToNextPassword,
-                                }
+                                },
                             ],
                         })(<Input />)}
                     </Form.Item>
-                    <Form.Item  {...formItemLayout} label="确认密码" hasFeedback>
+                    <Form.Item {...formItemLayout} label="确认密码" hasFeedback>
                         {getFieldDecorator('confrimpassword', {
                             rules: [
                                 {

@@ -44,7 +44,7 @@ namespace TuDou.Grace.DataExporting.Excel.EpPlus
                 }
                 catch (Exception)
                 {
-                    //ignore
+                    //忽略
                 }
             }
 

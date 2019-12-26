@@ -22,7 +22,7 @@ namespace TuDou.Grace.EntityFrameworkCore.Repositories
     }
 
     /// <summary>
-    /// Base class for custom repositories of the application.
+    /// 应用程序自定义存储库的基类。
     /// This is a shortcut of <see cref="GraceRepositoryBase{TEntity,TPrimaryKey}"/> for <see cref="int"/> primary key.
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
@@ -35,6 +35,5 @@ namespace TuDou.Grace.EntityFrameworkCore.Repositories
 
         }
 
-        //do not add any method here, add to the class above (since this inherits it)!!!
     }
 }

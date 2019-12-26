@@ -43,7 +43,7 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
   return (
     <Authorized
       authority={getRouteAuthority(location.pathname, routes) || ''}
-      noMatch={isLogin ? <Redirect to="/exception/403" /> : <Redirect to="/account/login" />}
+      noMatch={isLogin ? <Redirect to="/" /> : <Redirect to="/account/login" />}
     >
       {children}
     </Authorized>
@@ -51,5 +51,5 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
 };
 
 export default connect(({ global }: ConnectState) => ({
-  user:global.user,
+  user: global.user,
 }))(AuthComponent);

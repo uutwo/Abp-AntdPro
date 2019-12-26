@@ -1,27 +1,5 @@
 import React from 'react';
-import {
-  _setIntlObject,
-  addLocaleData,
-  IntlProvider,
-  intlShape,
-  LangContext,
-  _setLocaleContext
-} from 'umi-plugin-locale/lib/locale';
 
-const InjectedWrapper = (() => {
-  let sfc = (props, context) => {
-    _setIntlObject(context.intl);
-    return props.children;
-  };
-  sfc.contextTypes = {
-    intl: intlShape,
-  };
-  return sfc;
-})();
-
-import 'moment/locale/pt-br';
-import 'moment/locale/zh-cn';
-import 'moment/locale/zh-tw';
 
 const baseNavigator = true;
 const baseSeparator = '-';
@@ -34,42 +12,6 @@ let defaultAntd = require('antd/lib/locale-provider/zh_CN');
 defaultAntd = defaultAntd.default || defaultAntd;
 
 const localeInfo = {
-  'en-US': {
-    messages: {
-      ...((locale) => locale.__esModule ? locale.default : locale)(require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/locales/en-US.ts')),
-    },
-    locale: 'en-US',
-    antd: require('antd/lib/locale-provider/en_US'),
-    data: require('react-intl/locale-data/en'),
-    momentLocale: '',
-  },
-  'pt-BR': {
-    messages: {
-      ...((locale) => locale.__esModule ? locale.default : locale)(require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/locales/pt-BR.ts')),
-    },
-    locale: 'pt-BR',
-    antd: require('antd/lib/locale-provider/pt_BR'),
-    data: require('react-intl/locale-data/pt'),
-    momentLocale: 'pt-br',
-  },
-  'zh-CN': {
-    messages: {
-      ...((locale) => locale.__esModule ? locale.default : locale)(require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/locales/zh-CN.ts')),
-    },
-    locale: 'zh-CN',
-    antd: require('antd/lib/locale-provider/zh_CN'),
-    data: require('react-intl/locale-data/zh'),
-    momentLocale: 'zh-cn',
-  },
-  'zh-TW': {
-    messages: {
-      ...((locale) => locale.__esModule ? locale.default : locale)(require('D:/个人程序文件/个人项目/AbpZero-AntdPro/TuDou.Antd/src/locales/zh-TW.ts')),
-    },
-    locale: 'zh-TW',
-    antd: require('antd/lib/locale-provider/zh_TW'),
-    data: require('react-intl/locale-data/zh'),
-    momentLocale: 'zh-tw',
-  },
 };
 
 class LocaleWrapper extends React.Component{
@@ -106,7 +48,6 @@ class LocaleWrapper extends React.Component{
     }
     window.g_lang = appLocale.locale;
     window.g_langSeparator = baseSeparator || '-';
-    appLocale.data && addLocaleData(appLocale.data);
 
     // support dynamic add messages for umi ui
     // { 'zh-CN': { key: value }, 'en-US': { key: value } }
@@ -136,16 +77,6 @@ class LocaleWrapper extends React.Component{
       reloadAppLocale: this.reloadAppLocale,
     };
     let ret = this.props.children;
-    ret = (<IntlProvider locale={reactIntlLocale} messages={appLocale.messages}>
-      <InjectedWrapper>
-        <LangContext.Provider value={LangContextValue}>
-          <LangContext.Consumer>{(value) => {
-            _setLocaleContext(value);
-            return this.props.children
-            }}</LangContext.Consumer>
-        </LangContext.Provider>
-      </InjectedWrapper>
-    </IntlProvider>)
      // avoid antd ConfigProvider not found
      let AntdProvider = LocaleProvider;
      const [major, minor] = `${version || ''}`.split('.');

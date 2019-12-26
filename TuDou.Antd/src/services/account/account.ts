@@ -7,65 +7,75 @@ import { SendEmailActivationLinkInput } from './dtos/sendEmailActivationLinkInpu
 import { ActivateEmail } from './dtos/activateEmail';
 import { ImpersonateInput } from './dtos/impersonateInput';
 import { SwitchToLinkedAccountInput } from './dtos/switchToLinkedAccountInput';
- class AccountService{
+
+ class AccountService {
     async isTenantAvailable(input: IsTenantAvailableInput) {
-        return request('/api/services/app/Account/IsTenantAvailable', {
-            method: "POST",
-            params: input
+        return request('api/services/app/Account/IsTenantAvailable', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  resolveTenantId(input: ResolveTenantIdInput) {
-        return  request('/api/services/app/Account/ResolveTenantId', {
-            method: "POST",
-            params:input
+    }
+
+    async resolveTenantId(input: ResolveTenantIdInput) {
+        return request('api/services/app/Account/ResolveTenantId', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  register(input: RegisterInput) {
-        return  request('/api/services/app/Account/Register', {
-            method: "POST",
-            params:input
+    }
+
+    async register(input: RegisterInput) {
+        return request('api/services/app/Account/Register', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  sendPasswordResetCode(input: RegisterInput) {
-        return  request('/api/services/app/Account/SendPasswordResetCode', {
-            method: "POST",
-            params:input
+    }
+
+    async sendPasswordResetCode(input: RegisterInput) {
+        return request('api/services/app/Account/SendPasswordResetCode', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  resetPassword(input: ResetPasswordInput) {
-        return  request('/api/services/app/Account/ResetPassword', {
-            method: "POST",
-            params:input
+    }
+
+    async resetPassword(input: ResetPasswordInput) {
+        return request('api/services/app/Account/ResetPassword', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  sendEmailActivationLink(input: SendEmailActivationLinkInput) {
-        return  request('/api/services/app/Account/SendEmailActivationLink', {
-            method: "POST",
-            params:input
+    }
+
+    async sendEmailActivationLink(input: SendEmailActivationLinkInput) {
+        return request('api/services/app/Account/SendEmailActivationLink', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  activateEmail(input: ActivateEmail) {
-        return  request('/api/services/app/Account/ActivateEmail', {
-            method: "POST",
-            params:input
+    }
+
+    async activateEmail(input: ActivateEmail) {
+        return request('api/services/app/Account/ActivateEmail', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  impersonate(input: ImpersonateInput) {
-        return  request('/api/services/app/Account/Impersonate', {
-            method: "POST",
-            params:input
+    }
+
+    async impersonate(input: ImpersonateInput) {
+        return request('api/services/app/Account/Impersonate', {
+            method: 'POST',
+            data: input,
         });
-    };
-    async  backToImpersonator() {
-        return  request('/api/services/app/Account/BackToImpersonator', {
-            method: "POST"
+    }
+
+    async backToImpersonator() {
+        return request('/api/services/app/Account/BackToImpersonator', {
+            method: 'POST',
         });
-    };
-    async  switchToLinkedAccount(input: SwitchToLinkedAccountInput) {
-        return  request('/api/services/app/Account/SwitchToLinkedAccount', {
-            method: "POST",
-            params:input
+    }
+
+    async switchToLinkedAccount(input: SwitchToLinkedAccountInput) {
+        return request('/api/services/app/Account/SwitchToLinkedAccount', {
+            method: 'POST',
+            params: input,
         });
-    };
+    }
 }
 export default new AccountService();

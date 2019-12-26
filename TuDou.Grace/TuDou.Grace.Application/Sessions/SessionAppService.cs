@@ -14,13 +14,6 @@ namespace TuDou.Grace.Sessions
 {
     public class SessionAppService : GraceAppServiceBase, ISessionAppService
     {
-        private readonly IUiThemeCustomizerFactory _uiThemeCustomizerFactory;
-
-        public SessionAppService(IUiThemeCustomizerFactory uiThemeCustomizerFactory)
-        {
-            _uiThemeCustomizerFactory = uiThemeCustomizerFactory;
-        }
-
         [DisableAuditing]
         public async Task<GetCurrentLoginInformationsOutput> GetCurrentLoginInformations()
         {
@@ -36,9 +29,6 @@ namespace TuDou.Grace.Sessions
                     AllowTenantsToChangeEmailSettings = GraceConsts.AllowTenantsToChangeEmailSettings
                 }
             };
-
-            var uiCustomizer = await _uiThemeCustomizerFactory.GetCurrentUiCustomizer();
-            output.Theme = await uiCustomizer.GetUiSettings();
 
             if (AbpSession.TenantId.HasValue)
             {

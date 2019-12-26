@@ -1,18 +1,15 @@
 ﻿namespace TuDou.Grace.Authorization
 {
     /// <summary>
-    /// Defines string constants for application's permission names.
+    ///为应用程序的权限名定义字符串常量。
     /// <see cref="AppAuthorizationProvider"/> for permission definitions.
     /// </summary>
     public static class AppPermissions
     {
-        //COMMON PERMISSIONS (FOR BOTH OF TENANTS AND HOST)
+        //公共权限(租户和主机)
 
         public const string Pages = "Pages";
-
-        public const string Pages_DemoUiComponents= "Pages.DemoUiComponents";
         public const string Pages_Administration = "Pages.Administration";
-
         public const string Pages_Administration_Roles = "Pages.Administration.Roles";
         public const string Pages_Administration_Roles_Create = "Pages.Administration.Roles.Create";
         public const string Pages_Administration_Roles_Edit = "Pages.Administration.Roles.Edit";
@@ -31,19 +28,15 @@
         public const string Pages_Administration_Languages_Edit = "Pages.Administration.Languages.Edit";
         public const string Pages_Administration_Languages_Delete = "Pages.Administration.Languages.Delete";
         public const string Pages_Administration_Languages_ChangeTexts = "Pages.Administration.Languages.ChangeTexts";
-
         public const string Pages_Administration_AuditLogs = "Pages.Administration.AuditLogs";
-
         public const string Pages_Administration_OrganizationUnits = "Pages.Administration.OrganizationUnits";
         public const string Pages_Administration_OrganizationUnits_ManageOrganizationTree = "Pages.Administration.OrganizationUnits.ManageOrganizationTree";
         public const string Pages_Administration_OrganizationUnits_ManageMembers = "Pages.Administration.OrganizationUnits.ManageMembers";
         public const string Pages_Administration_OrganizationUnits_ManageRoles = "Pages.Administration.OrganizationUnits.ManageRoles";
-
         public const string Pages_Administration_HangfireDashboard = "Pages.Administration.HangfireDashboard";
-
         public const string Pages_Administration_UiCustomization = "Pages.Administration.UiCustomization";
 
-        //TENANT-SPECIFIC PERMISSIONS
+        //租户权限
 
         public const string Pages_Tenant_Dashboard = "Pages.Tenant.Dashboard";
 
@@ -51,21 +44,19 @@
 
         public const string Pages_Administration_Tenant_SubscriptionManagement = "Pages.Administration.Tenant.SubscriptionManagement";
 
-        //HOST-SPECIFIC PERMISSIONS
+        //主机权限
 
         public const string Pages_Editions = "Pages.Editions";
         public const string Pages_Editions_Create = "Pages.Editions.Create";
         public const string Pages_Editions_Edit = "Pages.Editions.Edit";
         public const string Pages_Editions_Delete = "Pages.Editions.Delete";
         public const string Pages_Editions_MoveTenantsToAnotherEdition = "Pages.Editions.MoveTenantsToAnotherEdition";
-
         public const string Pages_Tenants = "Pages.Tenants";
         public const string Pages_Tenants_Create = "Pages.Tenants.Create";
         public const string Pages_Tenants_Edit = "Pages.Tenants.Edit";
         public const string Pages_Tenants_ChangeFeatures = "Pages.Tenants.ChangeFeatures";
         public const string Pages_Tenants_Delete = "Pages.Tenants.Delete";
         public const string Pages_Tenants_Impersonation = "Pages.Tenants.Impersonation";
-
         public const string Pages_Administration_Host_Maintenance = "Pages.Administration.Host.Maintenance";
         public const string Pages_Administration_Host_Settings = "Pages.Administration.Host.Settings";
         public const string Pages_Administration_Host_Dashboard = "Pages.Administration.Host.Dashboard";

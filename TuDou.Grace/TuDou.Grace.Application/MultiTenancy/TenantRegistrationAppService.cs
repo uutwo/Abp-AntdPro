@@ -141,7 +141,7 @@ namespace TuDou.Grace.MultiTenancy
             var editions = await _editionManager.GetAllAsync();
             if (editions.Any())
             {
-                throw new Exception("Tenant registration is not allowed without edition because there are editions defined !");
+                throw new Exception("没有版本不允许注册租户，因为已经定义了版本!");
             }
         }
 
@@ -249,19 +249,19 @@ namespace TuDou.Grace.MultiTenancy
                 case SubscriptionStartType.Free:
                     if (!edition.IsFree)
                     {
-                        throw new Exception("This is not a free edition !");
+                        throw new Exception("这不是一个免费的版本!");
                     }
                     break;
                 case SubscriptionStartType.Trial:
                     if (!edition.HasTrial())
                     {
-                        throw new Exception("Trial is not available for this edition !");
+                        throw new Exception("这个版本没有试用版!");
                     }
                     break;
                 case SubscriptionStartType.Paid:
                     if (edition.IsFree)
                     {
-                        throw new Exception("This is a free edition and cannot be subscribed as paid !");
+                        throw new Exception("这是一个免费的版本，不能订阅作为支付!");
                     }
                     break;
             }

@@ -15,7 +15,7 @@ namespace TuDou.Grace
     {
         public override void PreInitialize()
         {
-            //Adding authorization providers
+            //添加授权提供程序
             Configuration.Authorization.Providers.Add<AppAuthorizationProvider>();
 
             //Adding custom AutoMapper configuration

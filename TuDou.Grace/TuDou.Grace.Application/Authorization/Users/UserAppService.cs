@@ -132,7 +132,7 @@ namespace TuDou.Grace.Authorization.Users
         [AbpAuthorize(AppPermissions.Pages_Administration_Users_Create, AppPermissions.Pages_Administration_Users_Edit)]
         public async Task<GetUserForEditOutput> GetUserForEdit(NullableIdDto<long> input)
         {
-            //Getting all available roles
+            //获取所有可用的角色
             var userRoleDtos = await _roleManager.Roles
                 .OrderBy(r => r.DisplayName)
                 .Select(r => new UserRoleDto
@@ -154,7 +154,7 @@ namespace TuDou.Grace.Authorization.Users
 
             if (!input.Id.HasValue)
             {
-                //Creating a new user
+                //创建新用户
                 output.User = new UserEditDto
                 {
                     IsActive = true,
@@ -174,7 +174,7 @@ namespace TuDou.Grace.Authorization.Users
             }
             else
             {
-                //Editing an existing user
+                //编辑现有用户
                 var user = await UserManager.GetUserByIdAsync(input.Id.Value);
 
                 output.User = ObjectMapper.Map<UserEditDto>(user);
@@ -272,8 +272,8 @@ namespace TuDou.Grace.Authorization.Users
 
             var user = await UserManager.FindByIdAsync(input.User.Id.Value.ToString());
             var a = LocalizationSource.GetAllStrings().Select(x => x.Name).Contains("Identity.DuplicateUserName");
-            //Update user properties
-            ObjectMapper.Map(input.User, user); //Passwords is not mapped (see mapping configuration)
+            //更新用户属性
+            ObjectMapper.Map(input.User, user); //没有映射密码(参见映射配置)
 
             CheckErrors(await UserManager.UpdateAsync(user));
 
@@ -289,10 +289,10 @@ namespace TuDou.Grace.Authorization.Users
                 CheckErrors(await UserManager.ChangePasswordAsync(user, input.User.Password));
             }
 
-            //Update roles
+            //更新角色
             CheckErrors(await UserManager.SetRolesAsync(user, input.AssignedRoleNames));
 
-            //update organization units
+            //更新组织机构
             await UserManager.SetOrganizationUnitsAsync(user, input.OrganizationUnits.ToArray());
 
             if (input.SendActivationEmail)
@@ -314,10 +314,10 @@ namespace TuDou.Grace.Authorization.Users
                 await _userPolicy.CheckMaxUserCountAsync(AbpSession.GetTenantId());
             }
 
-            var user = ObjectMapper.Map<User>(input.User); //Passwords is not mapped (see mapping configuration)
+            var user = ObjectMapper.Map<User>(input.User); //没有映射密码(参见映射配置)
             user.TenantId = AbpSession.TenantId;
 
-            //Set password
+            //设置密码
             if (input.SetRandomPassword)
             {
                 var randomPassword = await _userManager.CreateRandomPassword();
@@ -337,7 +337,7 @@ namespace TuDou.Grace.Authorization.Users
 
             user.ShouldChangePasswordOnNextLogin = input.User.ShouldChangePasswordOnNextLogin;
 
-            //Assign roles
+            //分配角色
             user.Roles = new Collection<UserRole>();
             foreach (var roleName in input.AssignedRoleNames)
             {
@@ -346,16 +346,16 @@ namespace TuDou.Grace.Authorization.Users
             }
 
             CheckErrors(await UserManager.CreateAsync(user));
-            await CurrentUnitOfWork.SaveChangesAsync(); //To get new user's Id.
+            await CurrentUnitOfWork.SaveChangesAsync(); //用户获取用户id
 
-            //Notifications
+            //通知
             await _notificationSubscriptionManager.SubscribeToAllAvailableNotificationsAsync(user.ToUserIdentifier());
             await _appNotifier.WelcomeToTheApplicationAsync(user);
 
-            //Organization Units
+            //组织机构
             await UserManager.SetOrganizationUnitsAsync(user, input.OrganizationUnits.ToArray());
 
-            //Send activation email
+            //发送激活邮件
             if (input.SendActivationEmail)
             {
                 user.SetNewEmailConfirmationCode();
@@ -369,7 +369,7 @@ namespace TuDou.Grace.Authorization.Users
 
         private async Task FillRoleNames(IReadOnlyCollection<UserListDto> userListDtos)
         {
-            /* This method is optimized to fill role names to given list. */
+            /* 此方法经过优化以将角色名填充到给定列表。 */
             var userIds = userListDtos.Select(u => u.Id);
 
             var userRoles = await _userRoleRepository.GetAll()
@@ -446,7 +446,7 @@ namespace TuDou.Grace.Authorization.Users
                         where (up != null && up.IsGranted) ||
                               (up == null && rp != null && rp.IsGranted) ||
                               (up == null && rp == null && staticRoleNames.Contains(urr.Name))
-                        //group user by user into userGrouped
+                        //将用户按用户分组为用户组
                         select user;
             }
 

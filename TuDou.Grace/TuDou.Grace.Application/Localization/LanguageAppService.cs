@@ -56,12 +56,12 @@ namespace TuDou.Grace.Localization
 
             var output = new GetLanguageForEditOutput();
 
-            //Language
+            //本地化
             output.Language = language != null
                 ? ObjectMapper.Map<ApplicationLanguageEditDto>(language)
                 : new ApplicationLanguageEditDto();
 
-            //Language names
+            //语言名称
             output.LanguageNames = CultureHelper
                 .AllCultures
                 .Select(c => new ComboboxItemDto(c.Name, c.EnglishName + " (" + c.Name + ")") { IsSelected = output.Language.Name == c.Name })
@@ -106,10 +106,10 @@ namespace TuDou.Grace.Localization
         [AbpAuthorize(AppPermissions.Pages_Administration_Languages_ChangeTexts)]
         public async Task<PagedResultDto<LanguageTextListDto>> GetLanguageTexts(GetLanguageTextsInput input)
         {
-            /* Note: This method is used by SPA without paging, MPA with paging.
-             * So, it can both usable with paging or not */
+            /*注:此方法为SPA无分页，MPA有分页。
+            因此，它既可以用于分页，也可以不用于*/
 
-            //Normalize base language name
+            //规范化基本语言名称
             if (input.BaseLanguageName.IsNullOrEmpty())
             {
                 var defaultLanguage = await _applicationLanguageManager.GetDefaultLanguageOrNullAsync(AbpSession.TenantId);
@@ -139,7 +139,7 @@ namespace TuDou.Grace.Localization
                 })
                 .AsQueryable();
 
-            //Filters
+            //过滤
             if (input.TargetValueFilter == "EMPTY")
             {
                 languageTexts = languageTexts.Where(s => s.TargetValue.IsNullOrEmpty());
@@ -156,13 +156,13 @@ namespace TuDou.Grace.Localization
 
             var totalCount = languageTexts.Count();
 
-            //Ordering
+            //排序
             if (!input.Sorting.IsNullOrEmpty())
             {
                 languageTexts = languageTexts.OrderBy(input.Sorting);
             }
 
-            //Paging
+            //分页
             if (input.SkipCount > 0)
             {
                 languageTexts = languageTexts.Skip(input.SkipCount);

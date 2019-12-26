@@ -58,7 +58,7 @@ namespace TuDou.Grace.Editions
 
             if (changedTenantCount != tenantIds.Count)
             {
-                Logger.Warn($"Unable to move all tenants from edition {args.SourceEditionId} to edition {args.TargetEditionId}");
+                Logger.Warn($"无法将所有租户从edition中移除 {args.SourceEditionId} to edition {args.TargetEditionId}");
                 return;
             }
 

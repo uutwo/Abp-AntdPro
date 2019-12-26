@@ -39,8 +39,8 @@ class PermissionsTree extends AppComponentBase<PermissionsTreeProps>{
       [
         {
           target: 'title',
-          targetFunction(item: FlatPermissionWithLevelDto) {
-            return <span>{item.displayName}</span>;
+          targetFunction:(item: FlatPermissionWithLevelDto)=>{
+            return <span>{this.L(item.displayName)}</span>;
           }
         }, {
           target: 'key',

@@ -89,10 +89,10 @@ namespace TuDou.Grace.Authorization.Accounts
 
         public async Task<RegisterOutput> Register(RegisterInput input)
         {
-            if (UseCaptchaOnRegistration())
-            {
-                await RecaptchaValidator.ValidateAsync(input.CaptchaResponse);
-            }
+            //if (UseCaptchaOnRegistration())
+            //{
+            //    await RecaptchaValidator.ValidateAsync(input.CaptchaResponse);
+            //}
 
             var user = await _userRegistrationManager.RegisterAsync(
                 input.Name,

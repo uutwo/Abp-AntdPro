@@ -1,5 +1,5 @@
-import { RoleEditDto } from "./roleEditDto";
-import { FlatPermissionDto } from "./flatPermissionDto";
+import { RoleEditDto } from './roleEditDto';
+import { FlatPermissionDto } from './flatPermissionDto';
 
 export interface GetRoleForEditOutput{
   role:RoleEditDto;

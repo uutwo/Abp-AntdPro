@@ -128,7 +128,7 @@ namespace TuDou.Grace.Chat
 
             if (friendshipState.Value == FriendshipState.Blocked)
             {
-                //Do not send message if receiver banned the sender
+                //如果接收者禁止发送者不要发送消息
                 return;
             }
 

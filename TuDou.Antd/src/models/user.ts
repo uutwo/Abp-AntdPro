@@ -64,7 +64,6 @@ const UserModel: UserModelType = {
       state = {
         currentUser: {},
       },
-      action,
     ) {
       return {
         ...state,

@@ -1,4 +1,4 @@
-import { IConfig, IPlugin } from 'umi-types';
+import {IConfig, IPlugin } from 'umi-types';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
 import aliyunTheme from '@ant-design/aliyun-theme';
@@ -29,11 +29,11 @@ const plugins: IPlugin[] = [
       },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -90,6 +90,11 @@ export default {
           name: 'account',
           path: '/account/login',
           component: './account/login',
+        },
+        {
+          name: 'account',
+          path: '/account/register',
+          component: './account/register',
         },
       ],
     },
@@ -160,6 +165,18 @@ export default {
                   component: './admin/shared/notifications',
                   hideInMenu: true,
                 },
+                {
+                  path: '/admin/dataDictionarys',
+                  name: '数据字典',
+                  icon: 'profile',
+                  component: './admin/dataDictionarys',
+                },
+                {
+                  path: '/admin/settings',
+                  icon: 'setting',
+                  name: '设置',
+                  component: './admin/settings',
+                },
               ],
             },
             {
@@ -200,7 +217,7 @@ export default {
     {
       from: 'src/lib/abp.js',
       to: 'dist',
-    }
+    },
   ],
   disableRedirectHoist: true,
   cssLoaderOptions: {
@@ -248,4 +265,3 @@ export default {
   },
   */
 } as IConfig;
-

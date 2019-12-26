@@ -20,6 +20,8 @@ using TuDou.Grace.Authorization.Users.Importing.Dto;
 using TuDou.Grace.Authorization.Users.Profile.Dto;
 using TuDou.Grace.Chat;
 using TuDou.Grace.Chat.Dto;
+using TuDou.Grace.Common.Dictionary;
+using TuDou.Grace.Common.Dictionary.Dto;
 using TuDou.Grace.Editions;
 using TuDou.Grace.Editions.Dto;
 using TuDou.Grace.Friendships;
@@ -41,7 +43,7 @@ namespace TuDou.Grace
     {
         public static void CreateMappings(IMapperConfigurationExpression configuration)
         {
-            //Inputs
+            //输入
             configuration.CreateMap<CheckboxInputType, FeatureInputTypeDto>();
             configuration.CreateMap<SingleLineStringInputType, FeatureInputTypeDto>();
             configuration.CreateMap<ComboboxInputType, FeatureInputTypeDto>();
@@ -56,20 +58,20 @@ namespace TuDou.Grace
             configuration.CreateMap<ILocalizableComboboxItem, LocalizableComboboxItemDto>()
                 .Include<LocalizableComboboxItem, LocalizableComboboxItemDto>();
 
-            //Chat
+            //聊天
             configuration.CreateMap<ChatMessage, ChatMessageDto>();
             configuration.CreateMap<ChatMessage, ChatMessageExportDto>();
 
-            //Feature
+            //功能
             configuration.CreateMap<FlatFeatureSelectDto, Feature>().ReverseMap();
             configuration.CreateMap<Feature, FlatFeatureDto>();
 
-            //Role
+            //角色
             configuration.CreateMap<RoleEditDto, Role>().ReverseMap();
             configuration.CreateMap<Role, RoleListDto>();
             configuration.CreateMap<UserRole, UserListRoleDto>();
 
-            //Edition
+            //版本
             configuration.CreateMap<EditionEditDto, SubscribableEdition>().ReverseMap();
             configuration.CreateMap<EditionCreateDto, SubscribableEdition>();
             configuration.CreateMap<EditionSelectDto, SubscribableEdition>().ReverseMap();
@@ -83,7 +85,7 @@ namespace TuDou.Grace
             configuration.CreateMap<Edition, EditionSelectDto>();
 
 
-            //Payment
+            //付款
             configuration.CreateMap<SubscriptionPaymentDto, SubscriptionPayment>().ReverseMap();
             configuration.CreateMap<SubscriptionPaymentListDto, SubscriptionPayment>().ReverseMap();
             configuration.CreateMap<SubscriptionPayment, SubscriptionPaymentInfoDto>();
@@ -92,21 +94,21 @@ namespace TuDou.Grace
             configuration.CreateMap<Permission, FlatPermissionDto>();
             configuration.CreateMap<Permission, FlatPermissionWithLevelDto>();
 
-            //Language
+            //本地化
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageEditDto>();
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageListDto>();
             configuration.CreateMap<NotificationDefinition, NotificationSubscriptionWithDisplayNameDto>();
             configuration.CreateMap<ApplicationLanguage, ApplicationLanguageEditDto>()
                 .ForMember(ldto => ldto.IsEnabled, options => options.MapFrom(l => !l.IsDisabled));
 
-            //Tenant
+            //租户
             configuration.CreateMap<Tenant, RecentTenant>();
             configuration.CreateMap<Tenant, TenantLoginInfoDto>();
             configuration.CreateMap<Tenant, TenantListDto>();
             configuration.CreateMap<TenantEditDto, Tenant>().ReverseMap();
             configuration.CreateMap<CurrentTenantInfoDto, Tenant>().ReverseMap();
 
-            //User
+            //用户
             configuration.CreateMap<User, UserEditDto>()
                 .ForMember(dto => dto.Password, options => options.Ignore())
                 .ReverseMap()
@@ -120,18 +122,21 @@ namespace TuDou.Grace
             configuration.CreateMap<UserLoginAttemptDto, UserLoginAttempt>().ReverseMap();
             configuration.CreateMap<ImportUserDto, User>();
 
-            //AuditLog
+            //审计日志
             configuration.CreateMap<AuditLog, AuditLogListDto>();
             configuration.CreateMap<EntityChange, EntityChangeListDto>();
 
-            //Friendship
+            //朋友
             configuration.CreateMap<Friendship, FriendDto>();
             configuration.CreateMap<FriendCacheItem, FriendDto>();
             configuration.CreateMap<EntityPropertyChange, EntityPropertyChangeDto>();
             //OrganizationUnit
             configuration.CreateMap<OrganizationUnit, OrganizationUnitDto>();
 
-            /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
+
+
+            configuration.CreateMap<DataDictionary, DataDictionaryDto>();
+            /* 在这添加你的自定义映射 */
         }
     }
 }

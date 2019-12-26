@@ -1,8 +1,8 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import { Modal, Typography } from "antd";
-import React from "react";
+import AppComponentBase from '@/components/AppComponentBase';
+import { Modal, Typography } from 'antd';
+import React from 'react';
 import Form, { FormComponentProps } from 'antd/lib/form';
-import TextArea from "antd/lib/input/TextArea";
+import TextArea from 'antd/lib/input/TextArea';
 
 const { Title } = Typography;
 interface EditLanguageTextProps extends FormComponentProps {
@@ -13,12 +13,11 @@ interface EditLanguageTextProps extends FormComponentProps {
   targetValue: string;
 }
 
-class EditLanguageText extends AppComponentBase<EditLanguageTextProps>{
-
+class EditLanguageText extends AppComponentBase<EditLanguageTextProps> {
   public render() {
     const { visible, onOk, onCancel, baseValue, targetValue } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    const keyValue = getFieldValue("key")
+    const keyValue = getFieldValue('key')
     return (
       <Modal
         title="编辑文本"
@@ -28,22 +27,22 @@ class EditLanguageText extends AppComponentBase<EditLanguageTextProps>{
       >
         <Form.Item label="键值">
           {
-            getFieldDecorator("key", {})(
-              <Title level={4}>{keyValue}</Title>
+            getFieldDecorator('key', {})(
+              <Title level={4}>{keyValue}</Title>,
             )
           }
         </Form.Item>
         <Form.Item label={baseValue}>
           {
-            getFieldDecorator("baseValue", {})(
-              <TextArea rows={4} />
+            getFieldDecorator('baseValue', {})(
+              <TextArea rows={4} />,
             )
           }
         </Form.Item>
         <Form.Item label={targetValue}>
           {
-            getFieldDecorator("targetValue", {})(
-              <TextArea rows={4} />
+            getFieldDecorator('targetValue', {})(
+              <TextArea rows={4} />,
             )
           }
         </Form.Item>

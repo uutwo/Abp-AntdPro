@@ -1,10 +1,10 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 
- class PermissionService{
+ class PermissionService {
     async getAllPermissions() {
         return request('api/services/app/Permission/GetAllPermissions', {
-            method: "GET",
+            method: 'GET',
         });
-    };
+    }
 }
 export default new PermissionService();

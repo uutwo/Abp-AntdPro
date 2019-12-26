@@ -1,5 +1,4 @@
-
-import { PagedRequestDto } from './../../../shared/dtos/pagedRequestDto';
+import PagedRequestDto from '@/shared/dtos/pagedRequestDto';
 
 export interface GetLanguageTextsInput extends PagedRequestDto
 {

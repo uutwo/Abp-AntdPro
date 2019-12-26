@@ -1,4 +1,5 @@
-import { PagedRequestDto } from "@/shared/dtos/pagedRequestDto";
+import PagedRequestDto from '@/shared/dtos/pagedRequestDto';
+
 
 export interface GetUsersInput extends PagedRequestDto{
     filter:string;

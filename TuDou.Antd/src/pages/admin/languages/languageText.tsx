@@ -1,17 +1,18 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import React, { RefObject } from "react";
-import { PageHeaderWrapper } from "@ant-design/pro-layout";
-import { Card, Table, Row, Col, Form, Select, Button } from "antd";
-import { ConnectState } from "@/models/connect";
-import { connect } from "dva";
-import { LanguagesModelState } from "@/models/admin/languages";
-import { Dispatch, AnyAction } from "redux";
-import { GetLanguageTextsInput } from "@/services/languages/dtos/getLanguageTextsInput";
+import AppComponentBase from '@/components/AppComponentBase';
+import React from 'react';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { Card, Table, Row, Col, Form, Select, Button } from 'antd';
+import { ConnectState } from '@/models/connect';
+import { connect } from 'dva';
+import { LanguagesModelState } from '@/models/admin/languages';
+import { Dispatch, AnyAction } from 'redux';
+import { GetLanguageTextsInput } from '@/services/languages/dtos/getLanguageTextsInput';
 import EditLanguageText from './components/editLanguageText';
 import * as _ from 'lodash';
 import { FormComponentProps } from 'antd/es/form';
-import Search from "antd/lib/input/Search";
-import { PaginationConfig } from "antd/lib/table";
+import Search from 'antd/lib/input/Search';
+import { PaginationConfig } from 'antd/lib/table';
+
 export interface LanguageTextProps extends FormComponentProps {
   dispatch: Dispatch<AnyAction>;
   languages: LanguagesModelState;
@@ -26,10 +27,11 @@ export interface LanguageTextStates {
 
 const { Option } = Select;
 @connect(({ languages }: ConnectState) => ({
-  languages: languages,
+  languages,
 }))
-class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextStates>{
+class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextStates> {
   modalRef: any = React.createRef();
+
   state = {
     sourceNames: [],
     languages: abp.localization.languages,
@@ -40,69 +42,73 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
       targetLanguageName: '',
       targetValueFilter: 'ALL',
       filterText: '',
-      baseLanguageName: abp.localization.currentLanguage.name
+      baseLanguageName: abp.localization.currentLanguage.name,
     },
-    editLanguageTextModalVisible: false
+    editLanguageTextModalVisible: false,
   }
+
   async componentDidMount() {
-    const targetLanguageName = location.pathname.replace("/admin/languageTexts/", "");
+    const targetLanguageName = window.location.pathname.replace('/admin/languageTexts/', '');
     const sourceNames = _.map(_.filter(abp.localization.sources, source => source.type === 'MultiTenantLocalizationSource'), value => value.name);
-    await this.setState({
+    await this.setState(state => ({
       sourceNames,
       request: {
-        ...this.state.request,
+        ...state.request,
         targetLanguageName,
-      }
-    })
-
+      },
+    }))
     this.getTableData();
   }
-  getTableData() {
 
+  getTableData() {
     const { dispatch } = this.props;
     dispatch({
       type: 'languages/getLanguageTexts',
       payload: {
         ...this.state.request,
-      }
+      },
     })
   }
+
   handRequestChange = () => {
     const { validateFields } = this.props.form;
     validateFields((errors: any, values: any) => {
       if (!errors) {
-        this.setState({
+        this.setState(state => ({
           request: {
-            maxResultCount: this.state.request.maxResultCount,
-            skipCount: this.state.request.skipCount,
+            maxResultCount: state.request.maxResultCount,
+            skipCount: state.request.skipCount,
             baseLanguageName: values.baseLanguageName,
             targetLanguageName: values.targetLanguageName,
             sourceName: values.sourceName,
             targetValueFilter: values.targetValueFilter,
-            filterText: values.filterText == undefined ? "" : values.filterText,
-          }
-        }, () => {
+            filterText: values.filterText === undefined ? '' : values.filterText,
+          },
+        }), () => {
           this.getTableData();
         })
       }
+    })
+  }
 
-    })
-  }
   Modal() {
-    this.setState({
-      editLanguageTextModalVisible: !this.state.editLanguageTextModalVisible
-    })
+    this.setState(state => ({
+      editLanguageTextModalVisible: !state.editLanguageTextModalVisible,
+    }))
   }
+
   modalOpen = (record: any) => {
     const { setFieldsValue } = this.modalRef.current;
     setFieldsValue({
-      ...record
+      ...record,
     })
     this.Modal();
   }
+
   modalCancel = () => {
     this.Modal();
   }
+
   modalOk = () => {
     const { validateFields } = this.modalRef.current;
     validateFields((errors: any, values: any) => {
@@ -114,25 +120,26 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
             key: values.key,
             languageName: this.state.request.targetLanguageName,
             value: values.targetValue,
-            sourceName: this.state.request.sourceName
-          }
+            sourceName: this.state.request.sourceName,
+          },
         })
         this.getTableData();
       }
     });
     this.Modal();
   }
+
   handleTableChange = (pagination: PaginationConfig) => {
-    this.setState({
+    this.setState(state => ({
       request: {
-        ...this.state.request,
-        skipCount: (pagination.current! - 1) * this.state.request.maxResultCount!
-      }
-    }, () => {
+        ...state.request,
+        skipCount: (pagination.current! - 1) * state.request.maxResultCount!,
+      },
+    }), () => {
       this.getTableData();
     })
-
   }
+
   public render() {
     const { getFieldDecorator } = this.props.form;
     const { languages, sourceNames, request, editLanguageTextModalVisible } = this.state;
@@ -156,9 +163,7 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
       title: '操作',
       dataIndex: 'action',
       key: 'action',
-      render: (text: any, record: any, index: number) => {
-        return <Button icon="edit" onClick={() => { this.modalOpen(record) }} type="primary">编辑</Button>
-      }
+      render: (text: any, record: any) => <Button icon="edit" onClick={() => { this.modalOpen(record) }} type="primary">编辑</Button>,
     },
     ];
     return (
@@ -171,51 +176,51 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
             <Col xs={24} xl={6} xxl={6}>
               <Form.Item label="默认语言">
                 {getFieldDecorator('baseLanguageName', {
-                  initialValue: abp.localization.currentLanguage.name
+                  initialValue: abp.localization.currentLanguage.name,
                 })(
                   <Select style={{ width: '100%' }} >
                     {languages.map((item: abp.localization.ILanguageInfo) => (
                       <Option value={item.name} key={item.name}>{item.displayName}</Option>
                     ))}
-                  </Select>
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
             <Col xs={24} xl={6} xxl={6}>
               <Form.Item label="目标语言">
                 {getFieldDecorator('targetLanguageName', {
-                  initialValue: request.targetLanguageName
+                  initialValue: request.targetLanguageName,
                 })(
                   <Select style={{ width: '100%' }} >
                     {languages.map((item: abp.localization.ILanguageInfo) => (
                       <Option value={item.name} key={item.name}>{item.displayName}</Option>
                     ))}
-                  </Select>
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
             <Col xs={24} xl={6} xxl={6}>
               <Form.Item label="选择源">
                 {getFieldDecorator('sourceName', {
-                  initialValue: 'Grace'
+                  initialValue: 'Grace',
                 })(
                   <Select style={{ width: '100%' }}>
                     {sourceNames.map((item: string) => (
                       <Option value={item} key={item}>{item}</Option>
                     ))}
-                  </Select>
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
             <Col xs={24} xl={6} xxl={6}>
               <Form.Item label="目标值">
                 {getFieldDecorator('targetValueFilter', {
-                  initialValue: 'ALL'
+                  initialValue: 'ALL',
                 })(
                   <Select style={{ width: '100%' }} >
                     <Option value="ALL">全部</Option>
                     <Option value="EMPTY">空值</Option>
-                  </Select>
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
@@ -229,7 +234,7 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
                     onSearch={this.handRequestChange}
                     placeholder="搜索..."
                     enterButton="刷新"
-                  />
+                  />,
                 )}
               </Form.Item>
             </Col>
@@ -237,21 +242,21 @@ class LanguageText extends AppComponentBase<LanguageTextProps, LanguageTextState
           <Table
             bordered
             onChange={this.handleTableChange}
-            dataSource={languageTexts == undefined ? [] : languageTexts.items}
-            pagination={{ showTotal: this.showPageTotal, pageSize: this.state.request.maxResultCount, total: languageTexts == undefined ? 0 : languageTexts.totalCount }}
+            dataSource={languageTexts === undefined ? [] : languageTexts.items}
+            pagination={{ showTotal: this.showPageTotal,
+              pageSize: this.state.request.maxResultCount,
+               total: languageTexts === undefined ? 0 : languageTexts.totalCount }}
             columns={columns} />
         </Card>
         <EditLanguageText
           ref={this.modalRef}
-          baseValue={languages.filter(t => t.name == request.baseLanguageName)[0].displayName}
-          targetValue={request.targetLanguageName == "" ? "" : languages.filter(t => t.name == request.targetLanguageName)[0].displayName}
+          baseValue={languages.filter(t => t.name === request.baseLanguageName)[0].displayName}
+          targetValue={request.targetLanguageName === '' ? '' : languages.filter(t => t.name === request.targetLanguageName)[0].displayName}
           onOk={this.modalOk}
           onCancel={this.modalCancel}
           visible={editLanguageTextModalVisible}
           />
       </PageHeaderWrapper>)
-
-
   }
 }
 export default Form.create<LanguageTextProps>()(LanguageText);

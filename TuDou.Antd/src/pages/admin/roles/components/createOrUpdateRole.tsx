@@ -1,10 +1,11 @@
-import AppComponentBase from "@/components/AppComponentBase";
-import { Modal, Tabs, Form, Alert } from "antd";
+import AppComponentBase from '@/components/AppComponentBase';
+import { Modal, Tabs, Form, Alert } from 'antd';
 import React from 'react';
-import { FormComponentProps } from "antd/es/form";
-import Input from "antd/es/input";
-import Checkbox from "antd/es/checkbox";
-import PermissionsTree from "@/components/PermissionsTree";
+import { FormComponentProps } from 'antd/es/form';
+import Input from 'antd/es/input';
+import Checkbox from 'antd/es/checkbox';
+import PermissionsTree from '@/components/PermissionsTree';
+
 const { TabPane } = Tabs;
 export interface ICreateOrUpdateRoleProps extends FormComponentProps {
   visible: boolean;
@@ -12,17 +13,17 @@ export interface ICreateOrUpdateRoleProps extends FormComponentProps {
   onOk: () => void;
   roleId: number | null;
 }
-class CreateOrUpdateRoleModal extends AppComponentBase<ICreateOrUpdateRoleProps>{
+class CreateOrUpdateRoleModal extends AppComponentBase<ICreateOrUpdateRoleProps> {
   render() {
     const { visible, onOk, onCancel, roleId } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
     let editRoleName = '';
     if (roleId !== null) {
-      editRoleName = ": " + getFieldValue("displayName")
+      editRoleName = `: ${getFieldValue('displayName')}`
     }
     return (
       <Modal
-        title={roleId == null ? "新增角色" : `编辑角色${editRoleName}`}
+        title={roleId == null ? '新增角色' : `编辑角色${editRoleName}`}
         visible={visible}
         onCancel={onCancel}
         destroyOnClose
@@ -32,11 +33,11 @@ class CreateOrUpdateRoleModal extends AppComponentBase<ICreateOrUpdateRoleProps>
           <TabPane tab="角色名称" key="1">
             <Form.Item label="角色名称" hasFeedback>
               {
-                getFieldDecorator("displayName", {
+                getFieldDecorator('displayName', {
                   rules: [
                     {
                       required: true,
-                      message: '这是必填项!'
+                      message: '这是必填项!',
                     },
                   ],
                 })(<Input />)
@@ -44,17 +45,17 @@ class CreateOrUpdateRoleModal extends AppComponentBase<ICreateOrUpdateRoleProps>
             </Form.Item>
             <Form.Item>
               {
-                getFieldDecorator("isDefault", {
-                  valuePropName: "checked",
+                getFieldDecorator('isDefault', {
+                  valuePropName: 'checked',
                   rules: [
                     {
                       required: true,
-                      message: '这是必填项!'
+                      message: '这是必填项!',
                     },
                   ],
-                })(<Checkbox  >
+                })(<Checkbox >
                   默认
-               </Checkbox>
+               </Checkbox>,
 
                 )
               }

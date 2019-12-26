@@ -1,4 +1,5 @@
 import { UserEditDto } from './userEditDto';
+
 export interface CreateOrUpdateUserInput{
      user:UserEditDto;
      assignedRoleNames:string[];

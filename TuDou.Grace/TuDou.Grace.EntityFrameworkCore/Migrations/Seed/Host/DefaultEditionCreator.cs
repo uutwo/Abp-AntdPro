@@ -30,7 +30,7 @@ namespace TuDou.Grace.Migrations.Seed.Host
                 _context.Editions.Add(defaultEdition);
                 _context.SaveChanges();
 
-                /* Add desired features to the standard edition, if wanted... */
+                /* 添加所需的功能到标准版，如果需要… */
             }
 
             if (defaultEdition.Id > 0)

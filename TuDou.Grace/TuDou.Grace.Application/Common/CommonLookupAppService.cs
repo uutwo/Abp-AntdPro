@@ -37,7 +37,7 @@ namespace TuDou.Grace.Common
         {
             if (AbpSession.TenantId != null)
             {
-                //Prevent tenants to get other tenant's users.
+                //阻止租户获取其他租户的用户。
                 input.TenantId = AbpSession.TenantId;
             }
 

@@ -1,13 +1,16 @@
 import * as _ from 'lodash';
+
 export class ArrayToTreeConverter {
-   static createTree(array: any[], parentIdProperty:string, idProperty:string, parentIdValue:number|null, childrenProperty: string, fieldMappings:any[]): any {
+  static createTree(array: any[],
+    parentIdProperty:string, idProperty:string,
+     parentIdValue:number|null, childrenProperty: string, fieldMappings:any[]): any {
         const tree:any = [];
 
-        let nodes = _.filter(array, [parentIdProperty, parentIdValue]);
+        const nodes = _.filter(array, [parentIdProperty, parentIdValue]);
 
         _.forEach(nodes, node => {
-            let newNode = {
-                data: node
+            const newNode = {
+                data: node,
             };
 
             this.mapFields(node, newNode, fieldMappings);
@@ -18,7 +21,7 @@ export class ArrayToTreeConverter {
                 idProperty,
                 node[idProperty],
                 childrenProperty,
-                fieldMappings
+                fieldMappings,
             );
 
             tree.push(newNode);
@@ -29,16 +32,16 @@ export class ArrayToTreeConverter {
 
    static mapFields(node:any, newNode:any, fieldMappings:any): void {
         _.forEach(fieldMappings, fieldMapping => {
-            if (!fieldMapping['target']) {
+            if (!fieldMapping.target) {
                 return;
             }
 
             if (fieldMapping.hasOwnProperty('value')) {
-                newNode[fieldMapping['target']] = fieldMapping['value'];
-            } else if (fieldMapping['source']) {
-                newNode[fieldMapping['target']] = node[fieldMapping['source']];
-            } else if (fieldMapping['targetFunction']) {
-                newNode[fieldMapping['target']] = fieldMapping['targetFunction'](node);
+                newNode[fieldMapping.target] = fieldMapping.value;
+            } else if (fieldMapping.source) {
+                newNode[fieldMapping.target] = node[fieldMapping.source];
+            } else if (fieldMapping.targetFunction) {
+                newNode[fieldMapping.target] = fieldMapping.targetFunction(node);
             }
         });
     }

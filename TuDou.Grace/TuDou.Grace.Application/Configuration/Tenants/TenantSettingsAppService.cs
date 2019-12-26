@@ -40,7 +40,7 @@ namespace TuDou.Grace.Configuration.Tenants
             _binaryObjectManager = binaryObjectManager;
         }
 
-        #region Get Settings
+        #region 获取设置
 
         public async Task<TenantSettingsEditDto> GetAllSettings()
         {
@@ -48,16 +48,8 @@ namespace TuDou.Grace.Configuration.Tenants
             {
                 UserManagement = await GetUserManagementSettingsAsync(),
                 Security = await GetSecuritySettingsAsync(),
-                Billing = await GetBillingSettingsAsync(),
-                OtherSettings = await GetOtherSettingsAsync(),
                 Email = await GetEmailSettingsAsync()
             };
-
-            if (!_multiTenancyConfig.IsEnabled || Clock.SupportsMultipleTimezone)
-            {
-                settings.General = await GetGeneralSettingsAsync();
-            }
-
             if (!_multiTenancyConfig.IsEnabled)
             {
                 if (_ldapModuleConfig.IsEnabled)
@@ -114,28 +106,6 @@ namespace TuDou.Grace.Configuration.Tenants
             };
         }
 
-        private async Task<GeneralSettingsEditDto> GetGeneralSettingsAsync()
-        {
-            var settings = new GeneralSettingsEditDto();
-
-            if (Clock.SupportsMultipleTimezone)
-            {
-                var timezone = await SettingManager.GetSettingValueForTenantAsync(TimingSettingNames.TimeZone, AbpSession.GetTenantId());
-
-                settings.Timezone = timezone;
-                settings.TimezoneForComparison = timezone;
-            }
-
-            var defaultTimeZoneId = await _timeZoneService.GetDefaultTimezoneAsync(SettingScopes.Tenant, AbpSession.TenantId);
-
-            if (settings.Timezone == defaultTimeZoneId)
-            {
-                settings.Timezone = string.Empty;
-            }
-
-            return settings;
-        }
-
         private async Task<TenantUserManagementSettingsEditDto> GetUserManagementSettingsAsync()
         {
             return new TenantUserManagementSettingsEditDto
@@ -176,24 +146,6 @@ namespace TuDou.Grace.Configuration.Tenants
                 DefaultPasswordComplexity = defaultPasswordComplexitySetting,
                 UserLockOut = await GetUserLockOutSettingsAsync(),
                 TwoFactorLogin = await GetTwoFactorLoginSettingsAsync()
-            };
-        }
-
-        private async Task<TenantBillingSettingsEditDto> GetBillingSettingsAsync()
-        {
-            return new TenantBillingSettingsEditDto()
-            {
-                LegalName = await SettingManager.GetSettingValueAsync(AppSettings.TenantManagement.BillingLegalName),
-                Address = await SettingManager.GetSettingValueAsync(AppSettings.TenantManagement.BillingAddress),
-                TaxVatNo = await SettingManager.GetSettingValueAsync(AppSettings.TenantManagement.BillingTaxVatNo)
-            };
-        }
-
-        private async Task<TenantOtherSettingsEditDto> GetOtherSettingsAsync()
-        {
-            return new TenantOtherSettingsEditDto()
-            {
-                IsQuickThemeSelectEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled)
             };
         }
 
@@ -239,29 +191,13 @@ namespace TuDou.Grace.Configuration.Tenants
 
         #endregion
 
-        #region Update Settings
+        #region 更新设置
 
         public async Task UpdateAllSettings(TenantSettingsEditDto input)
         {
             await UpdateUserManagementSettingsAsync(input.UserManagement);
             await UpdateSecuritySettingsAsync(input.Security);
-            await UpdateBillingSettingsAsync(input.Billing);
-            await UpdateOtherSettingsAsync(input.OtherSettings);
             await UpdateEmailSettingsAsync(input.Email);
-
-            //Time Zone
-            if (Clock.SupportsMultipleTimezone)
-            {
-                if (input.General.Timezone.IsNullOrEmpty())
-                {
-                    var defaultValue = await _timeZoneService.GetDefaultTimezoneAsync(SettingScopes.Tenant, AbpSession.TenantId);
-                    await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), TimingSettingNames.TimeZone, defaultValue);
-                }
-                else
-                {
-                    await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), TimingSettingNames.TimeZone, input.General.Timezone);
-                }
-            }
 
             if (!_multiTenancyConfig.IsEnabled)
             {
@@ -272,22 +208,6 @@ namespace TuDou.Grace.Configuration.Tenants
                     await UpdateLdapSettingsAsync(input.Ldap);
                 }
             }
-        }
-
-        private async Task UpdateOtherSettingsAsync(TenantOtherSettingsEditDto input)
-        {
-            await SettingManager.ChangeSettingForTenantAsync(
-                AbpSession.GetTenantId(),
-                AppSettings.UserManagement.IsQuickThemeSelectEnabled,
-                input.IsQuickThemeSelectEnabled.ToString().ToLowerInvariant()
-            );
-        }
-
-        private async Task UpdateBillingSettingsAsync(TenantBillingSettingsEditDto input)
-        {
-            await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AppSettings.TenantManagement.BillingLegalName, input.LegalName);
-            await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AppSettings.TenantManagement.BillingAddress, input.Address);
-            await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AppSettings.TenantManagement.BillingTaxVatNo, input.TaxVatNo);
         }
 
         private async Task UpdateLdapSettingsAsync(LdapSettingsEditDto input)
@@ -380,7 +300,6 @@ namespace TuDou.Grace.Configuration.Tenants
             }
 
             await UpdateUserLockOutSettingsAsync(settings.UserLockOut);
-            await UpdateTwoFactorLoginSettingsAsync(settings.TwoFactorLogin);
         }
 
         private async Task UpdatePasswordComplexitySettingsAsync(PasswordComplexitySetting settings)
@@ -423,29 +342,11 @@ namespace TuDou.Grace.Configuration.Tenants
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AbpZeroSettingNames.UserManagement.UserLockOut.MaxFailedAccessAttemptsBeforeLockout, settings.MaxFailedAccessAttemptsBeforeLockout.ToString());
         }
 
-        private async Task UpdateTwoFactorLoginSettingsAsync(TwoFactorLoginSettingsEditDto settings)
-        {
-            if (_multiTenancyConfig.IsEnabled &&
-                !await IsTwoFactorLoginEnabledForApplicationAsync()) //Two factor login can not be used by tenants if disabled by the host
-            {
-                return;
-            }
 
-            await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsEnabled, settings.IsEnabled.ToString().ToLowerInvariant());
-            await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsRememberBrowserEnabled, settings.IsRememberBrowserEnabled.ToString().ToLowerInvariant());
-
-            if (!_multiTenancyConfig.IsEnabled)
-            {
-                //These settings can only be changed by host, in a multitenant application.
-                await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsEmailProviderEnabled, settings.IsEmailProviderEnabled.ToString().ToLowerInvariant());
-                await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AbpZeroSettingNames.UserManagement.TwoFactorLogin.IsSmsProviderEnabled, settings.IsSmsProviderEnabled.ToString().ToLowerInvariant());
-                await SettingManager.ChangeSettingForTenantAsync(AbpSession.GetTenantId(), AppSettings.UserManagement.TwoFactorLogin.IsGoogleAuthenticatorEnabled, settings.IsGoogleAuthenticatorEnabled.ToString().ToLowerInvariant());
-            }
-        }
 
         #endregion
 
-        #region Others
+        #region 其他
 
         public async Task ClearLogo()
         {

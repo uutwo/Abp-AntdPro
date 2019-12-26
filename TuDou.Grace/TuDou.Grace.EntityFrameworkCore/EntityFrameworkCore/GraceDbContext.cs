@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using TuDou.Grace.Authorization.Roles;
 using TuDou.Grace.Authorization.Users;
 using TuDou.Grace.Chat;
+using TuDou.Grace.Common.Dictionary;
 using TuDou.Grace.Editions;
 using TuDou.Grace.Friendships;
 using TuDou.Grace.MultiTenancy;
-using TuDou.Grace.MultiTenancy.Accounting;
 using TuDou.Grace.MultiTenancy.Payments;
 using TuDou.Grace.Storage;
 
@@ -16,22 +16,20 @@ namespace TuDou.Grace.EntityFrameworkCore
 {
     public class GraceDbContext : AbpZeroDbContext<Tenant, Role, User, GraceDbContext>, IAbpPersistedGrantDbContext
     {
-        /* Define an IDbSet for each entity of the application */
+        /* 为应用程序的每个实体定义一个IDbSet */
 
         public virtual DbSet<BinaryObject> BinaryObjects { get; set; }
 
         public virtual DbSet<Friendship> Friendships { get; set; }
 
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
-
+        
         public virtual DbSet<SubscribableEdition> SubscribableEditions { get; set; }
 
         public virtual DbSet<SubscriptionPayment> SubscriptionPayments { get; set; }
 
-        public virtual DbSet<Invoice> Invoices { get; set; }
-
         public virtual DbSet<PersistedGrantEntity> PersistedGrants { get; set; }
-
+        public virtual DbSet<DataDictionary> DataDictionarys { get; set; }
         public GraceDbContext(DbContextOptions<GraceDbContext> options)
             : base(options)
         {

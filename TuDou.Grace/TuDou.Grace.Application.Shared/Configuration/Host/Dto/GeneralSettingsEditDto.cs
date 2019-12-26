@@ -5,7 +5,7 @@
         public string Timezone { get; set; }
 
         /// <summary>
-        /// This value is only used for comparing user's timezone to default timezone
+        /// 此值仅用于比较用户的时区与默认时区
         /// </summary>
         public string TimezoneForComparison { get; set; }
     }

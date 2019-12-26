@@ -5,17 +5,17 @@ namespace TuDou.Grace.Editions
     public class MoveTenantsToAnotherEditionJobArgs
     {
         /// <summary>
-        /// Id of the source edition to move tenants from
+        /// 将租户从源版本中移除的Id
         /// </summary>
         public int SourceEditionId { get; set; }
 
         /// <summary>
-        /// Id of the target edition for tenants to move
+        /// 用于租户移动的目标版本的Id
         /// </summary>
         public int TargetEditionId { get; set; }
 
         /// <summary>
-        /// Identifier of the user who starts move operation
+        /// 开始移动操作的用户的标识符
         /// </summary>
         public UserIdentifier User { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿namespace TuDou.Grace.Authorization.Roles
 {
+
     public static class StaticRoleNames
     {
         public static class Host

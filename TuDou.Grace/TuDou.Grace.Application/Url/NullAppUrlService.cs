@@ -13,7 +13,7 @@ namespace TuDou.Grace.Url
 
         public string CreateEmailActivationUrlFormat(int? tenantId)
         {
-            throw new NotImplementedException();
+            return "";
         }
 
         public string CreatePasswordResetUrlFormat(int? tenantId)

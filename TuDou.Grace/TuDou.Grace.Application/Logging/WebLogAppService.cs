@@ -72,10 +72,10 @@ namespace TuDou.Grace.Logging
 
         public FileDto DownloadWebLogs()
         {
-            //Create temporary copy of logs
+            //创建日志的临时副本
             var logFiles = GetAllLogFiles();
 
-            //Create the zip file
+            //创建zip文件
             var zipFileDto = new FileDto("WebSiteLogs.zip", MimeTypeNames.ApplicationZip);
 
             using (var outputZipFileStream = new MemoryStream())

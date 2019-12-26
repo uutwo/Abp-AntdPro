@@ -7,7 +7,7 @@ using Abp.Timing;
 namespace TuDou.Grace.Authorization.Users
 {
     /// <summary>
-    /// Represents a user in the system.
+    ///系统中的用户
     /// </summary>
     public class User : AbpUser<User>
     {
@@ -32,11 +32,11 @@ namespace TuDou.Grace.Authorization.Users
         }
 
         /// <summary>
-        /// Creates admin <see cref="User"/> for a tenant.
+        /// 为一个租户创建admin <see cref="User"/>。
         /// </summary>
-        /// <param name="tenantId">Tenant Id</param>
-        /// <param name="emailAddress">Email address</param>
-        /// <returns>Created <see cref="User"/> object</returns>
+        /// <param name="tenantId">租户 Id</param>
+        /// <param name="emailAddress">邮箱地址</param>
+        /// <returns>创建的<参见cref="User"/>对象</returns>
         public static User CreateTenantAdminUser(int tenantId, string emailAddress)
         {
             var user = new User
@@ -57,8 +57,8 @@ namespace TuDou.Grace.Authorization.Users
 
         public override void SetNewPasswordResetCode()
         {
-            /* This reset code is intentionally kept short.
-             * It should be short and easy to enter in a mobile application, where user can not click a link.
+            /* 此重置代码有意保持简短。
+             * 它应该是简短的，容易进入移动应用程序，在那里用户不能点击链接。
              */
             PasswordResetCode = Guid.NewGuid().ToString("N").Truncate(10).ToUpperInvariant();
         }

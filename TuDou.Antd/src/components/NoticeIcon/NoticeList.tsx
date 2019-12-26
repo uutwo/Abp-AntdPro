@@ -1,11 +1,13 @@
-import { List, Avatar } from 'antd';
+import { List, Avatar, Typography } from 'antd';
 import React from 'react';
 import classNames from 'classnames';
+import moment from 'moment';
 import styles from './NoticeList.less';
 import read from '@/assets/read.svg';
 import unread from '@/assets/unread.svg';
-import {  FormattedUserNotification } from '@/services/notification.ts/dtos/userNotification';
+import { FormattedUserNotification } from '@/services/notification/dtos/userNotification';
 
+const { Paragraph } = Typography;
 export interface NoticeIconTabProps {
   count?: number;
   name?: string;
@@ -27,7 +29,6 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
   data = [],
   onClick,
   onClear,
-  title,
   onViewMore,
   emptyText,
   showClear = true,
@@ -51,7 +52,7 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
           const itemCls = classNames(styles.item, {
             [styles.read]: !item.isUnread,
           });
-         const leftIcon=item.isUnread?<Avatar src={unread}/>:<Avatar src={read}/>
+         const leftIcon = item.isUnread ? <Avatar src={unread}/> : <Avatar src={read}/>
           return (
             <List.Item
               className={itemCls}
@@ -63,13 +64,14 @@ const NoticeList: React.SFC<NoticeIconTabProps> = ({
                 avatar={leftIcon}
                 title={
                   <div className={styles.title}>
-                    {item.text}
-                    <div className={styles.extra}>{item.state=="UNREAD"?"未读":"已读"}</div>
+                  <Paragraph ellipsis={{
+                    rows: 1 }}>{moment(item.creationTime).fromNow()}</Paragraph>
+                    <div className={styles.extra}>{item.state === 'UNREAD' ? '未读' : '已读'}</div>
                   </div>
                 }
                 description={
                   <div>
-                    <div className={styles.description}>{item.data.message}</div>
+                    <div className={styles.description}>{item.text}</div>
                     <div className={styles.datetime}>{item.creationTime}</div>
                   </div>
                 }

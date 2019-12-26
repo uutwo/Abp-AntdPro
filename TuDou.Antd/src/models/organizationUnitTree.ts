@@ -1,8 +1,9 @@
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
-import { ListResultDto } from '@/shared/dtos/listResultDto';
-import { OrganizationUnitDto } from './../services/organizationunits/dtos/organizationUnitDto';
+import ListResultDto from '@/shared/dtos/listResultDto';
 import OrganizationUnitsService from '@/services/organizationunits/organizationunits'
+import { OrganizationUnitDto } from '@/services/organizationunits/dtos/organizationUnitDto';
+
 export interface OrganizationUnitTreeModelState {
    allOrganizationUnits?:ListResultDto<OrganizationUnitDto>;
    selectedOrganizationUnits?:string[];
@@ -25,37 +26,36 @@ const OrganizationUnitTreeModel: OrganizationUnitTreeModelType = {
   namespace: 'organizationUnitTree',
   state: {
     allOrganizationUnits: undefined,
-    selectedOrganizationUnits:[]
+    selectedOrganizationUnits: [],
   },
 
   effects: {
     *getAllOrganizationUnits(_, { call, put }) {
-        const response= yield call(OrganizationUnitsService.getOrganizationUnits)
+        const response = yield call(OrganizationUnitsService.getOrganizationUnits)
         yield put({
-          type:'saveAllOrganizationUnits',
-          payload:response.result
+          type: 'saveAllOrganizationUnits',
+          payload: response.result,
         })
-
     },
-    *selectOrganizationUnits({ payload }, { call, put }) {
+    *selectOrganizationUnits({ payload }, { put }) {
       yield put({
-        type:'saveSelectedOrganizationUnits',
-        payload:payload
+        type: 'saveSelectedOrganizationUnits',
+        payload,
       })
-    }
+    },
   },
 
   reducers: {
     saveAllOrganizationUnits(state, { payload }) {
       return {
         ...state,
-        allOrganizationUnits:payload
+        allOrganizationUnits: payload,
       }
     },
     saveSelectedOrganizationUnits(state, { payload }) {
       return {
         ...state,
-        selectedOrganizationUnits:payload
+        selectedOrganizationUnits: payload,
       }
     },
   },

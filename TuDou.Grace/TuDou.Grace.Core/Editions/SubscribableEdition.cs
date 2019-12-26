@@ -6,12 +6,12 @@ using TuDou.Grace.MultiTenancy.Payments;
 namespace TuDou.Grace.Editions
 {
     /// <summary>
-    /// Extends <see cref="Edition"/> to add subscription features.
+    /// 扩展<参见cref="Edition"/>以添加订阅功能。
     /// </summary>
     public class SubscribableEdition : Edition
     {
         /// <summary>
-        /// The edition that will assigned after expire date
+        /// 将在过期日期后分配的版本
         /// </summary>
         public int? ExpiringEditionId { get; set; }
 
@@ -22,7 +22,7 @@ namespace TuDou.Grace.Editions
         public int? TrialDayCount { get; set; }
 
         /// <summary>
-        /// The account will be taken an action (termination of tenant account) after the specified days when the subscription is expired.
+        /// 该帐户将采取行动(终止租户帐户)在指定的日期后，订阅到期。
         /// </summary>
         public int? WaitingDayAfterExpire { get; set; }
 

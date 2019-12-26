@@ -78,7 +78,7 @@ namespace TuDou.Grace.Friendships.Cache
                 UpdateUserOnCache(userIdentifier, user);
             }
         }
-        
+
         [UnitOfWork]
         public virtual void IncreaseUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier, int change)
         {
@@ -173,22 +173,24 @@ namespace TuDou.Grace.Friendships.Cache
 
             using (_unitOfWorkManager.Current.SetTenantId(userIdentifier.TenantId))
             {
-                var friendCacheItems =
-                    (from friendship in _friendshipRepository.GetAll()
-                     join chatMessage in _chatMessageRepository.GetAll() on
-                     new { UserId = userIdentifier.UserId, TenantId = userIdentifier.TenantId, TargetUserId = friendship.FriendUserId, TargetTenantId = friendship.FriendTenantId, ChatSide = ChatSide.Receiver } equals
-                     new { UserId = chatMessage.UserId, TenantId = chatMessage.TenantId, TargetUserId = chatMessage.TargetUserId, TargetTenantId = chatMessage.TargetTenantId, ChatSide = chatMessage.Side } into chatMessageJoined
-                     where friendship.UserId == userIdentifier.UserId
-                     select new FriendCacheItem
-                     {
-                         FriendUserId = friendship.FriendUserId,
-                         FriendTenantId = friendship.FriendTenantId,
-                         State = friendship.State,
-                         FriendUserName = friendship.FriendUserName,
-                         FriendTenancyName = friendship.FriendTenancyName,
-                         FriendProfilePictureId = friendship.FriendProfilePictureId,
-                         UnreadMessageCount = chatMessageJoined.Count(cm => cm.ReadState == ChatMessageReadState.Unread)
-                     }).ToList();
+                var friendCacheItems = _friendshipRepository.GetAll()
+                    .Where(friendship => friendship.UserId == userIdentifier.UserId)
+                    .Select(friendship => new FriendCacheItem
+                    {
+                        FriendUserId = friendship.FriendUserId,
+                        FriendTenantId = friendship.FriendTenantId,
+                        State = friendship.State,
+                        FriendUserName = friendship.FriendUserName,
+                        FriendTenancyName = friendship.FriendTenancyName,
+                        FriendProfilePictureId = friendship.FriendProfilePictureId,
+                        UnreadMessageCount =
+                            _chatMessageRepository.GetAll().Count(cm => cm.ReadState == ChatMessageReadState.Unread &&
+                                                               cm.UserId == userIdentifier.UserId &&
+                                                               cm.TenantId == userIdentifier.TenantId &&
+                                                               cm.TargetUserId == friendship.FriendUserId &&
+                                                               cm.TargetTenantId == friendship.FriendTenantId &&
+                                                               cm.Side == ChatSide.Receiver)
+                    }).ToList();
 
                 var user = AsyncHelper.RunSync(() => _userManager.FindByIdAsync(userIdentifier.UserId.ToString()));
 

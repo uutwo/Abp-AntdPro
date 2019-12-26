@@ -1,8 +1,9 @@
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
-import { ListResultDto } from '@/shared/dtos/listResultDto';
+import ListResultDto from '@/shared/dtos/listResultDto';
 import { FlatPermissionWithLevelDto } from '@/services/permission/dtos/flatPermissionWithLevelDto';
 import PermissionService from '@/services/permission/permission';
+
 export interface PermissionModelState {
    allPermissions?:ListResultDto<FlatPermissionWithLevelDto>;
    selectedPermissionsName?:string[];
@@ -25,40 +26,39 @@ const PermissionModel: PermissionModelType = {
   namespace: 'permissions',
   state: {
     allPermissions: undefined,
-    selectedPermissionsName:[]
+    selectedPermissionsName: [],
   },
 
   effects: {
     *getAllPermissions(_, { call, put }) {
-        const response= yield call(PermissionService.getAllPermissions)
+        const response = yield call(PermissionService.getAllPermissions)
         yield put({
-          type:'saveAllPermissions',
-          payload:response.result
+          type: 'saveAllPermissions',
+          payload: response.result,
         })
-
     },
-    *selectPermissionsTree({ payload }, { call, put }) {
+    *selectPermissionsTree({ payload }, { put }) {
       yield put({
-        type:'getAllPermissions'
+        type: 'getAllPermissions',
       })
       yield put({
-        type:'saveSelectedPermissions',
-        payload:payload
+        type: 'saveSelectedPermissions',
+        payload,
       })
-    }
+    },
   },
 
   reducers: {
     saveAllPermissions(state, { payload }) {
       return {
         ...state,
-        allPermissions:payload
+        allPermissions: payload,
       }
     },
     saveSelectedPermissions(state, { payload }) {
       return {
         ...state,
-        selectedPermissionsName:payload
+        selectedPermissionsName: payload,
       }
     },
   },

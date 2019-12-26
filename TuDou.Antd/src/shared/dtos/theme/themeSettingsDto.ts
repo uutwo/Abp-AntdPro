@@ -1,8 +1,8 @@
-import { ThemeLayoutSettingsDto } from "./themeLayoutSettingsDto";
-import { ThemeHeaderSettingsDto } from "./themeHeaderSettingsDto";
-import { ThemeSubHeaderSettingsDto } from "./themeSubHeaderSettingsDto";
-import { ThemeMenuSettingsDto } from "./themeMenuSettingsDto";
-import { ThemeFooterSettingsDto } from "./themeFooterSettingsDto";
+import { ThemeLayoutSettingsDto } from './themeLayoutSettingsDto';
+import { ThemeHeaderSettingsDto } from './themeHeaderSettingsDto';
+import { ThemeSubHeaderSettingsDto } from './themeSubHeaderSettingsDto';
+import { ThemeMenuSettingsDto } from './themeMenuSettingsDto';
+import { ThemeFooterSettingsDto } from './themeFooterSettingsDto';
 
 export interface ThemeSettingsDto {
     theme: string | undefined;

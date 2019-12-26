@@ -90,7 +90,7 @@ namespace TuDou.Grace.Authorization.Users
 
         public async Task<string> GetAccountSwitchToken(long targetUserId, int? targetTenantId)
         {
-            //Create a cache item
+            //创建缓存项
             var cacheItem = new SwitchToLinkedAccountCacheItem(
                 targetTenantId,
                 targetUserId,
@@ -98,7 +98,7 @@ namespace TuDou.Grace.Authorization.Users
                 AbpSession.ImpersonatorUserId
             );
 
-            //Create a random token and save to the cache
+            //创建一个随机令牌并保存到缓存中
             var token = Guid.NewGuid().ToString();
 
             await _cacheManager
@@ -116,13 +116,13 @@ namespace TuDou.Grace.Authorization.Users
                 throw new UserFriendlyException(L("SwitchToLinkedAccountTokenErrorMessage"));
             }
 
-            //Get the user from tenant
+            //从承租者获取用户
             var user = await _userManager.FindByIdAsync(cacheItem.TargetUserId.ToString());
 
-            //Create identity
+            //创建身份
             var identity = (ClaimsIdentity)(await _principalFactory.CreateAsync(user)).Identity;
 
-            //Add claims for audit logging
+            //添加审计日志的声明
             if (cacheItem.ImpersonatorTenantId.HasValue)
             {
                 identity.AddClaim(new Claim(AbpClaimTypes.ImpersonatorTenantId, cacheItem.ImpersonatorTenantId.Value.ToString(CultureInfo.InvariantCulture)));
@@ -133,7 +133,7 @@ namespace TuDou.Grace.Authorization.Users
                 identity.AddClaim(new Claim(AbpClaimTypes.ImpersonatorUserId, cacheItem.ImpersonatorUserId.Value.ToString(CultureInfo.InvariantCulture)));
             }
 
-            //Remove the cache item to prevent re-use
+            //删除缓存项以防止重复使用
             await _cacheManager.GetSwitchToLinkedAccountCache().RemoveAsync(switchAccountToken);
 
             return new UserAndIdentity(user, identity);

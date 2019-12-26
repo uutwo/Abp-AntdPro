@@ -1,6 +1,6 @@
-import { AuditedEntityDto } from "./auditedEntityDto";
+import AuditedEntityDto from './auditedEntityDto';
 
-export interface FullAuditedEntityDto<T=number> extends AuditedEntityDto<T>{
+export default interface FullAuditedEntityDto<T=number> extends AuditedEntityDto<T>{
     isDeleted:boolean;
     deleterUserId:boolean;
     deletionTime:Date;

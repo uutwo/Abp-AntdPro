@@ -3,6 +3,7 @@ using Abp.Auditing;
 using Abp.Authorization;
 using Abp.Authorization.Users;
 using Abp.Configuration.Startup;
+using Abp.Runtime.Security;
 using Abp.UI;
 using Microsoft.AspNetCore.Mvc;
 using TuDou.Grace.Authorization;
@@ -59,8 +60,13 @@ namespace TuDou.Grace.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = "")
         {
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                ViewBag.ReturnUrl = returnUrl;
+            }
+
             return View();
         }
 

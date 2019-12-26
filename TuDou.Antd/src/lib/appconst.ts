@@ -8,25 +8,25 @@ const AppConsts = {
   authorization: {
     encrptedAuthTokenName: 'enc_auth_token',
   },
-  defaultPageSize:10,
-  defaultPageIndex:0,
+  defaultPageSize: 10,
+  defaultPageIndex: 0,
   appBaseUrl: process.env.REACT_APP_APP_BASE_URL,
   remoteServiceBaseUrl: process.env.REACT_APP_REMOTE_SERVICE_BASE_URL,
-  localeMappings:{
-    "moment": [
+  localeMappings: {
+    moment: [
       {
-        "from": "es-MX",
-        "to": "es"
+        from: 'es-MX',
+        to: 'es',
       },
       {
-        "from": "zh-Hans",
-        "to": "zh-cn"
+        from: 'zh-Hans',
+        to: 'zh-cn',
       },
       {
-        "from": "vi",
-        "to": "en-gb"
-      }
+        from: 'vi',
+        to: 'en-gb',
+      },
     ],
-  }
+  },
 };
 export default AppConsts;

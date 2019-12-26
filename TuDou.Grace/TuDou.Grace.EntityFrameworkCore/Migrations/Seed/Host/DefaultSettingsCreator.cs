@@ -26,11 +26,17 @@ namespace TuDou.Grace.Migrations.Seed.Host
                 tenantId = MultiTenancyConsts.DefaultTenantId;
             }
 
-            //Emailing
-            AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, "admin@mydomain.com", tenantId);
-            AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "mydomain.com mailer", tenantId);
-
-            //Languages
+            //邮箱
+            AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, "graceabp@163.com", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "tudou", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Host, "smtp.163.com", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Port, "587", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.UserName, "graceabp@163.com", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Password, "123qwe", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, "false", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Domain, "", tenantId);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.EnableSsl, "true", tenantId);
+            //多语言
             AddSettingIfNotExists(LocalizationSettingNames.DefaultLanguage, "zh-Hans", tenantId);
         }
 

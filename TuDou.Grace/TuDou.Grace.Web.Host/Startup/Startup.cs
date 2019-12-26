@@ -39,6 +39,7 @@ using TuDou.Grace.Schemas;
 using TuDou.Grace.Web.HealthCheck;
 using HealthChecksUISettings = HealthChecks.UI.Configuration.Settings;
 using TuDou.Grace.Web.Authentication.JwtBearer;
+using Hangfire.MySql.Core;
 
 namespace TuDou.Grace.Web.Startup
 {
@@ -57,8 +58,8 @@ namespace TuDou.Grace.Web.Startup
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            
-            //mvc
+
+            //MVC
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute());
@@ -107,6 +108,7 @@ namespace TuDou.Grace.Web.Startup
                 //Swagger—启用这一行和配置方法中的相关行，以启用Swagger UI
                 services.AddSwaggerGen(options =>
                 {
+
                     options.SwaggerDoc("v1", new OpenApiInfo() { Title = "Grace API", Version = "v1" });
                     options.DocInclusionPredicate((docName, description) => true);
                     options.ParameterFilter<SwaggerEnumParameterFilter>();
@@ -117,19 +119,12 @@ namespace TuDou.Grace.Web.Startup
                 });
             }
 
-            //Recaptcha
-            services.AddRecaptcha(new RecaptchaOptions
-            {
-                SiteKey = _appConfiguration["Recaptcha:SiteKey"],
-                SecretKey = _appConfiguration["Recaptcha:SecretKey"]
-            });
-
             if (WebConsts.HangfireDashboardEnabled)
             {
                 //Hangfire(支持使用Hangfire而不是默认的作业管理器)
                 services.AddHangfire(config =>
                 {
-                    config.UseSqlServerStorage(_appConfiguration.GetConnectionString("Default"));
+                    config.UseStorage(new MySqlStorage(_appConfiguration.GetConnectionString("Default")));
                 });
             }
 
@@ -214,11 +209,6 @@ namespace TuDou.Grace.Web.Startup
                     Authorization = new[] { new AbpHangfireAuthorizationFilter(AppPermissions.Pages_Administration_HangfireDashboard) }
                 });
                 app.UseHangfireServer();
-            }
-
-            if (bool.Parse(_appConfiguration["Payment:Stripe:IsActive"]))
-            {
-                StripeConfiguration.ApiKey = _appConfiguration["Payment:Stripe:SecretKey"];
             }
 
             if (WebConsts.GraphQL.Enabled)

@@ -1,4 +1,4 @@
-import { PagedRequestDto } from "@/shared/dtos/pagedRequestDto";
+import PagedRequestDto from '@/shared/dtos/pagedRequestDto';
 
 export interface GetEntityTypeChangeInput extends PagedRequestDto{
     entityTypeFullName:string;

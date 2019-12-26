@@ -1,4 +1,4 @@
-import { RoleEditDto } from "./roleEditDto";
+import { RoleEditDto } from './roleEditDto';
 
 export interface CreateOrUpdateRoleInput{
   role:RoleEditDto;

@@ -11,7 +11,7 @@ using TuDou.Grace.MultiTenancy;
 namespace TuDou.Grace
 {
     /// <summary>
-    /// Derive your application services from this class.
+    /// 从这个类派生应用程序服务。
     /// </summary>
     public abstract class GraceAppServiceBase : ApplicationService
     {
@@ -29,7 +29,7 @@ namespace TuDou.Grace
             var user = await UserManager.FindByIdAsync(AbpSession.GetUserId().ToString());
             if (user == null)
             {
-                throw new Exception("There is no current user!");
+                throw new Exception("没有当前用户!");
             }
 
             return user;

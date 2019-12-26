@@ -6,9 +6,9 @@ using Abp.MultiTenancy;
 namespace TuDou.Grace.Authorization
 {
     /// <summary>
-    /// Application's authorization provider.
-    /// Defines permissions for the application.
-    /// See <see cref="AppPermissions"/> for all permission names.
+    /// 应用程序的授权提供者。
+    /// 定义应用程序的权限。
+    /// 有关所有权限名称，请参见<cref="AppPermissions"/>。
     /// </summary>
     public class AppAuthorizationProvider : AuthorizationProvider
     {
@@ -26,11 +26,9 @@ namespace TuDou.Grace.Authorization
 
         public override void SetPermissions(IPermissionDefinitionContext context)
         {
-            //COMMON PERMISSIONS (FOR BOTH OF TENANTS AND HOST)
+            //公共权限(租户和主机)
 
             var pages = context.GetPermissionOrNull(AppPermissions.Pages) ?? context.CreatePermission(AppPermissions.Pages, L("Pages"));
-            pages.CreateChildPermission(AppPermissions.Pages_DemoUiComponents, L("DemoUiComponents"));
-
             var administration = pages.CreateChildPermission(AppPermissions.Pages_Administration, L("Administration"));
 
             var roles = administration.CreateChildPermission(AppPermissions.Pages_Administration_Roles, L("Roles"));
@@ -60,14 +58,14 @@ namespace TuDou.Grace.Authorization
 
             administration.CreateChildPermission(AppPermissions.Pages_Administration_UiCustomization, L("VisualSettings"));
 
-            //TENANT-SPECIFIC PERMISSIONS
+            //使用与租户相关的权限
 
             pages.CreateChildPermission(AppPermissions.Pages_Tenant_Dashboard, L("Dashboard"), multiTenancySides: MultiTenancySides.Tenant);
 
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Tenant_Settings, L("Settings"), multiTenancySides: MultiTenancySides.Tenant);
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Tenant_SubscriptionManagement, L("Subscription"), multiTenancySides: MultiTenancySides.Tenant);
 
-            //HOST-SPECIFIC PERMISSIONS
+            //主机权限
 
             var editions = pages.CreateChildPermission(AppPermissions.Pages_Editions, L("Editions"), multiTenancySides: MultiTenancySides.Host);
             editions.CreateChildPermission(AppPermissions.Pages_Editions_Create, L("CreatingNewEdition"), multiTenancySides: MultiTenancySides.Host);

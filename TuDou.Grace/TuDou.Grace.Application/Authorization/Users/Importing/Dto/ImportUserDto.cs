@@ -15,7 +15,7 @@
         public string Password { get; set; }
 
         /// <summary>
-        /// comma separated list
+        /// 逗号分隔列表
         /// </summary>
         public string[] AssignedRoleNames { get; set; }
 

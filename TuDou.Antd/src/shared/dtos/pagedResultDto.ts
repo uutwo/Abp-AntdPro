@@ -1,5 +1,4 @@
-export interface PagedResultDto<T> {
+export default interface PagedResultDto<T> {
     totalCount: number;
     items: T[];
   }
-  

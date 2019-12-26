@@ -1,4 +1,4 @@
-import { EntityDto } from "@/shared/dtos/entityDto";
+import EntityDto from '@/shared/dtos/entityDto';
 
 export interface OrganizationUnitUserListDto extends EntityDto{
     name:string;

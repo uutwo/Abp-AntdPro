@@ -3,7 +3,7 @@ import { routerRedux } from 'dva/router';
 import { Effect } from 'dva';
 import { stringify } from 'querystring';
 import TokenAuthService from '@/services/tokenAuth/tokenAuth'
-import {  getFakeCaptcha } from '@/services/login';
+import { getFakeCaptcha } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import AppConsts from '@/lib/appconst';
@@ -34,7 +34,7 @@ const Model: LoginModelType = {
 
   state: {
     status: undefined,
-    resetPasswordModalState:false
+    resetPasswordModalState: false,
   },
 
   effects: {
@@ -46,7 +46,7 @@ const Model: LoginModelType = {
       });
       // Login successfully
       if (response.success === true) {
-        const {result}= response;
+        const { result } = response;
         if (result.shouldResetPassword) {
           // Password reset
           yield put({
@@ -57,11 +57,13 @@ const Model: LoginModelType = {
         }
 
         // token重置时间
-        let tokenExpireDate = payload.rememberClient ? (new Date(new Date().getTime() + 1000 * result.expireInSeconds)) : undefined;
+        const tokenExpireDate = payload.rememberClient ?
+         (new Date(new Date().getTime() + 1000 * result.expireInSeconds)) : undefined;
         // set Token
-        abp.auth.setToken(result.accessToken,tokenExpireDate);
+        abp.auth.setToken(result.accessToken, tokenExpireDate);
         // set cookie
-        abp.utils.setCookieValue(AppConsts.authorization.encrptedAuthTokenName,result.encryptedAccessToken,tokenExpireDate,abp.appPath);
+        abp.utils.setCookieValue(AppConsts.authorization.encrptedAuthTokenName,
+          result.encryptedAccessToken, tokenExpireDate, abp.appPath);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };
@@ -79,7 +81,6 @@ const Model: LoginModelType = {
         }
         yield put(routerRedux.replace(redirect || '/'));
       }
-
     },
 
     *getCaptcha({ payload }, { call }) {
@@ -104,17 +105,17 @@ const Model: LoginModelType = {
   reducers: {
     // 修改登录状态
     changeLoginStatus(state, { payload }) {
-      setAuthority("admin");
+      setAuthority('admin');
       return {
         ...state,
         status: payload.success,
         type: payload.type,
       };
     },
-    changeResetPasswordModalStatus(state, { payload }){
+    changeResetPasswordModalStatus(state, { payload }) {
       return {
         ...state,
-        resetPasswordModalState:payload
+        resetPasswordModalState: payload,
       };
     },
   },

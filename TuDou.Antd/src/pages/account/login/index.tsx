@@ -1,5 +1,5 @@
 import { Alert, Checkbox, Icon } from 'antd';
-import React, { Component } from 'react';
+import React from 'react';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { Dispatch, AnyAction } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
@@ -12,8 +12,10 @@ import { LoginParamsType } from '@/services/login';
 import { ConnectState } from '@/models/connect';
 import { AuthenticateModel } from '@/services/tokenAuth/dtos/authenticateModel';
 import ResetPassword from './components/ResetPassword';
+import TenantsSelect from '@/components/TenantsSelect';
+import AppComponentBase from '@/components/AppComponentBase';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
+const { Tab, UserName, Password, Submit } = LoginComponents;
 
 export interface LoginProps {
   dispatch: Dispatch<AnyAction>;
@@ -29,7 +31,7 @@ export interface LoginState {
   userLogin: login,
   submitting: loading.effects['login/login'],
 }))
-class Login extends Component<LoginProps, LoginState> {
+class Login extends AppComponentBase<LoginProps, LoginState> {
   loginForm: FormComponentProps['form'] | undefined | null = undefined;
 
   state: LoginState = {
@@ -51,7 +53,7 @@ class Login extends Component<LoginProps, LoginState> {
         type: 'login/login',
         payload: {
           ...values,
-          rememberClient
+          rememberClient,
         },
       });
     }
@@ -91,27 +93,33 @@ class Login extends Component<LoginProps, LoginState> {
   renderMessage = (content: string) => (
     <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
   );
-  resetPasswordModalOk=()=>{
-    const {dispatch} = this.props;
+
+  resetPasswordModalOk = () => {
+    const { dispatch } = this.props;
     dispatch({
-      type:'login/changeResetPasswordModalStatus',
-      payload:false
+      type: 'login/changeResetPasswordModalStatus',
+      payload: false,
     })
   }
+
   // 关闭模态框
-  resetPasswordModalCancel=()=>{
-    const {dispatch} = this.props;
+  resetPasswordModalCancel = () => {
+    const { dispatch } = this.props;
     dispatch({
-      type:'login/changeResetPasswordModalStatus',
-      payload:false
+      type: 'login/changeResetPasswordModalStatus',
+      payload: false,
     })
   }
+
   render() {
     const { userLogin, submitting } = this.props;
-    const { status, type: loginType,resetPasswordModalState } = userLogin;
+    const { status, type: loginType, resetPasswordModalState } = userLogin;
     const { type, rememberClient } = this.state;
     return (
       <div className={styles.main}>
+        {
+          abp.multiTenancy.isEnabled ? <TenantsSelect /> : null
+        }
         <LoginComponents
           defaultActiveKey={type}
           onTabChange={this.onTabChange}
@@ -120,30 +128,31 @@ class Login extends Component<LoginProps, LoginState> {
             this.loginForm = form;
           }}
         >
-          <Tab key="account" tab="账户密码登录">
+
+          <Tab key="account" tab={this.L('GoToApplication')}>
             {status === false &&
               loginType === 'account' &&
               !submitting &&
               this.renderMessage(
-                "用户名或密码有误",
+                this.L('InvalidUserNameOrPassword'),
               )}
             <UserName
               name="userNameOrEmailAddress"
-              placeholder="用户名"
+              placeholder={this.L('UserNameOrEmail')}
               rules={[
                 {
                   required: true,
-                  message: "用户名不能为空",
+                  message: this.L('ThisFieldIsRequired'),
                 },
               ]}
             />
             <Password
               name="password"
-              placeholder="密码"
+              placeholder={this.L('Password')}
               rules={[
                 {
                   required: true,
-                  message: "密码不能为空"
+                  message: this.L('ThisFieldIsRequired'),
                 },
               ]}
               onPressEnter={e => {
@@ -154,64 +163,30 @@ class Login extends Component<LoginProps, LoginState> {
               }}
             />
           </Tab>
-          <Tab key="mobile" tab="手机号登陆">
-            {status === false &&
-              loginType === 'mobile' &&
-              !submitting &&
-              this.renderMessage(
-                "验证码错误",
-              )}
-            <Mobile
-              name="mobile"
-              placeholder="手机号"
-              rules={[
-                {
-                  required: true,
-                  message: "手机号不能为空",
-                },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: "请输入正确格式手机号"
-                },
-              ]}
-            />
-            <Captcha
-              name="captcha"
-              placeholder="请输入验证码"
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText="获取验证码"
-              getCaptchaSecondText="秒"
-              rules={[
-                {
-                  required: true,
-                  message: "验证码不能为空",
-                },
-              ]}
-            />
-          </Tab>
           <div>
             <Checkbox checked={rememberClient} onChange={this.changeAutoLogin}>
-              自动登录
+              {this.L('RememberMe')}
             </Checkbox>
             <a style={{ float: 'right' }} href="">
-             忘记密码
+            {this.L('ForgotPassword')}
             </a>
           </div>
           <Submit loading={submitting}>
-           登陆
+          {this.L('SignUp')}
           </Submit>
           <div className={styles.other}>
-            其他登录方式
             <Icon type="alipay-circle" className={styles.icon} theme="outlined" />
             <Icon type="taobao-circle" className={styles.icon} theme="outlined" />
             <Icon type="weibo-circle" className={styles.icon} theme="outlined" />
-            <Link className={styles.register} to="/user/register">
-              注册账户
+            <Link className={styles.register} to="/account/register">
+              {this.L('CreateAnAccount')}
             </Link>
           </div>
         </LoginComponents>
-        <ResetPassword visible={resetPasswordModalState!} onOk={()=>{}} onCancel={this.resetPasswordModalCancel}></ResetPassword>
+        <ResetPassword
+         visible={resetPasswordModalState!}
+         onOk={() => { }} onCancel={this.resetPasswordModalCancel}>
+         </ResetPassword>
       </div>
     );
   }
